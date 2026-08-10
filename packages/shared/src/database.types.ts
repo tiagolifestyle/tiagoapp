@@ -57,20 +57,10 @@ export interface Exercise {
   updated_at: string;
 }
 
-export interface WorkoutTemplate {
-  id: string;
-  name: string;
-  description: string | null;
-  category: string | null;
-  created_by: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 export interface WorkoutPlan {
   id: string;
-  client_id: string;
-  template_id: string | null;
+  client_id: string | null;
+  is_template: boolean;
   name: string;
   start_date: string | null;
   end_date: string | null;

@@ -39,14 +39,19 @@ export const workoutDaySchema = z.object({
 
 export type WorkoutDayInput = z.infer<typeof workoutDaySchema>;
 
-export const workoutPlanSchema = z.object({
-  clientId: z.string().uuid(),
-  templateId: z.string().uuid().optional(),
-  name: z.string().min(2),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
-  status: z.enum(["draft", "active", "completed", "archived"]).default("draft"),
-  days: z.array(workoutDaySchema).min(1),
-});
+export const workoutPlanSchema = z
+  .object({
+    clientId: z.string().uuid().optional(),
+    isTemplate: z.boolean().default(false),
+    name: z.string().min(2),
+    startDate: z.string().optional(),
+    endDate: z.string().optional(),
+    status: z.enum(["draft", "active", "completed", "archived"]).default("draft"),
+    days: z.array(workoutDaySchema).min(1),
+  })
+  .refine((data) => data.isTemplate || Boolean(data.clientId), {
+    message: "Um plano não-template tem de ter um cliente associado",
+    path: ["clientId"],
+  });
 
 export type WorkoutPlanInput = z.infer<typeof workoutPlanSchema>;
