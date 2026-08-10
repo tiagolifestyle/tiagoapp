@@ -1,0 +1,91 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "duplicate": "Duplicar",
+    "add": "Añadir",
+    "search": "Buscar",
+    "loading": "Cargando…",
+    "error": "Ha ocurrido un error. Inténtalo de nuevo.",
+    "confirm": "Confirmar",
+    "back": "Volver",
+    "today": "Hoy",
+    "seeAll": "Ver todo"
+  },
+  "auth": {
+    "loginTitle": "Bienvenido de nuevo",
+    "loginSubtitle": "Entra para ver tu plan de hoy.",
+    "email": "Email",
+    "password": "Contraseña",
+    "loginButton": "Entrar",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetPasswordTitle": "Recuperar contraseña",
+    "resetPasswordSubtitle": "Te enviamos un enlace para restablecer tu contraseña.",
+    "sendResetLink": "Enviar enlace",
+    "changePassword": "Cambiar contraseña",
+    "logout": "Cerrar sesión",
+    "invalidCredentials": "Email o contraseña incorrectos."
+  },
+  "dashboard": {
+    "greetingMorning": "Buenos días, {{name}}",
+    "greetingAfternoon": "Buenas tardes, {{name}}",
+    "greetingEvening": "Buenas noches, {{name}}",
+    "todayPlanIntro": "Este es tu plan para hoy.",
+    "todayWorkout": "Entrenamiento de hoy",
+    "todayNutrition": "Plan de alimentación de hoy",
+    "goals": "Objetivos",
+    "progress": "Progreso",
+    "currentWeight": "Peso actual",
+    "nextSession": "Próxima sesión",
+    "coachMessages": "Mensajes del coach",
+    "alerts": "Alertas",
+    "noWorkoutToday": "Hoy es día de descanso. Aprovecha para recuperar.",
+    "streak": "{{count}} días de consistencia"
+  },
+  "workout": {
+    "sets": "series",
+    "reps": "repeticiones",
+    "rest": "descanso",
+    "rir": "RIR",
+    "rpe": "RPE",
+    "tempo": "tempo",
+    "notes": "Notas",
+    "instructions": "Instrucciones",
+    "startWorkout": "Iniciar entrenamiento",
+    "markComplete": "Marcar como completado",
+    "planVersion": "Versión {{version}}"
+  },
+  "nutrition": {
+    "breakfast": "Desayuno",
+    "lunch": "Almuerzo",
+    "snack": "Snack",
+    "dinner": "Cena",
+    "calories": "Calorías",
+    "protein": "Proteína",
+    "carbs": "Carbohidratos",
+    "fat": "Grasa",
+    "water": "Agua"
+  },
+  "profile": {
+    "title": "Perfil",
+    "language": "Idioma",
+    "personalInfo": "Información personal",
+    "security": "Seguridad"
+  },
+  "admin": {
+    "dashboardTitle": "Resumen general",
+    "totalClients": "Total de clientes",
+    "activeClients": "Clientes activos",
+    "inactiveClients": "Clientes inactivos",
+    "pendingCheckins": "Check-ins pendientes",
+    "pendingWorkouts": "Entrenamientos pendientes",
+    "clients": "Clientes",
+    "exerciseLibrary": "Biblioteca de ejercicios",
+    "templates": "Plantillas",
+    "workoutBuilder": "Editor de entrenamientos",
+    "clientProfile": "Perfil del cliente",
+    "privateNotes": "Notas privadas del coach"
+  }
+}

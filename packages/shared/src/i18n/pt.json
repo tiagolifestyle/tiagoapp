@@ -1,0 +1,91 @@
+{
+  "common": {
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "duplicate": "Duplicar",
+    "add": "Adicionar",
+    "search": "Pesquisar",
+    "loading": "A carregar…",
+    "error": "Ocorreu um erro. Tenta novamente.",
+    "confirm": "Confirmar",
+    "back": "Voltar",
+    "today": "Hoje",
+    "seeAll": "Ver tudo"
+  },
+  "auth": {
+    "loginTitle": "Bem-vindo de volta",
+    "loginSubtitle": "Entra para veres o teu plano de hoje.",
+    "email": "Email",
+    "password": "Password",
+    "loginButton": "Entrar",
+    "forgotPassword": "Esqueceste-te da password?",
+    "resetPasswordTitle": "Recuperar password",
+    "resetPasswordSubtitle": "Enviamos-te um link para redefinires a tua password.",
+    "sendResetLink": "Enviar link",
+    "changePassword": "Alterar password",
+    "logout": "Terminar sessão",
+    "invalidCredentials": "Email ou password incorretos."
+  },
+  "dashboard": {
+    "greetingMorning": "Bom dia, {{name}}",
+    "greetingAfternoon": "Boa tarde, {{name}}",
+    "greetingEvening": "Boa noite, {{name}}",
+    "todayPlanIntro": "Este é o teu plano para hoje.",
+    "todayWorkout": "Treino de hoje",
+    "todayNutrition": "Plano alimentar de hoje",
+    "goals": "Objetivos",
+    "progress": "Progresso",
+    "currentWeight": "Peso atual",
+    "nextSession": "Próxima sessão",
+    "coachMessages": "Mensagens do coach",
+    "alerts": "Alertas",
+    "noWorkoutToday": "Hoje é dia de descanso. Aproveita para recuperar.",
+    "streak": "{{count}} dias de consistência"
+  },
+  "workout": {
+    "sets": "séries",
+    "reps": "repetições",
+    "rest": "descanso",
+    "rir": "RIR",
+    "rpe": "RPE",
+    "tempo": "tempo",
+    "notes": "Notas",
+    "instructions": "Instruções",
+    "startWorkout": "Iniciar treino",
+    "markComplete": "Marcar como concluído",
+    "planVersion": "Versão {{version}}"
+  },
+  "nutrition": {
+    "breakfast": "Pequeno-almoço",
+    "lunch": "Almoço",
+    "snack": "Snack",
+    "dinner": "Jantar",
+    "calories": "Calorias",
+    "protein": "Proteína",
+    "carbs": "Hidratos",
+    "fat": "Gordura",
+    "water": "Água"
+  },
+  "profile": {
+    "title": "Perfil",
+    "language": "Idioma",
+    "personalInfo": "Informação pessoal",
+    "security": "Segurança"
+  },
+  "admin": {
+    "dashboardTitle": "Visão geral",
+    "totalClients": "Total de clientes",
+    "activeClients": "Clientes ativos",
+    "inactiveClients": "Clientes inativos",
+    "pendingCheckins": "Check-ins pendentes",
+    "pendingWorkouts": "Treinos pendentes",
+    "clients": "Clientes",
+    "exerciseLibrary": "Biblioteca de exercícios",
+    "templates": "Templates",
+    "workoutBuilder": "Editor de treinos",
+    "clientProfile": "Perfil do cliente",
+    "privateNotes": "Notas privadas do coach"
+  }
+}
