@@ -84,16 +84,36 @@ pnpm dev:admin
 - **Admin (Next.js)**: deploy num serviço como Vercel — liga o repositório,
   define as env vars de `apps/admin/.env.example` e o build command
   `pnpm --filter @tiagolifestyle/admin build`.
-- **Mobile**: usa [EAS Build](https://docs.expo.dev/build/introduction/)
+
+- **Mobile — Android**: [EAS Build](https://docs.expo.dev/build/introduction/)
+  gera um `.apk` instalável diretamente no telemóvel, sem passar pela Play
+  Store:
   ```bash
   cd apps/mobile
   npx eas login
   npx eas build:configure
-  npx eas build --platform android --profile production   # gera o .apk/.aab
-  npx eas build --platform ios --profile production        # requer conta Apple Developer
+  npx eas build --platform android --profile preview   # .apk, distribuição interna
+  npx eas build --platform android --profile production # .aab, para a Play Store
   ```
-  Antes do primeiro build, adiciona os ícones/splash em `apps/mobile/assets/`
-  (ver `assets/README.md`) e configura os segredos com `eas secret:create`.
+  No fim, o EAS dá um link/QR code para descarregar e instalar.
+
+- **Mobile — iOS**: em vez de conta Apple Developer (99$/ano), a app corre
+  como PWA — versão web instalada via "Adicionar ao Ecrã Principal" no
+  Safari, que abre em ecrã completo como uma app nativa. Deploy:
+  ```bash
+  cd apps/mobile
+  npx vercel          # primeira vez: liga o projeto, root directory = apps/mobile
+  npx vercel --prod
+  ```
+  (`vercel.json` já define o build command e output directory.) Define lá
+  as env vars `EXPO_PUBLIC_SUPABASE_URL`/`EXPO_PUBLIC_SUPABASE_ANON_KEY`.
+  No iPhone: abrir o link no Safari → ícone de partilha → **"Adicionar ao
+  Ecrã Principal"**.
+
+  Antes do primeiro build/deploy, falta o logo em `apps/mobile/assets/`
+  (ver `assets/README.md`, para o build Android) e em `apps/mobile/public/`
+  (ver `public/README.md`, para o PWA). Configura os segredos do EAS com
+  `eas secret:create`.
 
 ## Ambientes
 
