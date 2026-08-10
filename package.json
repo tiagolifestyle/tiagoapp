@@ -1,0 +1,23 @@
+{
+  "name": "tiagolifestyle",
+  "private": true,
+  "version": "0.1.0",
+  "description": "TiagoLifeStyle — plataforma premium de coaching de fitness",
+  "packageManager": "pnpm@10.9.7",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "dev:mobile": "pnpm --filter @tiagolifestyle/mobile dev",
+    "dev:admin": "pnpm --filter @tiagolifestyle/admin dev",
+    "build": "turbo run build",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "test": "turbo run test"
+  },
+  "devDependencies": {
+    "turbo": "^2.3.0",
+    "typescript": "^5.7.2",
+    "prettier": "^3.4.2"
+  }
+}
