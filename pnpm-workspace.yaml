@@ -1,3 +1,18 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# react-i18next's .d.ts files import 'react' but the package doesn't
+# declare @types/react as a peer, so pnpm doesn't nest a matching copy
+# next to it — TypeScript then falls back to pnpm's ambiguous global
+# node_modules/.pnpm/node_modules hoist folder, which can resolve to
+# whichever @types/react version another workspace app (e.g. the React
+# 19 admin app) happens to use. Declaring the peer explicitly makes
+# pnpm nest the correct (React 18) types for the mobile app.
+packageExtensions:
+  react-i18next:
+    peerDependencies:
+      "@types/react": "*"
+  react-native-chart-kit:
+    peerDependencies:
+      "@types/react": "*"

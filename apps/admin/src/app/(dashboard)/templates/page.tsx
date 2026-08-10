@@ -15,10 +15,12 @@ export default async function TemplatesPage() {
     .select("id, profiles(full_name)")
     .eq("status", "active");
 
-  const clientOptions = (clients ?? []).map((client) => ({
-    id: client.id,
-    name: (Array.isArray(client.profiles) ? client.profiles[0]?.full_name : client.profiles?.full_name) ?? "—",
-  }));
+  type ClientRow = { id: string; profiles: { full_name: string } | { full_name: string }[] | null };
+
+  const clientOptions = ((clients ?? []) as unknown as ClientRow[]).map((client) => {
+    const profile = Array.isArray(client.profiles) ? client.profiles[0] : client.profiles;
+    return { id: client.id, name: profile?.full_name ?? "—" };
+  });
 
   return <TemplatesView initialTemplates={templates ?? []} clientOptions={clientOptions} />;
 }

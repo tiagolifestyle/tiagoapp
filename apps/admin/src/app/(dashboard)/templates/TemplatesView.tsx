@@ -20,7 +20,7 @@ export function TemplatesView({
   clientOptions: ClientOption[];
 }) {
   const router = useRouter();
-  const [templates, setTemplates] = useState(initialTemplates);
+  const [templates] = useState(initialTemplates);
   const [applyingTemplateId, setApplyingTemplateId] = useState<string | null>(null);
   const [selectedClientId, setSelectedClientId] = useState("");
   const [applying, setApplying] = useState(false);

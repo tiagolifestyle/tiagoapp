@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "description": "TiagoLifeStyle — plataforma premium de coaching de fitness",
-  "packageManager": "pnpm@10.9.7",
+  "packageManager": "pnpm@10.34.5",
   "engines": {
     "node": ">=20"
   },

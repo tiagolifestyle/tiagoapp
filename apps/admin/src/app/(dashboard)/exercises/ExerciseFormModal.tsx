@@ -92,7 +92,10 @@ export function ExerciseFormModal({ exercise, onClose, onSaved }: ExerciseFormMo
 
           <Field label="Imagem/GIF">
             <div className="flex items-center gap-3">
-              {imageUrl && <img src={imageUrl} alt="" className="h-12 w-12 rounded-lg object-cover" />}
+              {imageUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={imageUrl} alt="" className="h-12 w-12 rounded-lg object-cover" />
+              )}
               <input
                 type="file"
                 accept="image/*"

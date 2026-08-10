@@ -116,3 +116,27 @@ presente em `clients`), analytics.
   existe, o envio efetivo via `expo-notifications` fica para a Fase 2).
 - Ícones/splash da app mobile são placeholders — substituir antes de
   submeter às lojas (ver `apps/mobile/assets/README.md`).
+
+## 9. Notas de manutenção do monorepo
+
+O `apps/mobile` corre React 18 (Expo/React Native) e o `apps/admin` corre
+React 19 (Next.js) **no mesmo workspace pnpm, de propósito**. Isso expõe
+uma armadilha conhecida do pnpm: algumas dependências (`react-i18next`,
+`react-native-chart-kit`) referenciam `react` nos seus `.d.ts` sem
+declarar `@types/react` como peer dependency, e o hoist automático de
+pnpm para `node_modules/.pnpm/node_modules` só consegue guardar **uma**
+versão por pacote — com duas versões de `@types/react` no workspace isso
+causava resolução de tipos ambígua (e por vezes errada) entre as apps.
+Resolvido com:
+- `.npmrc` — exclui `react`/`react-dom`/`@types/react`/`@types/react-dom`
+  desse hoist automático, forçando resolução estrita pelo grafo de
+  dependências real.
+- `pnpm-workspace.yaml` (`packageExtensions`) — declara explicitamente
+  `@types/react` como peer dependency dos pacotes que precisam mas não a
+  declaram, para o pnpm aninhar a versão correta junto de cada um.
+
+Se um erro de tipos "JSX element class does not support attributes" ou
+"cannot be used as a JSX component" voltar a aparecer depois de
+adicionar uma dependência nova, é provavelmente o mesmo problema — a
+correção é adicionar essa dependência a `packageExtensions` em
+`pnpm-workspace.yaml`.

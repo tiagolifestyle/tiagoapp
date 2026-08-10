@@ -25,7 +25,7 @@ export function ExerciseRow({ item, index }: { item: PlanExercise; index: number
           {item.rest_seconds ? ` · ${item.rest_seconds}s ${t("workout.rest")}` : ""}
           {item.rir ? ` · RIR ${item.rir}` : ""}
         </Text>
-        {item.notes ? <Text className="text-sm italic text-muted">"{item.notes}"</Text> : null}
+        {item.notes ? <Text className="text-sm italic text-muted">&quot;{item.notes}&quot;</Text> : null}
       </View>
     </View>
   );

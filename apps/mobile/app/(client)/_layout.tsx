@@ -1,8 +1,18 @@
 import { Redirect, Tabs } from "expo-router";
 import { ActivityIndicator, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import type { ComponentProps } from "react";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/context/AuthContext";
+
+type IconName = ComponentProps<typeof Ionicons>["name"];
+
+function tabIcon(name: IconName) {
+  // eslint-disable-next-line react/display-name
+  return ({ color, size }: { color: string; size: number }) => (
+    <Ionicons name={name} color={color} size={size} />
+  );
+}
 
 export default function ClientLayout() {
   const { session, isLoading } = useAuth();
@@ -32,36 +42,36 @@ export default function ClientLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: t("dashboard.todayPlanIntro") ? "Início" : "Início",
-          tabBarIcon: ({ color, size }) => <Ionicons name="home" color={color} size={size} />,
+          title: "Início",
+          tabBarIcon: tabIcon("home"),
         }}
       />
       <Tabs.Screen
         name="workout"
         options={{
           title: t("dashboard.todayWorkout"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="barbell" color={color} size={size} />,
+          tabBarIcon: tabIcon("barbell"),
         }}
       />
       <Tabs.Screen
         name="nutrition"
         options={{
           title: t("dashboard.todayNutrition"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="nutrition" color={color} size={size} />,
+          tabBarIcon: tabIcon("nutrition"),
         }}
       />
       <Tabs.Screen
         name="progress"
         options={{
           title: t("dashboard.progress"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="trending-up" color={color} size={size} />,
+          tabBarIcon: tabIcon("trending-up"),
         }}
       />
       <Tabs.Screen
         name="profile"
         options={{
           title: t("profile.title"),
-          tabBarIcon: ({ color, size }) => <Ionicons name="person" color={color} size={size} />,
+          tabBarIcon: tabIcon("person"),
         }}
       />
       <Tabs.Screen name="coach" options={{ href: null }} />
