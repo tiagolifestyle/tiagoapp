@@ -40,7 +40,8 @@
           "resizeMode": "contain",
           "backgroundColor": "#0B0B0F"
         }
-      ]
+      ],
+      "./plugins/withFixExpoModulesAutolinking.js"
     ],
     "experiments": {
       "typedRoutes": true
