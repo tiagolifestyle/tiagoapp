@@ -1,4 +1,9 @@
 {
+  "onboarding": {
+    "chooseLanguage": "Elige tu idioma",
+    "chooseLanguageSubtitle": "Puedes cambiar esto más tarde en tu perfil.",
+    "continue": "Continuar"
+  },
   "common": {
     "save": "Guardar",
     "cancel": "Cancelar",
@@ -26,7 +31,25 @@
     "sendResetLink": "Enviar enlace",
     "changePassword": "Cambiar contraseña",
     "logout": "Cerrar sesión",
-    "invalidCredentials": "Email o contraseña incorrectos."
+    "invalidCredentials": "Email o contraseña incorrectos.",
+    "noAccount": "¿Todavía no tienes cuenta?",
+    "createAccount": "Crear cuenta",
+    "signUpTitle": "Crea tu cuenta",
+    "signUpSubtitle": "Regístrate para empezar a seguir tu plan.",
+    "fullName": "Nombre completo",
+    "confirmPassword": "Confirmar contraseña",
+    "signUpButton": "Crear cuenta",
+    "alreadyHaveAccount": "¿Ya tienes cuenta?",
+    "backToLogin": "Volver al login",
+    "passwordMismatch": "Las contraseñas no coinciden.",
+    "passwordTooShort": "La contraseña debe tener al menos 8 caracteres.",
+    "signUpError": "No se pudo crear tu cuenta. Inténtalo de nuevo.",
+    "signUpSuccess": "¡Cuenta creada! Ya tienes sesión iniciada.",
+    "manager": "Gestor",
+    "managerPassword": "Contraseña de gestor",
+    "managerAccess": "Acceder",
+    "managerInvalid": "Contraseña incorrecta.",
+    "managerNoUrl": "El panel de gestión todavía no está configurado."
   },
   "dashboard": {
     "greetingMorning": "Buenos días, {{name}}",

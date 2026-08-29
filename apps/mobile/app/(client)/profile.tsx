@@ -10,6 +10,7 @@ import { Button } from "@/components/Button";
 const localeLabels: Record<SupportedLocale, string> = {
   pt: "Português",
   es: "Español",
+  en: "English",
 };
 
 export default function ProfileScreen() {

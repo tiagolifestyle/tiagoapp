@@ -2,12 +2,14 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import type { Session } from "@supabase/supabase-js";
 import type { Profile } from "@tiagolifestyle/shared";
 import { supabase } from "@/lib/supabase";
+import i18n from "@/lib/i18n";
 
 interface AuthContextValue {
   session: Session | null;
   profile: Profile | null;
   isLoading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: string | null }>;
+  signUp: (fullName: string, email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
 }
@@ -61,6 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       isLoading,
       signIn: async (email, password) => {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
+        return { error: error?.message ?? null };
+      },
+      signUp: async (fullName, email, password) => {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: {
+              role: "client",
+              full_name: fullName,
+              locale: i18n.language,
+            },
+          },
+        });
         return { error: error?.message ?? null };
       },
       signOut: async () => {

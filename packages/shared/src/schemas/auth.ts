@@ -13,6 +13,20 @@ export const forgotPasswordSchema = z.object({
 
 export type ForgotPasswordInput = z.infer<typeof forgotPasswordSchema>;
 
+export const signUpSchema = z
+  .object({
+    fullName: z.string().min(2),
+    email: z.string().email(),
+    password: z.string().min(8),
+    confirmPassword: z.string().min(8),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "As passwords não coincidem",
+    path: ["confirmPassword"],
+  });
+
+export type SignUpInput = z.infer<typeof signUpSchema>;
+
 export const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(8),

@@ -8,6 +8,8 @@ import {
   type SupportedLocale,
 } from "@tiagolifestyle/shared";
 
+export const LANGUAGE_STORAGE_KEY = "tiagolifestyle.language";
+
 function detectDeviceLocale(): SupportedLocale {
   const deviceLocale = getLocales()[0]?.languageCode;
   return (supportedLocales as readonly string[]).includes(deviceLocale ?? "")
