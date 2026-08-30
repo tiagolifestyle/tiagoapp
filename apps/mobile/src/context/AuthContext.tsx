@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { router } from "expo-router";
 import type { Session } from "@supabase/supabase-js";
 import type { Profile } from "@tiagolifestyle/shared";
 import { supabase } from "@/lib/supabase";
@@ -12,6 +13,7 @@ interface AuthContextValue {
   signUp: (fullName: string, email: string, password: string) => Promise<{ error: string | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: string | null }>;
+  updatePassword: (password: string) => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -27,8 +29,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsLoading(false);
     });
 
-    const { data: subscription } = supabase.auth.onAuthStateChange((_event, nextSession) => {
+    const { data: subscription } = supabase.auth.onAuthStateChange((event, nextSession) => {
       setSession(nextSession);
+      if (event === "PASSWORD_RECOVERY") {
+        router.replace("/reset-password");
+      }
     });
 
     return () => subscription.subscription.unsubscribe();
@@ -84,6 +89,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       resetPassword: async (email) => {
         const { error } = await supabase.auth.resetPasswordForEmail(email);
+        return { error: error?.message ?? null };
+      },
+      updatePassword: async (password) => {
+        const { error } = await supabase.auth.updateUser({ password });
         return { error: error?.message ?? null };
       },
     }),

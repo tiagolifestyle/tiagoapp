@@ -16,6 +16,7 @@ export interface CreateSupabaseClientOptions {
   storage?: AuthStorageAdapter;
   autoRefreshToken?: boolean;
   persistSession?: boolean;
+  detectSessionInUrl?: boolean;
 }
 
 export function createSupabaseClient({
@@ -24,6 +25,7 @@ export function createSupabaseClient({
   storage,
   autoRefreshToken = true,
   persistSession = true,
+  detectSessionInUrl = false,
 }: CreateSupabaseClientOptions) {
   if (!url || !anonKey) {
     throw new Error(
@@ -36,7 +38,7 @@ export function createSupabaseClient({
       storage: storage as never,
       autoRefreshToken,
       persistSession,
-      detectSessionInUrl: false,
+      detectSessionInUrl,
     },
   };
 
