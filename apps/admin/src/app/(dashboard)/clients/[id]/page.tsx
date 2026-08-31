@@ -8,7 +8,7 @@ export default async function ClientDetailPage({ params }: { params: Promise<{ i
 
   const { data: client } = await supabase
     .from("clients")
-    .select("*, profiles(full_name, avatar_url, locale)")
+    .select("*, profiles!clients_id_fkey(full_name, avatar_url, locale)")
     .eq("id", id)
     .single();
 

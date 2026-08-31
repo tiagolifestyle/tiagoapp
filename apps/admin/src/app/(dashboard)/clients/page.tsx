@@ -8,7 +8,7 @@ export default async function ClientsPage() {
 
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, goal, status, subscription_tier, updated_at, profiles(full_name, avatar_url)")
+    .select("id, goal, status, subscription_tier, updated_at, profiles!clients_id_fkey(full_name, avatar_url)")
     .order("updated_at", { ascending: false });
 
   return (

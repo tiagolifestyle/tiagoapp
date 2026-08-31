@@ -12,7 +12,7 @@ export default async function TemplatesPage() {
 
   const { data: clients } = await supabase
     .from("clients")
-    .select("id, profiles(full_name)")
+    .select("id, profiles!clients_id_fkey(full_name)")
     .eq("status", "active");
 
   type ClientRow = { id: string; profiles: { full_name: string } | { full_name: string }[] | null };
