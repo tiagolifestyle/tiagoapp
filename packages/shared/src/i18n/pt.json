@@ -78,7 +78,9 @@
     "instructions": "Instruções",
     "startWorkout": "Iniciar treino",
     "markComplete": "Marcar como concluído",
-    "planVersion": "Versão {{version}}"
+    "planVersion": "Versão {{version}}",
+    "restDay": "Dia de descanso",
+    "weekdaysShort": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
   },
   "nutrition": {
     "breakfast": "Pequeno-almoço",

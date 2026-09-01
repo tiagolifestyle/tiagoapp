@@ -78,7 +78,9 @@
     "instructions": "Instructions",
     "startWorkout": "Start workout",
     "markComplete": "Mark as complete",
-    "planVersion": "Version {{version}}"
+    "planVersion": "Version {{version}}",
+    "restDay": "Rest day",
+    "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   },
   "nutrition": {
     "breakfast": "Breakfast",
