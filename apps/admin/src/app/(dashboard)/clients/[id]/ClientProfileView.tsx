@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { Client } from "@tiagolifestyle/shared";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -34,7 +35,10 @@ export function ClientProfileView({
   initialClient: Client;
   initialProfileName: string;
 }) {
-  const [activeTab, setActiveTab] = useState<TabKey>("info");
+  const searchParams = useSearchParams();
+  const requestedTab = searchParams.get("tab");
+  const initialTab = TABS.some((tab) => tab.key === requestedTab) ? (requestedTab as TabKey) : "info";
+  const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
 
   return (
     <div className="flex flex-col gap-6">
