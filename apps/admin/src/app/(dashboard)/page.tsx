@@ -4,13 +4,20 @@ import { StatCard } from "@/components/StatCard";
 
 export default async function OverviewPage() {
   const supabase = await createServerSupabaseClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   const [total, active, inactive, pendingCheckins, unreadMessages] = await Promise.all([
     supabase.from("clients").select("id", { count: "exact", head: true }),
     supabase.from("clients").select("id", { count: "exact", head: true }).eq("status", "active"),
     supabase.from("clients").select("id", { count: "exact", head: true }).eq("status", "inactive"),
     supabase.from("checkins").select("id", { count: "exact", head: true }).eq("status", "pending"),
-    supabase.from("messages").select("id", { count: "exact", head: true }).is("read_at", null),
+    supabase
+      .from("messages")
+      .select("id", { count: "exact", head: true })
+      .is("read_at", null)
+      .neq("sender_id", user?.id ?? ""),
   ]);
 
   return (

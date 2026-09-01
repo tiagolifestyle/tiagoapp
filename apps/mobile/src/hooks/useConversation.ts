@@ -26,6 +26,13 @@ export function useConversation(clientId: string | undefined) {
         .order("created_at", { ascending: true })
         .limit(100);
       setMessages((data ?? []) as Message[]);
+
+      const unreadIds = (data ?? [])
+        .filter((message) => message.sender_id !== clientId && !message.read_at)
+        .map((message) => message.id);
+      if (unreadIds.length > 0) {
+        await supabase.from("messages").update({ read_at: new Date().toISOString() }).in("id", unreadIds);
+      }
     }
 
     setIsLoading(false);

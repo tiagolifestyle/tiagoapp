@@ -31,6 +31,13 @@ export function MessagesTab({ clientId }: { clientId: string }) {
         .eq("conversation_id", conversation.id)
         .order("created_at", { ascending: true });
       setMessages((data ?? []) as Message[]);
+
+      const unreadIds = (data ?? [])
+        .filter((message) => message.sender_id !== user?.id && !message.read_at)
+        .map((message) => message.id);
+      if (unreadIds.length > 0) {
+        await supabase.from("messages").update({ read_at: new Date().toISOString() }).in("id", unreadIds);
+      }
     }
   }
 
