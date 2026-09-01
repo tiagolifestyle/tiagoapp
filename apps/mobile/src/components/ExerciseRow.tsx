@@ -1,10 +1,27 @@
-import { View, Text, Image } from "react-native";
+import { useEffect, useState } from "react";
+import { View, Text, Image, TextInput } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import type { PlanExercise } from "@/hooks/useWorkoutPlan";
 
-export function ExerciseRow({ item, index }: { item: PlanExercise; index: number }) {
+interface ExerciseRowProps {
+  item: PlanExercise;
+  index: number;
+  load: string;
+  onSaveLoad: (value: string) => void;
+}
+
+export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps) {
   const { t } = useTranslation();
+  const [draft, setDraft] = useState(load);
+
+  useEffect(() => {
+    setDraft(load);
+  }, [load]);
+
+  function handleBlur() {
+    if (draft !== load) onSaveLoad(draft);
+  }
 
   return (
     <View className="flex-row gap-3 border-b border-border py-4 last:border-b-0">
@@ -24,8 +41,23 @@ export function ExerciseRow({ item, index }: { item: PlanExercise; index: number
           {item.sets} {t("workout.sets")} · {item.reps} {t("workout.reps")}
           {item.rest_seconds ? ` · ${item.rest_seconds}s ${t("workout.rest")}` : ""}
           {item.rir ? ` · RIR ${item.rir}` : ""}
+          {item.tempo ? ` · ${t("workout.tempo")} ${item.tempo}` : ""}
         </Text>
         {item.notes ? <Text className="text-sm italic text-muted">&quot;{item.notes}&quot;</Text> : null}
+
+        <View className="mt-2 flex-row items-center gap-2">
+          <Text className="text-sm text-muted">{t("workout.load")}:</Text>
+          <TextInput
+            value={draft}
+            onChangeText={setDraft}
+            onBlur={handleBlur}
+            keyboardType="numeric"
+            placeholder="—"
+            placeholderTextColor="#6B6B76"
+            className="w-16 rounded-lg border border-border bg-surface-elevated px-2 py-1 text-center text-sm text-foreground"
+          />
+          <Text className="text-sm text-muted">kg</Text>
+        </View>
       </View>
     </View>
   );

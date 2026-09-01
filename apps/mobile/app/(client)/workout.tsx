@@ -13,7 +13,7 @@ const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 export default function WorkoutScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { plan, isLoading, refresh } = useWorkoutPlan(profile?.id);
+  const { plan, loads, saveLoad, isLoading, refresh } = useWorkoutPlan(profile?.id);
   const weekdayLabels = t("workout.weekdaysShort", { returnObjects: true }) as string[];
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
 
@@ -76,7 +76,13 @@ export default function WorkoutScreen() {
               <Card key={selectedDay.id} className="gap-1">
                 <Text className="mb-2 text-lg font-semibold text-foreground">{selectedDay.name}</Text>
                 {selectedDay.exercises.map((exercise, index) => (
-                  <ExerciseRow key={exercise.id} item={exercise} index={index} />
+                  <ExerciseRow
+                    key={exercise.id}
+                    item={exercise}
+                    index={index}
+                    load={loads[exercise.id] ?? ""}
+                    onSaveLoad={(value) => saveLoad(exercise.id, value)}
+                  />
                 ))}
               </Card>
             ) : (

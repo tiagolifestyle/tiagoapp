@@ -80,6 +80,7 @@
     "markComplete": "Marcar como concluído",
     "planVersion": "Versão {{version}}",
     "restDay": "Dia de descanso",
+    "load": "Carga",
     "weekdaysShort": ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"]
   },
   "nutrition": {

@@ -16,6 +16,7 @@ export interface ActivePlan extends WorkoutPlan {
 
 export function useWorkoutPlan(clientId: string | undefined) {
   const [plan, setPlan] = useState<ActivePlan | null>(null);
+  const [loads, setLoads] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   const load = useCallback(async () => {
@@ -33,6 +34,7 @@ export function useWorkoutPlan(clientId: string | undefined) {
 
     if (!planRow) {
       setPlan(null);
+      setLoads({});
       setIsLoading(false);
       return;
     }
@@ -49,6 +51,28 @@ export function useWorkoutPlan(clientId: string | undefined) {
     })) as PlanDay[];
 
     setPlan({ ...(planRow as WorkoutPlan), days: orderedDays });
+
+    const exerciseIds = orderedDays.flatMap((day) => day.exercises.map((exercise) => exercise.id));
+    if (exerciseIds.length > 0) {
+      const { data: logs } = await supabase
+        .from("exercise_logs")
+        .select("workout_exercise_id, sets_completed, performed_at")
+        .eq("client_id", clientId)
+        .in("workout_exercise_id", exerciseIds)
+        .order("performed_at", { ascending: false });
+
+      const nextLoads: Record<string, string> = {};
+      for (const log of logs ?? []) {
+        const exerciseId = log.workout_exercise_id as string | null;
+        if (!exerciseId || nextLoads[exerciseId] !== undefined) continue;
+        const entry = Array.isArray(log.sets_completed) ? log.sets_completed[0] : null;
+        if (entry?.load) nextLoads[exerciseId] = String(entry.load);
+      }
+      setLoads(nextLoads);
+    } else {
+      setLoads({});
+    }
+
     setIsLoading(false);
   }, [clientId]);
 
@@ -56,5 +80,15 @@ export function useWorkoutPlan(clientId: string | undefined) {
     load();
   }, [load]);
 
-  return { plan, isLoading, refresh: load };
+  async function saveLoad(workoutExerciseId: string, value: string) {
+    if (!clientId) return;
+    setLoads((prev) => ({ ...prev, [workoutExerciseId]: value }));
+    await supabase.from("exercise_logs").insert({
+      client_id: clientId,
+      workout_exercise_id: workoutExerciseId,
+      sets_completed: [{ load: value }],
+    });
+  }
+
+  return { plan, loads, saveLoad, isLoading, refresh: load };
 }

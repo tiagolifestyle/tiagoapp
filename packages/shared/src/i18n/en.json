@@ -80,6 +80,7 @@
     "markComplete": "Mark as complete",
     "planVersion": "Version {{version}}",
     "restDay": "Rest day",
+    "load": "Load",
     "weekdaysShort": ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
   },
   "nutrition": {
