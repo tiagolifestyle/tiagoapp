@@ -38,12 +38,38 @@ export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps)
           {index + 1}. {item.exercise.name}
         </Text>
         <Text className="text-sm text-muted">
-          {item.sets} {t("workout.sets")} · {item.reps} {t("workout.reps")}
-          {item.rest_seconds ? ` · ${item.rest_seconds}s ${t("workout.rest")}` : ""}
-          {item.rir ? ` · RIR ${item.rir}` : ""}
-          {item.tempo ? ` · ${t("workout.tempo")} ${item.tempo}` : ""}
+          <Text className="text-foreground">{item.sets} </Text>
+          <Text className="font-semibold text-accent">{t("workout.sets")}</Text>
+          <Text> · </Text>
+          <Text className="text-foreground">{item.reps} </Text>
+          <Text className="font-semibold text-accent">{t("workout.reps")}</Text>
+          {item.rest_seconds ? (
+            <>
+              <Text> · </Text>
+              <Text className="text-foreground">{item.rest_seconds}s </Text>
+              <Text className="font-semibold text-accent">{t("workout.rest")}</Text>
+            </>
+          ) : null}
+          {item.rir ? (
+            <>
+              <Text> · </Text>
+              <Text className="font-semibold text-accent">RIR </Text>
+              <Text className="text-foreground">{item.rir}</Text>
+            </>
+          ) : null}
+          {item.tempo ? (
+            <>
+              <Text> · </Text>
+              <Text className="font-semibold text-accent">{t("workout.tempo")} </Text>
+              <Text className="text-foreground">{item.tempo}</Text>
+            </>
+          ) : null}
         </Text>
-        {item.notes ? <Text className="text-sm italic text-muted">&quot;{item.notes}&quot;</Text> : null}
+        {item.notes ? (
+          <View className="mt-1 rounded-lg border border-accent-muted bg-surface-elevated px-3 py-2">
+            <Text className="text-sm italic text-accent">&quot;{item.notes}&quot;</Text>
+          </View>
+        ) : null}
 
         <View className="mt-2 flex-row items-center gap-2">
           <Text className="text-sm text-muted">{t("workout.load")}:</Text>
