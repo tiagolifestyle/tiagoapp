@@ -2,17 +2,16 @@
 
 import { useDroppable } from "@dnd-kit/core";
 import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable";
-import { Copy, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { ExerciseCard } from "./ExerciseCard";
 import type { BuilderDay, BuilderExercise } from "./types";
 
-const WEEKDAY_LABELS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+export const DAY_SLOT_DROPPABLE_ID = "day-slot";
 
 interface DayColumnProps {
-  day: BuilderDay;
+  day: BuilderDay | undefined;
+  weekdayLabel: string;
   onRename: (name: string) => void;
-  onWeekdayChange: (weekday: number | null) => void;
-  onDuplicateDay: () => void;
   onDeleteDay: () => void;
   onExerciseChange: (exerciseEntryId: string, patch: Partial<BuilderExercise>) => void;
   onDuplicateExercise: (exerciseEntryId: string) => void;
@@ -21,53 +20,38 @@ interface DayColumnProps {
 
 export function DayColumn({
   day,
+  weekdayLabel,
   onRename,
-  onWeekdayChange,
-  onDuplicateDay,
   onDeleteDay,
   onExerciseChange,
   onDuplicateExercise,
   onDeleteExercise,
 }: DayColumnProps) {
-  const { setNodeRef, isOver } = useDroppable({ id: `day-${day.id}` });
+  const { setNodeRef, isOver } = useDroppable({ id: DAY_SLOT_DROPPABLE_ID });
 
   return (
-    <div className="flex w-[340px] shrink-0 flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
+    <div className="flex flex-1 flex-col gap-3 rounded-2xl border border-border bg-surface p-4">
       <div className="flex items-center justify-between gap-2">
         <input
-          value={day.name}
+          value={day?.name ?? weekdayLabel}
           onChange={(e) => onRename(e.target.value)}
           className="flex-1 bg-transparent text-base font-semibold text-foreground outline-none"
         />
-        <button onClick={onDuplicateDay} className="text-muted hover:text-foreground" title="Duplicar treino">
-          <Copy size={16} />
-        </button>
-        <button onClick={onDeleteDay} className="text-muted hover:text-danger" title="Eliminar treino">
-          <Trash2 size={16} />
-        </button>
+        {day && (
+          <button onClick={onDeleteDay} className="text-muted hover:text-danger" title="Limpar este dia">
+            <Trash2 size={16} />
+          </button>
+        )}
       </div>
 
-      <select
-        value={day.weekday ?? ""}
-        onChange={(e) => onWeekdayChange(e.target.value === "" ? null : Number(e.target.value))}
-        className="rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none"
-      >
-        <option value="">Sem dia da semana</option>
-        {WEEKDAY_LABELS.map((label, weekday) => (
-          <option key={weekday} value={weekday}>
-            {label}
-          </option>
-        ))}
-      </select>
-
-      <SortableContext items={day.exercises.map((e) => e.id)} strategy={verticalListSortingStrategy}>
+      <SortableContext items={day?.exercises.map((e) => e.id) ?? []} strategy={verticalListSortingStrategy}>
         <div
           ref={setNodeRef}
-          className={`flex min-h-[120px] flex-col gap-3 rounded-xl p-1 transition ${
+          className={`flex min-h-[200px] flex-col gap-3 rounded-xl p-1 transition ${
             isOver ? "bg-surface-elevated ring-2 ring-accent/50" : ""
           }`}
         >
-          {day.exercises.map((exercise, index) => (
+          {day?.exercises.map((exercise, index) => (
             <ExerciseCard
               key={exercise.id}
               item={exercise}
@@ -77,9 +61,9 @@ export function DayColumn({
               onDelete={() => onDeleteExercise(exercise.id)}
             />
           ))}
-          {day.exercises.length === 0 && (
+          {(!day || day.exercises.length === 0) && (
             <p className="rounded-xl border border-dashed border-border p-6 text-center text-xs text-muted">
-              Arrasta exercícios da biblioteca para aqui
+              Arrasta exercícios da biblioteca para aqui para montares o treino de {weekdayLabel.toLowerCase()}
             </p>
           )}
         </div>

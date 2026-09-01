@@ -3,12 +3,22 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors, type DragEndEvent, type DragStartEvent } from "@dnd-kit/core";
-import { ArrowLeft, Plus, Dumbbell } from "lucide-react";
+import {
+  DndContext,
+  DragOverlay,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+  type DragStartEvent,
+} from "@dnd-kit/core";
+import { arrayMove } from "@dnd-kit/sortable";
+import { ArrowLeft, Dumbbell } from "lucide-react";
 import type { Exercise, WorkoutPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
-import { DayColumn } from "./DayColumn";
+import { DayColumn, DAY_SLOT_DROPPABLE_ID } from "./DayColumn";
 import { LibraryPanel } from "./LibraryPanel";
+import { WeekdayTabs, WEEKDAY_ORDER, WEEKDAY_LABELS } from "./WeekdayTabs";
 import type { BuilderDay, BuilderExercise } from "./types";
 
 function reindex(list: BuilderExercise[]): BuilderExercise[] {
@@ -17,10 +27,6 @@ function reindex(list: BuilderExercise[]): BuilderExercise[] {
 
 function isTempId(id: string) {
   return id.startsWith("tmp-");
-}
-
-function dayLetter(index: number) {
-  return String.fromCharCode(65 + index);
 }
 
 interface WorkoutBuilderProps {
@@ -35,30 +41,32 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
   const [planName, setPlanName] = useState(plan.name);
   const [planStatus, setPlanStatus] = useState(plan.status);
   const [days, setDays] = useState<BuilderDay[]>(initialDays);
+  const [selectedWeekday, setSelectedWeekday] = useState(
+    () => WEEKDAY_ORDER.find((w) => initialDays.some((d) => d.weekday === w)) ?? 1
+  );
   const [activeDrag, setActiveDrag] = useState<{ label: string } | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
+  const selectedDay = days.find((d) => d.weekday === selectedWeekday);
 
-  function locate(id: string) {
-    for (let dayIndex = 0; dayIndex < days.length; dayIndex++) {
-      const exerciseIndex = days[dayIndex].exercises.findIndex((e) => e.id === id);
-      if (exerciseIndex >= 0) return { dayIndex, exerciseIndex };
-    }
-    return null;
-  }
+  function ensureSelectedDay(prev: BuilderDay[]): { next: BuilderDay[]; index: number } {
+    const index = prev.findIndex((d) => d.weekday === selectedWeekday);
+    if (index >= 0) return { next: prev, index };
 
-  function resolveTarget(overId: string) {
-    if (overId.startsWith("day-")) {
-      const dayId = overId.slice(4);
-      const dayIndex = days.findIndex((d) => d.id === dayId);
-      if (dayIndex < 0) return null;
-      return { dayIndex, index: days[dayIndex].exercises.length };
-    }
-    const found = locate(overId);
-    if (!found) return null;
-    return { dayIndex: found.dayIndex, index: found.exerciseIndex };
+    const newDay: BuilderDay = {
+      id: `tmp-${crypto.randomUUID()}`,
+      plan_id: plan.id,
+      name: WEEKDAY_LABELS[selectedWeekday],
+      day_order: prev.length,
+      weekday: selectedWeekday,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      exercises: [],
+    };
+    const next = [...prev, newDay];
+    return { next, index: next.length - 1 };
   }
 
   function handleDragStart(event: DragStartEvent) {
@@ -66,8 +74,8 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
     if (data?.type === "library") {
       setActiveDrag({ label: (data.exercise as Exercise).name });
     } else {
-      const found = locate(event.active.id as string);
-      if (found) setActiveDrag({ label: days[found.dayIndex].exercises[found.exerciseIndex].exercise.name });
+      const exercise = selectedDay?.exercises.find((e) => e.id === event.active.id);
+      if (exercise) setActiveDrag({ label: exercise.exercise.name });
     }
   }
 
@@ -80,129 +88,104 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
 
     if (activeData?.type === "library") {
       const exercise = activeData.exercise as Exercise;
-      const target = resolveTarget(over.id as string);
-      if (!target) return;
-
-      const newEntry: BuilderExercise = {
-        id: `tmp-${crypto.randomUUID()}`,
-        day_id: days[target.dayIndex].id,
-        exercise_id: exercise.id,
-        exercise,
-        order_index: target.index,
-        sets: 3,
-        reps: "10",
-        load: null,
-        rest_seconds: 60,
-        rir: null,
-        rpe: null,
-        tempo: null,
-        notes: null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
 
       setDays((prev) => {
-        const next = prev.map((d) => ({ ...d, exercises: [...d.exercises] }));
-        next[target.dayIndex].exercises.splice(target.index, 0, newEntry);
-        next[target.dayIndex].exercises = reindex(next[target.dayIndex].exercises);
+        const { next, index } = ensureSelectedDay(prev.map((d) => ({ ...d, exercises: [...d.exercises] })));
+        const newEntry: BuilderExercise = {
+          id: `tmp-${crypto.randomUUID()}`,
+          day_id: next[index].id,
+          exercise_id: exercise.id,
+          exercise,
+          order_index: next[index].exercises.length,
+          sets: 3,
+          reps: "10",
+          load: null,
+          rest_seconds: 60,
+          rir: null,
+          rpe: null,
+          tempo: null,
+          notes: null,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
+        next[index].exercises = reindex([...next[index].exercises, newEntry]);
         return next;
       });
       return;
     }
 
     const activeId = active.id as string;
-    const source = locate(activeId);
-    if (!source) return;
-    const target = resolveTarget(over.id as string);
-    if (!target) return;
-    if (source.dayIndex === target.dayIndex && source.exerciseIndex === target.index) return;
+    const overId = over.id as string;
+    if (overId === DAY_SLOT_DROPPABLE_ID || activeId === overId) return;
 
     setDays((prev) => {
-      const next = prev.map((d) => ({ ...d, exercises: [...d.exercises] }));
-      const [moved] = next[source.dayIndex].exercises.splice(source.exerciseIndex, 1);
-      let targetIndex = target.index;
-      if (source.dayIndex === target.dayIndex && target.index > source.exerciseIndex) targetIndex -= 1;
-      next[target.dayIndex].exercises.splice(targetIndex, 0, { ...moved, day_id: next[target.dayIndex].id });
-      next[source.dayIndex].exercises = reindex(next[source.dayIndex].exercises);
-      next[target.dayIndex].exercises = reindex(next[target.dayIndex].exercises);
+      const dayIndex = prev.findIndex((d) => d.weekday === selectedWeekday);
+      if (dayIndex < 0) return prev;
+      const day = prev[dayIndex];
+      const oldIndex = day.exercises.findIndex((e) => e.id === activeId);
+      const newIndex = day.exercises.findIndex((e) => e.id === overId);
+      if (oldIndex < 0 || newIndex < 0) return prev;
+
+      const next = [...prev];
+      next[dayIndex] = { ...day, exercises: reindex(arrayMove(day.exercises, oldIndex, newIndex)) };
       return next;
     });
   }
 
-  function addDay() {
-    setDays((prev) => [
-      ...prev,
-      {
-        id: `tmp-${crypto.randomUUID()}`,
-        plan_id: plan.id,
-        name: `Treino ${dayLetter(prev.length)}`,
-        day_order: prev.length,
-        weekday: null,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-        exercises: [],
-      },
-    ]);
-  }
-
-  function renameDay(dayId: string, name: string) {
-    setDays((prev) => prev.map((d) => (d.id === dayId ? { ...d, name } : d)));
-  }
-
-  function changeDayWeekday(dayId: string, weekday: number | null) {
-    setDays((prev) => prev.map((d) => (d.id === dayId ? { ...d, weekday } : d)));
-  }
-
-  function duplicateDay(dayId: string) {
+  function renameDay(name: string) {
     setDays((prev) => {
-      const index = prev.findIndex((d) => d.id === dayId);
-      if (index < 0) return prev;
-      const original = prev[index];
-      const clone: BuilderDay = {
-        ...original,
-        id: `tmp-${crypto.randomUUID()}`,
-        name: `${original.name} (cópia)`,
-        exercises: original.exercises.map((exercise) => ({ ...exercise, id: `tmp-${crypto.randomUUID()}` })),
-      };
-      const next = [...prev];
-      next.splice(index + 1, 0, clone);
-      return next.map((d, i) => ({ ...d, day_order: i }));
+      const index = prev.findIndex((d) => d.weekday === selectedWeekday);
+      if (index >= 0) {
+        const next = [...prev];
+        next[index] = { ...next[index], name };
+        return next;
+      }
+      const { next } = ensureSelectedDay(prev);
+      next[next.length - 1] = { ...next[next.length - 1], name };
+      return next;
     });
   }
 
-  function deleteDay(dayId: string) {
-    if (!confirm("Eliminar este treino do plano?")) return;
-    setDays((prev) => prev.filter((d) => d.id !== dayId).map((d, i) => ({ ...d, day_order: i })));
+  function deleteDay() {
+    if (!selectedDay) return;
+    if (!confirm(`Limpar o treino de ${WEEKDAY_LABELS[selectedWeekday]}? Esta ação não pode ser desfeita.`)) return;
+    setDays((prev) => prev.filter((d) => d.weekday !== selectedWeekday));
   }
 
   function updateExercise(entryId: string, patch: Partial<BuilderExercise>) {
-    setDays((prev) =>
-      prev.map((day) => ({
-        ...day,
-        exercises: day.exercises.map((exercise) => (exercise.id === entryId ? { ...exercise, ...patch } : exercise)),
-      }))
-    );
+    setDays((prev) => {
+      const dayIndex = prev.findIndex((d) => d.weekday === selectedWeekday);
+      if (dayIndex < 0) return prev;
+      const next = [...prev];
+      next[dayIndex] = {
+        ...next[dayIndex],
+        exercises: next[dayIndex].exercises.map((e) => (e.id === entryId ? { ...e, ...patch } : e)),
+      };
+      return next;
+    });
   }
 
   function duplicateExercise(entryId: string) {
     setDays((prev) => {
-      const found = locate(entryId);
-      if (!found) return prev;
-      const next = prev.map((d) => ({ ...d, exercises: [...d.exercises] }));
-      const original = next[found.dayIndex].exercises[found.exerciseIndex];
-      next[found.dayIndex].exercises.splice(found.exerciseIndex + 1, 0, { ...original, id: `tmp-${crypto.randomUUID()}` });
-      next[found.dayIndex].exercises = reindex(next[found.dayIndex].exercises);
+      const dayIndex = prev.findIndex((d) => d.weekday === selectedWeekday);
+      if (dayIndex < 0) return prev;
+      const exercises = [...prev[dayIndex].exercises];
+      const index = exercises.findIndex((e) => e.id === entryId);
+      if (index < 0) return prev;
+      exercises.splice(index + 1, 0, { ...exercises[index], id: `tmp-${crypto.randomUUID()}` });
+      const next = [...prev];
+      next[dayIndex] = { ...next[dayIndex], exercises: reindex(exercises) };
       return next;
     });
   }
 
   function deleteExercise(entryId: string) {
     setDays((prev) => {
-      const found = locate(entryId);
-      if (!found) return prev;
-      const next = prev.map((d) => ({ ...d, exercises: [...d.exercises] }));
-      next[found.dayIndex].exercises.splice(found.exerciseIndex, 1);
-      next[found.dayIndex].exercises = reindex(next[found.dayIndex].exercises);
+      const dayIndex = prev.findIndex((d) => d.weekday === selectedWeekday);
+      if (dayIndex < 0) return prev;
+      const exercises = reindex(prev[dayIndex].exercises.filter((e) => e.id !== entryId));
+      const next = [...prev];
+      next[dayIndex] = { ...next[dayIndex], exercises };
       return next;
     });
   }
@@ -387,30 +370,24 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
           </div>
         </div>
 
+        <WeekdayTabs
+          selected={selectedWeekday}
+          onSelect={setSelectedWeekday}
+          countFor={(weekday) => days.find((d) => d.weekday === weekday)?.exercises.length ?? 0}
+        />
+
         <div className="flex gap-4 overflow-x-auto pb-4">
           <LibraryPanel library={library} />
 
-          {days.map((day) => (
-            <DayColumn
-              key={day.id}
-              day={day}
-              onRename={(name) => renameDay(day.id, name)}
-              onWeekdayChange={(weekday) => changeDayWeekday(day.id, weekday)}
-              onDuplicateDay={() => duplicateDay(day.id)}
-              onDeleteDay={() => deleteDay(day.id)}
-              onExerciseChange={updateExercise}
-              onDuplicateExercise={duplicateExercise}
-              onDeleteExercise={deleteExercise}
-            />
-          ))}
-
-          <button
-            onClick={addDay}
-            className="flex h-fit w-[220px] shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-border p-8 text-muted hover:border-accent hover:text-accent"
-          >
-            <Plus size={20} />
-            <span className="text-sm font-medium">Adicionar treino</span>
-          </button>
+          <DayColumn
+            day={selectedDay}
+            weekdayLabel={WEEKDAY_LABELS[selectedWeekday]}
+            onRename={renameDay}
+            onDeleteDay={deleteDay}
+            onExerciseChange={updateExercise}
+            onDuplicateExercise={duplicateExercise}
+            onDeleteExercise={deleteExercise}
+          />
         </div>
       </div>
 
