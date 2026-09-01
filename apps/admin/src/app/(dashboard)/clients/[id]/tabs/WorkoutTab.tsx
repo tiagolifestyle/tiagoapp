@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import type { WorkoutPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
@@ -49,6 +49,13 @@ export function WorkoutTab({ clientId }: { clientId: string }) {
     if (!error && plan) router.push(`/workouts/builder/${plan.id}`);
   }
 
+  async function handleDeletePlan(plan: WorkoutPlan) {
+    if (!confirm(`Eliminar o plano "${plan.name}"? Esta ação não pode ser desfeita.`)) return;
+    const supabase = createBrowserSupabaseClient();
+    const { error } = await supabase.from("workout_plans").delete().eq("id", plan.id);
+    if (!error) setPlans((prev) => prev.filter((p) => p.id !== plan.id));
+  }
+
   return (
     <div className="flex flex-col gap-4">
       <button
@@ -68,19 +75,27 @@ export function WorkoutTab({ clientId }: { clientId: string }) {
 
       <div className="flex flex-col gap-3">
         {plans.map((plan) => (
-          <a
+          <div
             key={plan.id}
-            href={`/workouts/builder/${plan.id}`}
             className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5 transition hover:bg-surface-elevated"
           >
-            <div>
+            <a href={`/workouts/builder/${plan.id}`} className="flex-1">
               <p className="font-medium text-foreground">{plan.name}</p>
               <p className="mt-0.5 text-xs text-muted">
                 v{plan.version} · criado em {new Date(plan.created_at).toLocaleDateString("pt-PT")}
               </p>
+            </a>
+            <div className="flex items-center gap-4">
+              <StatusBadge status={plan.status} />
+              <button
+                onClick={() => handleDeletePlan(plan)}
+                className="text-muted hover:text-danger"
+                title="Eliminar plano"
+              >
+                <Trash2 size={16} />
+              </button>
             </div>
-            <StatusBadge status={plan.status} />
-          </a>
+          </div>
         ))}
       </div>
     </div>
