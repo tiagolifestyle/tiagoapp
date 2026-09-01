@@ -6,9 +6,12 @@ import { Copy, Trash2 } from "lucide-react";
 import { ExerciseCard } from "./ExerciseCard";
 import type { BuilderDay, BuilderExercise } from "./types";
 
+const WEEKDAY_LABELS = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
+
 interface DayColumnProps {
   day: BuilderDay;
   onRename: (name: string) => void;
+  onWeekdayChange: (weekday: number | null) => void;
   onDuplicateDay: () => void;
   onDeleteDay: () => void;
   onExerciseChange: (exerciseEntryId: string, patch: Partial<BuilderExercise>) => void;
@@ -19,6 +22,7 @@ interface DayColumnProps {
 export function DayColumn({
   day,
   onRename,
+  onWeekdayChange,
   onDuplicateDay,
   onDeleteDay,
   onExerciseChange,
@@ -42,6 +46,19 @@ export function DayColumn({
           <Trash2 size={16} />
         </button>
       </div>
+
+      <select
+        value={day.weekday ?? ""}
+        onChange={(e) => onWeekdayChange(e.target.value === "" ? null : Number(e.target.value))}
+        className="rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none"
+      >
+        <option value="">Sem dia da semana</option>
+        {WEEKDAY_LABELS.map((label, weekday) => (
+          <option key={weekday} value={weekday}>
+            {label}
+          </option>
+        ))}
+      </select>
 
       <SortableContext items={day.exercises.map((e) => e.id)} strategy={verticalListSortingStrategy}>
         <div

@@ -149,6 +149,10 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
     setDays((prev) => prev.map((d) => (d.id === dayId ? { ...d, name } : d)));
   }
 
+  function changeDayWeekday(dayId: string, weekday: number | null) {
+    setDays((prev) => prev.map((d) => (d.id === dayId ? { ...d, weekday } : d)));
+  }
+
   function duplicateDay(dayId: string) {
     setDays((prev) => {
       const index = prev.findIndex((d) => d.id === dayId);
@@ -391,6 +395,7 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
               key={day.id}
               day={day}
               onRename={(name) => renameDay(day.id, name)}
+              onWeekdayChange={(weekday) => changeDayWeekday(day.id, weekday)}
               onDuplicateDay={() => duplicateDay(day.id)}
               onDeleteDay={() => deleteDay(day.id)}
               onExerciseChange={updateExercise}
