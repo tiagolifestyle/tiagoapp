@@ -11,6 +11,7 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
   const [search, setSearch] = useState("");
   const [muscleGroupFilter, setMuscleGroupFilter] = useState("");
   const [difficultyFilter, setDifficultyFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
   const [editingExercise, setEditingExercise] = useState<Exercise | null | undefined>(undefined);
 
   const muscleGroups = useMemo(
@@ -18,11 +19,17 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
     [exercises]
   );
 
+  const categories = useMemo(
+    () => Array.from(new Set(exercises.map((e) => e.category).filter(Boolean))) as string[],
+    [exercises]
+  );
+
   const filtered = exercises.filter((exercise) => {
     const matchesSearch = exercise.name.toLowerCase().includes(search.toLowerCase());
     const matchesMuscle = !muscleGroupFilter || exercise.muscle_group === muscleGroupFilter;
     const matchesDifficulty = !difficultyFilter || exercise.difficulty === difficultyFilter;
-    return matchesSearch && matchesMuscle && matchesDifficulty;
+    const matchesCategory = !categoryFilter || exercise.category === categoryFilter;
+    return matchesSearch && matchesMuscle && matchesDifficulty && matchesCategory;
   });
 
   function handleSaved(exercise: Exercise) {
@@ -99,6 +106,18 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
           <option value="iniciante">Iniciante</option>
           <option value="intermedio">Intermédio</option>
           <option value="avancado">Avançado</option>
+        </select>
+        <select
+          value={categoryFilter}
+          onChange={(e) => setCategoryFilter(e.target.value)}
+          className="rounded-2xl border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground outline-none"
+        >
+          <option value="">Todas as categorias</option>
+          {categories.map((category) => (
+            <option key={category} value={category}>
+              {category}
+            </option>
+          ))}
         </select>
       </div>
 
