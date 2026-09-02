@@ -3,13 +3,27 @@ import "../src/lib/i18n";
 import { useEffect, useState } from "react";
 import { View, ActivityIndicator } from "react-native";
 import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18n from "../src/lib/i18n";
 import { LANGUAGE_STORAGE_KEY } from "../src/lib/i18n";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { LanguagePickerScreen } from "@/components/LanguagePickerScreen";
 import type { SupportedLocale } from "@tiagolifestyle/shared";
+
+function AuthenticatedApp() {
+  const { theme } = useTheme();
+  return (
+    <AuthProvider>
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          contentStyle: { backgroundColor: theme === "dark" ? "#0B0B0F" : "#F7F7F4" },
+        }}
+      />
+    </AuthProvider>
+  );
+}
 
 export default function RootLayout() {
   const [languageReady, setLanguageReady] = useState<boolean | null>(null);
@@ -31,28 +45,15 @@ export default function RootLayout() {
     setLanguageReady(true);
   }
 
-  if (languageReady === null) {
-    return (
-      <View className="flex-1 items-center justify-center bg-background">
-        <StatusBar style="light" />
-        <ActivityIndicator color="#C9A227" />
-      </View>
-    );
-  }
-
-  if (languageReady === false) {
-    return (
-      <>
-        <StatusBar style="light" />
-        <LanguagePickerScreen onSelect={handleLanguageSelect} />
-      </>
-    );
-  }
-
   return (
-    <AuthProvider>
-      <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: "#0B0B0F" } }} />
-    </AuthProvider>
+    <ThemeProvider>
+      {languageReady === null && (
+        <View className="flex-1 items-center justify-center bg-background">
+          <ActivityIndicator color="#C9A227" />
+        </View>
+      )}
+      {languageReady === false && <LanguagePickerScreen onSelect={handleLanguageSelect} />}
+      {languageReady === true && <AuthenticatedApp />}
+    </ThemeProvider>
   );
 }

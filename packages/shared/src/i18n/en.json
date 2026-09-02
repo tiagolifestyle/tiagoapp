@@ -97,6 +97,9 @@
   "profile": {
     "title": "Profile",
     "language": "Language",
+    "theme": "Theme",
+    "themeDark": "Dark",
+    "themeLight": "Light",
     "personalInfo": "Personal information",
     "security": "Security"
   },

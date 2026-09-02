@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { supportedLocales, type SupportedLocale } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme, type ThemeMode } from "@/context/ThemeContext";
 import { supabase } from "@/lib/supabase";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
@@ -13,9 +14,12 @@ const localeLabels: Record<SupportedLocale, string> = {
   en: "English",
 };
 
+const THEME_MODES: ThemeMode[] = ["dark", "light"];
+
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { profile, signOut } = useAuth();
+  const { theme, setTheme } = useTheme();
 
   async function changeLocale(locale: SupportedLocale) {
     await i18n.changeLanguage(locale);
@@ -46,6 +50,23 @@ export default function ProfileScreen() {
                 }`}
               >
                 <Text className="text-foreground">{localeLabels[locale]}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </Card>
+
+        <Card className="gap-3">
+          <Text className="text-base font-medium text-foreground">{t("profile.theme")}</Text>
+          <View className="flex-row gap-3">
+            {THEME_MODES.map((mode) => (
+              <Pressable
+                key={mode}
+                onPress={() => setTheme(mode)}
+                className={`flex-1 items-center rounded-2xl border px-4 py-3 ${
+                  theme === mode ? "border-accent bg-surface-elevated" : "border-border"
+                }`}
+              >
+                <Text className="text-foreground">{t(`profile.theme${mode === "dark" ? "Dark" : "Light"}`)}</Text>
               </Pressable>
             ))}
           </View>
