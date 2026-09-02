@@ -6,6 +6,20 @@ import type { Exercise, ExerciseDifficulty } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
+const MUSCLE_GROUPS = [
+  "Pecho",
+  "Espalda",
+  "Hombros",
+  "Bíceps",
+  "Tríceps",
+  "Antebrazo",
+  "Abdominales",
+  "Cuádriceps",
+  "Isquiotibiales",
+  "Glúteos",
+  "Gemelos",
+  "Cuerpo completo",
+];
 
 interface ExerciseFormModalProps {
   exercise: Exercise | null;
@@ -89,7 +103,16 @@ export function ExerciseFormModal({ exercise, onClose, onSaved }: ExerciseFormMo
                 ))}
               </select>
             </Field>
-            <Field label="Grupo muscular"><input value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)} className={inputClass} /></Field>
+            <Field label="Grupo muscular">
+              <select value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)} className={inputClass}>
+                <option value="">—</option>
+                {MUSCLE_GROUPS.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <Field label="Equipamento"><input value={equipment} onChange={(e) => setEquipment(e.target.value)} className={inputClass} /></Field>
             <Field label="Dificuldade">
               <select value={difficulty} onChange={(e) => setDifficulty(e.target.value as ExerciseDifficulty)} className={inputClass}>

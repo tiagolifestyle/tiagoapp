@@ -1,12 +1,26 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Plus, Search, Pencil, Copy, Trash2, Dumbbell } from "lucide-react";
 import type { Exercise } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { ExerciseFormModal } from "./ExerciseFormModal";
 
 const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
+const MUSCLE_GROUPS = [
+  "Pecho",
+  "Espalda",
+  "Hombros",
+  "Bíceps",
+  "Tríceps",
+  "Antebrazo",
+  "Abdominales",
+  "Cuádriceps",
+  "Isquiotibiales",
+  "Glúteos",
+  "Gemelos",
+  "Cuerpo completo",
+];
 
 export function ExerciseLibraryView({ initialExercises }: { initialExercises: Exercise[] }) {
   const [exercises, setExercises] = useState(initialExercises);
@@ -15,11 +29,6 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
   const [difficultyFilter, setDifficultyFilter] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("");
   const [editingExercise, setEditingExercise] = useState<Exercise | null | undefined>(undefined);
-
-  const muscleGroups = useMemo(
-    () => Array.from(new Set(exercises.map((e) => e.muscle_group).filter(Boolean))) as string[],
-    [exercises]
-  );
 
   const filtered = exercises.filter((exercise) => {
     const matchesSearch = exercise.name.toLowerCase().includes(search.toLowerCase());
@@ -88,7 +97,7 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
           className="rounded-2xl border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground outline-none"
         >
           <option value="">Todos os grupos musculares</option>
-          {muscleGroups.map((group) => (
+          {MUSCLE_GROUPS.map((group) => (
             <option key={group} value={group}>
               {group}
             </option>
