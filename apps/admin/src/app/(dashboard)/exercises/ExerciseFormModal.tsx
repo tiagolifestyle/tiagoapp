@@ -5,6 +5,8 @@ import { X } from "lucide-react";
 import type { Exercise, ExerciseDifficulty } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 
+const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
+
 interface ExerciseFormModalProps {
   exercise: Exercise | null;
   onClose: () => void;
@@ -77,7 +79,16 @@ export function ExerciseFormModal({ exercise, onClose, onSaved }: ExerciseFormMo
           <Field label="Nome"><input value={name} onChange={(e) => setName(e.target.value)} className={inputClass} /></Field>
 
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Categoria"><input value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass} /></Field>
+            <Field label="Categoria">
+              <select value={category} onChange={(e) => setCategory(e.target.value)} className={inputClass}>
+                <option value="">—</option>
+                {EXERCISE_CATEGORIES.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </Field>
             <Field label="Grupo muscular"><input value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)} className={inputClass} /></Field>
             <Field label="Equipamento"><input value={equipment} onChange={(e) => setEquipment(e.target.value)} className={inputClass} /></Field>
             <Field label="Dificuldade">

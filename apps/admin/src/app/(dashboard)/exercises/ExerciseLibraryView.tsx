@@ -6,6 +6,8 @@ import type { Exercise } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { ExerciseFormModal } from "./ExerciseFormModal";
 
+const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
+
 export function ExerciseLibraryView({ initialExercises }: { initialExercises: Exercise[] }) {
   const [exercises, setExercises] = useState(initialExercises);
   const [search, setSearch] = useState("");
@@ -16,11 +18,6 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
 
   const muscleGroups = useMemo(
     () => Array.from(new Set(exercises.map((e) => e.muscle_group).filter(Boolean))) as string[],
-    [exercises]
-  );
-
-  const categories = useMemo(
-    () => Array.from(new Set(exercises.map((e) => e.category).filter(Boolean))) as string[],
     [exercises]
   );
 
@@ -113,7 +110,7 @@ export function ExerciseLibraryView({ initialExercises }: { initialExercises: Ex
           className="rounded-2xl border border-border bg-surface-elevated px-4 py-2.5 text-sm text-foreground outline-none"
         >
           <option value="">Todas as categorias</option>
-          {categories.map((category) => (
+          {EXERCISE_CATEGORIES.map((category) => (
             <option key={category} value={category}>
               {category}
             </option>
