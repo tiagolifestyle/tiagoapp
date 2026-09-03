@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, Image, TextInput } from "react-native";
+import { View, Text, Image, TextInput, Pressable, Modal } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import type { PlanExercise } from "@/hooks/useWorkoutPlan";
@@ -14,6 +14,7 @@ interface ExerciseRowProps {
 export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps) {
   const { t } = useTranslation();
   const [draft, setDraft] = useState(load);
+  const [imageExpanded, setImageExpanded] = useState(false);
 
   useEffect(() => {
     setDraft(load);
@@ -26,11 +27,28 @@ export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps)
   return (
     <View className="flex-row gap-3 border-b border-border py-4 last:border-b-0">
       {item.exercise.image_url ? (
-        <Image source={{ uri: item.exercise.image_url }} className="h-14 w-14 rounded-xl bg-surface-elevated" />
+        <Pressable onPress={() => setImageExpanded(true)}>
+          <Image source={{ uri: item.exercise.image_url }} className="h-14 w-14 rounded-xl bg-surface-elevated" />
+        </Pressable>
       ) : (
         <View className="h-14 w-14 items-center justify-center rounded-xl bg-surface-elevated">
           <Ionicons name="barbell-outline" size={22} color="#6B6B76" />
         </View>
+      )}
+
+      {item.exercise.image_url && (
+        <Modal visible={imageExpanded} transparent animationType="fade" onRequestClose={() => setImageExpanded(false)}>
+          <Pressable
+            className="flex-1 items-center justify-center bg-black/90 p-6"
+            onPress={() => setImageExpanded(false)}
+          >
+            <Image
+              source={{ uri: item.exercise.image_url }}
+              className="h-full w-full"
+              resizeMode="contain"
+            />
+          </Pressable>
+        </Modal>
       )}
 
       <View className="flex-1 gap-1">
