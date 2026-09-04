@@ -34,6 +34,7 @@ export interface Client {
   height_cm: number | null;
   starting_weight_kg: number | null;
   status: ClientStatus;
+  active_until: string | null;
   subscription_tier: SubscriptionTier;
   notes_private: string | null;
   created_at: string;

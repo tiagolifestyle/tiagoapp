@@ -8,6 +8,7 @@ import { Card } from "@/components/Card";
 export function InfoTab({ clientId, initialClient }: { clientId: string; initialClient: Client }) {
   const [goal, setGoal] = useState(initialClient.goal ?? "");
   const [status, setStatus] = useState<ClientStatus>(initialClient.status);
+  const [activeUntil, setActiveUntil] = useState(initialClient.active_until ?? "");
   const [tier, setTier] = useState<SubscriptionTier>(initialClient.subscription_tier);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -18,7 +19,7 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
     const supabase = createBrowserSupabaseClient();
     await supabase
       .from("clients")
-      .update({ goal, status, subscription_tier: tier })
+      .update({ goal, status, active_until: activeUntil || null, subscription_tier: tier })
       .eq("id", clientId);
     setSaving(false);
     setSaved(true);
@@ -49,6 +50,18 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
           </select>
         </div>
 
+        <div className="flex flex-1 flex-col gap-2">
+          <label className="text-sm font-medium text-muted">Ativo até</label>
+          <input
+            type="date"
+            value={activeUntil}
+            onChange={(event) => setActiveUntil(event.target.value)}
+            className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
+          />
+        </div>
+      </div>
+
+      <div className="flex gap-4">
         <div className="flex flex-1 flex-col gap-2">
           <label className="text-sm font-medium text-muted">Plano de subscrição</label>
           <select

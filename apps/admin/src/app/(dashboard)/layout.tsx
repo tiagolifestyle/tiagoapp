@@ -21,6 +21,12 @@ export default async function DashboardLayout({ children }: { children: React.Re
     redirect("/login");
   }
 
+  await supabase
+    .from("clients")
+    .update({ status: "inactive" })
+    .eq("status", "active")
+    .lt("active_until", new Date().toISOString().slice(0, 10));
+
   return (
     <div className="flex">
       <Sidebar coachName={profile.full_name} />
