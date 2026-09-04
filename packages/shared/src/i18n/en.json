@@ -122,6 +122,10 @@
     "personalInfo": "Personal information",
     "security": "Security"
   },
+  "account": {
+    "inactiveTitle": "Account inactive",
+    "inactiveMessage": "Your subscription isn't active. Talk to your coach to renew your plan and regain access to your data."
+  },
   "checkin": {
     "title": "Weekly check-in",
     "subtitle": "Tell me how your week went.",

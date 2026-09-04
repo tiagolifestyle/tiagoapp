@@ -122,6 +122,10 @@
     "personalInfo": "Informação pessoal",
     "security": "Segurança"
   },
+  "account": {
+    "inactiveTitle": "Conta inativa",
+    "inactiveMessage": "A tua subscrição não está ativa. Fala com o teu coach para renovares o plano e voltares a ter acesso aos teus dados."
+  },
   "checkin": {
     "title": "Check-in semanal",
     "subtitle": "Conta-me como foi a tua semana.",

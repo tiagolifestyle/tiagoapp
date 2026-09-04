@@ -1,9 +1,13 @@
+import { useEffect, useState } from "react";
 import { Redirect, Tabs } from "expo-router";
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View, Text } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import type { ComponentProps } from "react";
 import { useTranslation } from "react-i18next";
+import type { ClientStatus } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
+import { supabase } from "@/lib/supabase";
+import { Button } from "@/components/Button";
 
 type IconName = ComponentProps<typeof Ionicons>["name"];
 
@@ -15,10 +19,25 @@ function tabIcon(name: IconName) {
 }
 
 export default function ClientLayout() {
-  const { session, isLoading } = useAuth();
+  const { session, profile, isLoading, signOut } = useAuth();
   const { t } = useTranslation();
+  const [clientStatus, setClientStatus] = useState<ClientStatus | null>(null);
+  const [statusLoading, setStatusLoading] = useState(true);
 
-  if (isLoading) {
+  useEffect(() => {
+    if (!profile) return;
+    supabase
+      .from("clients")
+      .select("status")
+      .eq("id", profile.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        setClientStatus((data?.status as ClientStatus | undefined) ?? null);
+        setStatusLoading(false);
+      });
+  }, [profile]);
+
+  if (isLoading || (session && statusLoading)) {
     return (
       <View className="flex-1 items-center justify-center bg-background">
         <ActivityIndicator color="#C9A227" />
@@ -28,6 +47,17 @@ export default function ClientLayout() {
 
   if (!session) {
     return <Redirect href="/(auth)/login" />;
+  }
+
+  if (clientStatus === "inactive") {
+    return (
+      <View className="flex-1 items-center justify-center gap-4 bg-background px-8">
+        <Ionicons name="lock-closed-outline" size={40} color="#C9A227" />
+        <Text className="text-center text-xl font-semibold text-foreground">{t("account.inactiveTitle")}</Text>
+        <Text className="text-center text-base text-muted">{t("account.inactiveMessage")}</Text>
+        <Button label={t("auth.logout")} variant="ghost" onPress={signOut} />
+      </View>
+    );
   }
 
   return (
