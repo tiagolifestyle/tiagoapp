@@ -56,7 +56,7 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
             onChange={(event) => setTier(event.target.value as SubscriptionTier)}
             className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
           >
-            <option value="free">Free</option>
+            <option value="free">Basic</option>
             <option value="premium">Premium</option>
             <option value="vip">VIP</option>
           </select>

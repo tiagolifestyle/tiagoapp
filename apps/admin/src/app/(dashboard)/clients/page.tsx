@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { Plus } from "lucide-react";
+import type { SubscriptionTier } from "@tiagolifestyle/shared";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { StatusBadge } from "@/components/StatusBadge";
+
+const TIER_LABELS: Record<SubscriptionTier, string> = {
+  free: "Basic",
+  premium: "Premium",
+  vip: "VIP",
+};
 
 export default async function ClientsPage() {
   const supabase = await createServerSupabaseClient();
@@ -51,7 +58,7 @@ export default async function ClientsPage() {
                     </Link>
                   </td>
                   <td className="px-5 py-4 text-muted">{client.goal ?? "—"}</td>
-                  <td className="px-5 py-4 text-muted capitalize">{client.subscription_tier}</td>
+                  <td className="px-5 py-4 text-muted">{TIER_LABELS[client.subscription_tier as SubscriptionTier]}</td>
                   <td className="px-5 py-4">
                     <StatusBadge status={client.status} />
                   </td>

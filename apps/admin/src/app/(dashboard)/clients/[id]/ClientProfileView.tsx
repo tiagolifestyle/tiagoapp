@@ -4,8 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import type { Client } from "@tiagolifestyle/shared";
+import type { Client, SubscriptionTier } from "@tiagolifestyle/shared";
 import { StatusBadge } from "@/components/StatusBadge";
+
+const TIER_LABELS: Record<SubscriptionTier, string> = {
+  free: "Basic",
+  premium: "Premium",
+  vip: "VIP",
+};
 import { InfoTab } from "./tabs/InfoTab";
 import { WorkoutTab } from "./tabs/WorkoutTab";
 import { NutritionTab } from "./tabs/NutritionTab";
@@ -56,7 +62,7 @@ export function ClientProfileView({
             <h1 className="text-2xl font-semibold text-foreground">{initialProfileName}</h1>
             <div className="mt-1 flex items-center gap-2">
               <StatusBadge status={initialClient.status} />
-              <span className="text-sm text-muted capitalize">{initialClient.subscription_tier}</span>
+              <span className="text-sm text-muted">{TIER_LABELS[initialClient.subscription_tier]}</span>
             </div>
           </div>
         </div>
