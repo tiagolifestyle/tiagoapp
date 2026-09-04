@@ -119,6 +119,7 @@
     "tierBasic": "Basic",
     "tierPremium": "Premium",
     "tierVip": "VIP",
+    "validUntil": "Válido hasta {{date}}",
     "personalInfo": "Información personal",
     "security": "Seguridad"
   },

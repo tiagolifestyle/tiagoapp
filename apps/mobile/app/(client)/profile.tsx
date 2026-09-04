@@ -22,15 +22,19 @@ export default function ProfileScreen() {
   const { profile, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
   const [tier, setTier] = useState<SubscriptionTier | null>(null);
+  const [activeUntil, setActiveUntil] = useState<string | null>(null);
 
   useEffect(() => {
     if (!profile) return;
     supabase
       .from("clients")
-      .select("subscription_tier")
+      .select("subscription_tier, active_until")
       .eq("id", profile.id)
       .single()
-      .then(({ data }) => setTier(data?.subscription_tier ?? null));
+      .then(({ data }) => {
+        setTier(data?.subscription_tier ?? null);
+        setActiveUntil(data?.active_until ?? null);
+      });
   }, [profile]);
 
   async function changeLocale(locale: SupportedLocale) {
@@ -46,10 +50,15 @@ export default function ProfileScreen() {
         <View className="mt-4 flex-row items-center justify-between">
           <Text className="text-2xl font-semibold text-foreground">{t("profile.title")}</Text>
           {tier ? (
-            <View className="rounded-full border border-accent bg-surface-elevated px-3 py-1.5">
-              <Text className="text-xs font-bold uppercase tracking-wide text-accent">
-                {t(`profile.tier${tier === "free" ? "Basic" : tier === "premium" ? "Premium" : "Vip"}`)}
-              </Text>
+            <View className="items-end gap-1">
+              <View className="rounded-full border border-accent bg-surface-elevated px-3 py-1.5">
+                <Text className="text-xs font-bold uppercase tracking-wide text-accent">
+                  {t(`profile.tier${tier === "free" ? "Basic" : tier === "premium" ? "Premium" : "Vip"}`)}
+                </Text>
+              </View>
+              {activeUntil ? (
+                <Text className="text-xs text-muted">{t("profile.validUntil", { date: activeUntil })}</Text>
+              ) : null}
             </View>
           ) : null}
         </View>
