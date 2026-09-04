@@ -94,6 +94,22 @@
     "fat": "Gordura",
     "water": "Água"
   },
+  "progress": {
+    "tabWeight": "Peso",
+    "tabPhoto": "Foto",
+    "tabMeasurements": "Medições",
+    "addPhoto": "Adicionar foto",
+    "angleFront": "Frente",
+    "angleSide": "Lado",
+    "angleBack": "Costas",
+    "noPhotos": "Ainda não tens fotos de progresso.",
+    "waist": "Cintura",
+    "abdomen": "Zona abdominal",
+    "arm": "Braço",
+    "legs": "Pernas",
+    "diastasis": "Diastasis",
+    "noMeasurements": "Ainda não tens medições registadas."
+  },
   "profile": {
     "title": "Perfil",
     "language": "Idioma",

@@ -94,6 +94,22 @@
     "fat": "Fat",
     "water": "Water"
   },
+  "progress": {
+    "tabWeight": "Weight",
+    "tabPhoto": "Photo",
+    "tabMeasurements": "Measurements",
+    "addPhoto": "Add photo",
+    "angleFront": "Front",
+    "angleSide": "Side",
+    "angleBack": "Back",
+    "noPhotos": "No progress photos yet.",
+    "waist": "Waist",
+    "abdomen": "Abdomen",
+    "arm": "Arm",
+    "legs": "Legs",
+    "diastasis": "Diastasis",
+    "noMeasurements": "No measurements logged yet."
+  },
   "profile": {
     "title": "Profile",
     "language": "Language",

@@ -41,7 +41,13 @@
           "backgroundColor": "#0B0B0F"
         }
       ],
-      "./plugins/withFixExpoModulesAutolinking.js"
+      "./plugins/withFixExpoModulesAutolinking.js",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permite à app aceder às tuas fotos para carregares fotos de progresso."
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
