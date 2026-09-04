@@ -10,11 +10,11 @@ export default async function OverviewPage() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const [total, active, inactive, pendingCheckins, unreadRows] = await Promise.all([
+  const [total, active, inactive, pendingCheckinRows, unreadRows] = await Promise.all([
     supabase.from("clients").select("id", { count: "exact", head: true }),
     supabase.from("clients").select("id", { count: "exact", head: true }).eq("status", "active"),
     supabase.from("clients").select("id", { count: "exact", head: true }).eq("status", "inactive"),
-    supabase.from("checkins").select("id", { count: "exact", head: true }).eq("status", "pending"),
+    supabase.from("checkins").select("id, client_id").eq("status", "pending"),
     supabase.from("messages").select("conversation_id").is("read_at", null).neq("sender_id", user?.id ?? ""),
   ]);
 
@@ -45,6 +45,31 @@ export default async function OverviewPage() {
 
   const unreadTotal = unreadByClient.reduce((sum, row) => sum + row.count, 0);
 
+  const pendingCheckinByConversationClient = new Map<string, number>();
+  for (const row of pendingCheckinRows.data ?? []) {
+    pendingCheckinByConversationClient.set(
+      row.client_id,
+      (pendingCheckinByConversationClient.get(row.client_id) ?? 0) + 1
+    );
+  }
+
+  let pendingCheckinByClient: { clientId: string; name: string; count: number }[] = [];
+  if (pendingCheckinByConversationClient.size > 0) {
+    const { data: checkinProfiles } = await supabase
+      .from("profiles")
+      .select("id, full_name")
+      .in("id", [...pendingCheckinByConversationClient.keys()]);
+    const checkinNameById = new Map((checkinProfiles ?? []).map((p) => [p.id, p.full_name]));
+
+    pendingCheckinByClient = [...pendingCheckinByConversationClient.entries()]
+      .map(([clientId, count]) => ({
+        clientId,
+        name: checkinNameById.get(clientId) ?? "—",
+        count,
+      }))
+      .sort((a, b) => b.count - a.count);
+  }
+
   return (
     <div className="flex flex-col gap-8">
       <div>
@@ -58,9 +83,9 @@ export default async function OverviewPage() {
         <StatCard label="Clientes inativos" value={inactive.count ?? 0} icon={UserX} tone="warning" />
         <StatCard
           label="Check-ins pendentes"
-          value={pendingCheckins.count ?? 0}
+          value={pendingCheckinRows.data?.length ?? 0}
           icon={ClipboardList}
-          tone={(pendingCheckins.count ?? 0) > 0 ? "warning" : "default"}
+          tone={(pendingCheckinRows.data?.length ?? 0) > 0 ? "warning" : "default"}
         />
         <StatCard
           label="Mensagens por ler"
@@ -78,6 +103,24 @@ export default async function OverviewPage() {
               <Link
                 key={row.clientId}
                 href={`/clients/${row.clientId}?tab=messages`}
+                className="flex items-center justify-between rounded-xl border border-border px-4 py-2.5 hover:bg-surface-elevated"
+              >
+                <span className="text-sm text-foreground">{row.name}</span>
+                <span className="rounded-full bg-accent px-2 py-0.5 text-xs font-bold text-background">{row.count}</span>
+              </Link>
+            ))}
+          </div>
+        </Card>
+      )}
+
+      {pendingCheckinByClient.length > 0 && (
+        <Card className="gap-3">
+          <p className="text-sm font-medium text-foreground">Check-ins pendentes, por cliente</p>
+          <div className="flex flex-col gap-2">
+            {pendingCheckinByClient.map((row) => (
+              <Link
+                key={row.clientId}
+                href={`/clients/${row.clientId}?tab=checkins`}
                 className="flex items-center justify-between rounded-xl border border-border px-4 py-2.5 hover:bg-surface-elevated"
               >
                 <span className="text-sm text-foreground">{row.name}</span>
