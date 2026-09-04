@@ -69,7 +69,19 @@ export default function DashboardScreen() {
             label={t("dashboard.currentWeight")}
             value={data.latestMetric?.weight_kg ? `${data.latestMetric.weight_kg} kg` : "—"}
           />
-          <StatTile label={t("dashboard.nextSession")} value="—" />
+          <View className="flex-1">
+            <Link href="/(client)/postpartum">
+              <Card
+                className="w-full gap-1.5"
+                style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)" }}
+              >
+                <Text className="text-xs uppercase tracking-wide" style={{ color: "#F472B6" }}>
+                  {t("postpartum.tileLabel")}
+                </Text>
+                <Text className="text-2xl">👩‍🍼</Text>
+              </Card>
+            </Link>
+          </View>
         </View>
 
         <Card className="gap-3">

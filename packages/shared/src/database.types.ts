@@ -14,6 +14,8 @@ export type PlanStatus = "draft" | "active" | "completed" | "archived";
 export type CheckinStatus = "pending" | "reviewed";
 export type PhotoAngle = "front" | "side" | "back";
 export type ExerciseDifficulty = "iniciante" | "intermedio" | "avancado";
+export type DeliveryType = "vaginal" | "cesarean";
+export type BabySex = "boy" | "girl" | "twins";
 
 export interface Profile {
   id: string;
@@ -185,6 +187,41 @@ export interface Checkin {
   status: CheckinStatus;
   submitted_at: string | null;
   reviewed_at: string | null;
+  created_at: string;
+}
+
+export interface PostpartumProfile {
+  client_id: string;
+  birth_date: string | null;
+  delivery_type: DeliveryType | null;
+  gestational_weeks: number | null;
+  first_child: boolean | null;
+  baby_sex: BabySex | null;
+  breastfeeding: boolean | null;
+  complications: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PelvicFloorAssessment {
+  id: string;
+  client_id: string;
+  assessed_at: string;
+  stress_incontinence: boolean;
+  urgency_incontinence: boolean;
+  pelvic_pain: boolean;
+  notes: string | null;
+  created_at: string;
+}
+
+export interface DiastasisAssessment {
+  id: string;
+  client_id: string;
+  assessed_at: string;
+  supraumbilical_cm: number | null;
+  umbilical_cm: number | null;
+  infraumbilical_cm: number | null;
+  notes: string | null;
   created_at: string;
 }
 

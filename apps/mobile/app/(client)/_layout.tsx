@@ -106,6 +106,7 @@ export default function ClientLayout() {
       />
       <Tabs.Screen name="coach" options={{ href: null }} />
       <Tabs.Screen name="checkin" options={{ href: null }} />
+      <Tabs.Screen name="postpartum" options={{ href: null }} />
     </Tabs>
   );
 }

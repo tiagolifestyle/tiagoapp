@@ -16,6 +16,7 @@ import { InfoTab } from "./tabs/InfoTab";
 import { WorkoutTab } from "./tabs/WorkoutTab";
 import { NutritionTab } from "./tabs/NutritionTab";
 import { ProgressTab } from "./tabs/ProgressTab";
+import { PostpartumTab } from "./tabs/PostpartumTab";
 import { CheckinsTab } from "./tabs/CheckinsTab";
 import { MessagesTab } from "./tabs/MessagesTab";
 import { NotesTab } from "./tabs/NotesTab";
@@ -25,6 +26,7 @@ const TABS = [
   { key: "workout", label: "Treino" },
   { key: "nutrition", label: "Nutrição" },
   { key: "progress", label: "Progresso" },
+  { key: "postpartum", label: "Pós-parto" },
   { key: "checkins", label: "Check-ins" },
   { key: "messages", label: "Mensagens" },
   { key: "notes", label: "Notas privadas" },
@@ -89,6 +91,7 @@ export function ClientProfileView({
         {activeTab === "workout" && <WorkoutTab clientId={clientId} />}
         {activeTab === "nutrition" && <NutritionTab clientId={clientId} />}
         {activeTab === "progress" && <ProgressTab clientId={clientId} />}
+        {activeTab === "postpartum" && <PostpartumTab clientId={clientId} />}
         {activeTab === "checkins" && <CheckinsTab clientId={clientId} />}
         {activeTab === "messages" && <MessagesTab clientId={clientId} />}
         {activeTab === "notes" && <NotesTab clientId={clientId} initialNotes={initialClient.notes_private} />}
