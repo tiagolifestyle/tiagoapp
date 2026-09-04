@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, TextInput } from "react-native";
+import { useEffect, useMemo, useState } from "react";
+import { View, Text, ScrollView, Pressable, TextInput, Dimensions } from "react-native";
+import { LineChart } from "react-native-chart-kit";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,6 +10,8 @@ import { usePostpartum } from "@/hooks/usePostpartum";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
+
+const screenWidth = Dimensions.get("window").width;
 
 type PostpartumTabKey = "birth" | "pelvicFloor" | "diastasis";
 
@@ -79,6 +82,16 @@ export default function PostpartumScreen() {
     { key: "diastasis", label: t("postpartum.tabDiastasis") },
   ];
 
+  const weeksPostpartum = useMemo(() => {
+    if (!pp?.birth_date) return null;
+    const birth = new Date(pp.birth_date);
+    const diffMs = Date.now() - birth.getTime();
+    if (diffMs < 0) return null;
+    return Math.floor(diffMs / (7 * 24 * 60 * 60 * 1000));
+  }, [pp?.birth_date]);
+
+  const diastasisChartData = useMemo(() => [...diastasis].reverse().slice(-6), [diastasis]);
+
   async function handleSaveProfile() {
     setSavingProfile(true);
     const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(birthDate);
@@ -125,7 +138,16 @@ export default function PostpartumScreen() {
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <ScrollView className="flex-1 px-5" contentContainerClassName="gap-4 pb-10">
         <Button label={t("common.back")} variant="ghost" onPress={() => router.back()} />
-        <Text className="text-2xl font-semibold text-foreground">{t("postpartum.tileLabel")}</Text>
+        <View className="flex-row items-center justify-between">
+          <Text className="text-2xl font-semibold text-foreground">{t("postpartum.tileLabel")}</Text>
+          {weeksPostpartum != null ? (
+            <View className="rounded-full border border-accent bg-surface-elevated px-3 py-1.5">
+              <Text className="text-xs font-bold uppercase tracking-wide text-accent">
+                {t("postpartum.weeksPostpartum", { count: weeksPostpartum })}
+              </Text>
+            </View>
+          ) : null}
+        </View>
 
         <View className="flex-row gap-2">
           {tabs.map((tab) => (
@@ -252,6 +274,36 @@ export default function PostpartumScreen() {
 
         {activeTab === "diastasis" && (
           <>
+            {diastasisChartData.length >= 2 && (
+              <Card>
+                <LineChart
+                  data={{
+                    labels: diastasisChartData.map((entry) => entry.assessed_at.slice(5)),
+                    datasets: [
+                      { data: diastasisChartData.map((entry) => entry.supraumbilical_cm ?? 0), color: () => "#C9A227", strokeWidth: 2 },
+                      { data: diastasisChartData.map((entry) => entry.umbilical_cm ?? 0), color: () => "#F472B6", strokeWidth: 2 },
+                      { data: diastasisChartData.map((entry) => entry.infraumbilical_cm ?? 0), color: () => "#3FAE6E", strokeWidth: 2 },
+                    ],
+                    legend: [t("postpartum.supraumbilical"), t("postpartum.umbilical"), t("postpartum.infraumbilical")],
+                  }}
+                  width={screenWidth - 72}
+                  height={200}
+                  withInnerLines={false}
+                  chartConfig={{
+                    backgroundColor: "#16161D",
+                    backgroundGradientFrom: "#16161D",
+                    backgroundGradientTo: "#16161D",
+                    decimalPlaces: 1,
+                    color: () => "#9A9AA5",
+                    labelColor: () => "#9A9AA5",
+                    propsForDots: { r: "3" },
+                  }}
+                  bezier
+                  style={{ borderRadius: 16 }}
+                />
+              </Card>
+            )}
+
             <Card className="gap-4">
               <TextField
                 label={`${t("postpartum.supraumbilical")} (cm)`}

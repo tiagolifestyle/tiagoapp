@@ -136,6 +136,7 @@
     "tabBirth": "Parto",
     "tabPelvicFloor": "Soalho Pélvico",
     "tabDiastasis": "Diástase",
+    "weeksPostpartum": "{{count}} semanas pós-parto",
     "birthDate": "Data do parto",
     "birthDatePlaceholder": "AAAA-MM-DD",
     "deliveryType": "Tipo de parto",

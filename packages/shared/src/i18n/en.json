@@ -136,6 +136,7 @@
     "tabBirth": "Birth",
     "tabPelvicFloor": "Pelvic Floor",
     "tabDiastasis": "Diastasis",
+    "weeksPostpartum": "{{count}} weeks postpartum",
     "birthDate": "Birth date",
     "birthDatePlaceholder": "YYYY-MM-DD",
     "deliveryType": "Delivery type",
