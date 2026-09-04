@@ -100,6 +100,9 @@
     "theme": "Theme",
     "themeDark": "Dark",
     "themeLight": "Light",
+    "tierBasic": "Basic",
+    "tierPremium": "Premium",
+    "tierVip": "VIP",
     "personalInfo": "Personal information",
     "security": "Security"
   },

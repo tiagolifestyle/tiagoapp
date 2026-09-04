@@ -1,7 +1,8 @@
+import { useEffect, useState } from "react";
 import { View, Text, ScrollView, Pressable } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { supportedLocales, type SupportedLocale } from "@tiagolifestyle/shared";
+import { supportedLocales, type SupportedLocale, type SubscriptionTier } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, type ThemeMode } from "@/context/ThemeContext";
 import { supabase } from "@/lib/supabase";
@@ -20,6 +21,17 @@ export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
   const { profile, signOut } = useAuth();
   const { theme, setTheme } = useTheme();
+  const [tier, setTier] = useState<SubscriptionTier | null>(null);
+
+  useEffect(() => {
+    if (!profile) return;
+    supabase
+      .from("clients")
+      .select("subscription_tier")
+      .eq("id", profile.id)
+      .single()
+      .then(({ data }) => setTier(data?.subscription_tier ?? null));
+  }, [profile]);
 
   async function changeLocale(locale: SupportedLocale) {
     await i18n.changeLanguage(locale);
@@ -31,7 +43,16 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <ScrollView className="flex-1 px-5" contentContainerClassName="gap-4 pb-10">
-        <Text className="mt-4 text-2xl font-semibold text-foreground">{t("profile.title")}</Text>
+        <View className="mt-4 flex-row items-center justify-between">
+          <Text className="text-2xl font-semibold text-foreground">{t("profile.title")}</Text>
+          {tier ? (
+            <View className="rounded-full border border-accent bg-surface-elevated px-3 py-1.5">
+              <Text className="text-xs font-bold uppercase tracking-wide text-accent">
+                {t(`profile.tier${tier === "free" ? "Basic" : tier === "premium" ? "Premium" : "Vip"}`)}
+              </Text>
+            </View>
+          ) : null}
+        </View>
 
         <Card className="gap-1">
           <Text className="text-lg font-medium text-foreground">{profile?.full_name}</Text>
