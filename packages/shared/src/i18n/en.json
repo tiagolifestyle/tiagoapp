@@ -106,6 +106,21 @@
     "personalInfo": "Personal information",
     "security": "Security"
   },
+  "checkin": {
+    "title": "Weekly check-in",
+    "subtitle": "Tell me how your week went.",
+    "feeling": "How did you feel this week?",
+    "feelingPlaceholder": "E.g: Motivated, tired, energetic...",
+    "workoutsCompleted": "How many workouts did you complete?",
+    "nutritionRating": "How do you rate your nutrition? (1-5)",
+    "sleepRating": "How do you rate your sleep? (1-5)",
+    "energyLevel": "How do you rate your energy level? (1-5)",
+    "difficulties": "Did you experience any difficulties?",
+    "observations": "Observations",
+    "submit": "Submit check-in",
+    "alreadySubmitted": "You've already submitted this week's check-in.",
+    "coachResponse": "Coach's response"
+  },
   "admin": {
     "dashboardTitle": "Overview",
     "totalClients": "Total clients",

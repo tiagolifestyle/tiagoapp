@@ -106,6 +106,21 @@
     "personalInfo": "Informação pessoal",
     "security": "Segurança"
   },
+  "checkin": {
+    "title": "Check-in semanal",
+    "subtitle": "Conta-me como foi a tua semana.",
+    "feeling": "Como te sentiste esta semana?",
+    "feelingPlaceholder": "Ex: Motivado, cansado, com energia...",
+    "workoutsCompleted": "Quantos treinos completaste?",
+    "nutritionRating": "Como avalias a tua alimentação? (1-5)",
+    "sleepRating": "Como avalias o teu sono? (1-5)",
+    "energyLevel": "Como avalias o teu nível de energia? (1-5)",
+    "difficulties": "Sentiste alguma dificuldade?",
+    "observations": "Observações",
+    "submit": "Enviar check-in",
+    "alreadySubmitted": "Já enviaste o check-in desta semana.",
+    "coachResponse": "Resposta do coach"
+  },
   "admin": {
     "dashboardTitle": "Visão geral",
     "totalClients": "Total de clientes",

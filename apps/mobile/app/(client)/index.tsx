@@ -55,10 +55,13 @@ export default function DashboardScreen() {
         )}
 
         {data.pendingCheckin && (
-          <Card className="flex-row items-center gap-3 border-warning">
-            <Ionicons name="alert-circle-outline" size={22} color="#D9A441" />
-            <Text className="flex-1 text-base text-foreground">👀 {t("dashboard.alerts")}: check-in semanal pendente</Text>
-          </Card>
+          <Link href="/(client)/checkin">
+            <Card className="flex-row items-center gap-3 border-warning">
+              <Ionicons name="alert-circle-outline" size={22} color="#D9A441" />
+              <Text className="flex-1 text-base text-foreground">👀 {t("dashboard.alerts")}: check-in semanal pendente</Text>
+              <Ionicons name="chevron-forward" size={18} color="#D9A441" />
+            </Card>
+          </Link>
         )}
 
         <View className="flex-row gap-3">

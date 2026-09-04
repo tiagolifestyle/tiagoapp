@@ -24,6 +24,16 @@ const emptyDashboard: DashboardData = {
   streakDays: 0,
 };
 
+function currentWeekStart(): string {
+  const now = new Date();
+  const day = now.getDay();
+  const diffToMonday = day === 0 ? -6 : 1 - day;
+  const monday = new Date(now);
+  monday.setDate(now.getDate() + diffToMonday);
+  monday.setHours(0, 0, 0, 0);
+  return monday.toISOString().slice(0, 10);
+}
+
 async function computeStreak(clientId: string): Promise<number> {
   const { data } = await supabase
     .from("exercise_logs")
@@ -85,8 +95,7 @@ export function useDashboard(clientId: string | undefined) {
           .from("checkins")
           .select("id")
           .eq("client_id", clientId)
-          .eq("status", "pending")
-          .limit(1)
+          .eq("week_start", currentWeekStart())
           .maybeSingle(),
         supabase.from("conversations").select("id").eq("client_id", clientId).maybeSingle(),
         computeStreak(clientId),
@@ -129,7 +138,7 @@ export function useDashboard(clientId: string | undefined) {
       nutritionPlan: (nutritionResult.data as NutritionPlan | null) ?? null,
       latestMetric: (metricResult.data as ProgressMetric | null) ?? null,
       unreadMessagesCount,
-      pendingCheckin: Boolean(checkinResult.data),
+      pendingCheckin: !checkinResult.data,
       streakDays: streak,
     });
     setIsLoading(false);
