@@ -323,7 +323,7 @@ export default function PostpartumScreen() {
             </Card>
 
             {diastasisChartData.length >= 2 && (
-              <Card>
+              <Card className="gap-3">
                 <LineChart
                   data={{
                     labels: diastasisChartData.map((entry) => entry.assessed_at.slice(5)),
@@ -332,7 +332,6 @@ export default function PostpartumScreen() {
                       { data: diastasisChartData.map((entry) => entry.umbilical_cm ?? 0), color: () => "#F472B6", strokeWidth: 2 },
                       { data: diastasisChartData.map((entry) => entry.infraumbilical_cm ?? 0), color: () => "#3FAE6E", strokeWidth: 2 },
                     ],
-                    legend: [t("postpartum.supraumbilical"), t("postpartum.umbilical"), t("postpartum.infraumbilical")],
                   }}
                   width={screenWidth - 72}
                   height={200}
@@ -349,6 +348,21 @@ export default function PostpartumScreen() {
                   bezier
                   style={{ borderRadius: 16 }}
                 />
+
+                <View className="gap-1.5">
+                  <View className="flex-row items-center gap-2">
+                    <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#C9A227" }} />
+                    <Text className="text-xs text-muted">{t("postpartum.supraumbilical")}</Text>
+                  </View>
+                  <View className="flex-row items-center gap-2">
+                    <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#F472B6" }} />
+                    <Text className="text-xs text-muted">{t("postpartum.umbilical")}</Text>
+                  </View>
+                  <View className="flex-row items-center gap-2">
+                    <View className="h-2.5 w-2.5 rounded-full" style={{ backgroundColor: "#3FAE6E" }} />
+                    <Text className="text-xs text-muted">{t("postpartum.infraumbilical")}</Text>
+                  </View>
+                </View>
               </Card>
             )}
 
