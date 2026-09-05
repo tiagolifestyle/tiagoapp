@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useWorkoutPlan, type PlanDay } from "@/hooks/useWorkoutPlan";
 import { Card } from "@/components/Card";
 import { ExerciseRow } from "@/components/ExerciseRow";
+import { RmCalculatorButton } from "@/components/RmCalculatorButton";
 
 // Ordem de exibição Segunda→Domingo; os valores são o índice de Date.getDay() (0=Domingo).
 const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
@@ -36,7 +37,12 @@ export default function WorkoutScreen() {
       >
         <View className="mt-4 mb-1 flex-row items-center justify-between">
           <Text className="text-2xl font-semibold text-foreground">{plan?.name ?? t("dashboard.todayWorkout")}</Text>
-          {plan ? <Text className="text-sm text-muted">{t("workout.planVersion", { version: plan.version })}</Text> : null}
+          {plan ? (
+            <View className="flex-row items-center gap-2">
+              <Text className="text-sm text-muted">{t("workout.planVersion", { version: plan.version })}</Text>
+              <RmCalculatorButton />
+            </View>
+          ) : null}
         </View>
 
         {!plan && !isLoading && <Text className="text-base text-muted">{t("dashboard.noWorkoutToday")}</Text>}

@@ -98,6 +98,14 @@
     "fat": "Grasa",
     "water": "Agua"
   },
+  "rmCalculator": {
+    "title": "Calculadora de Repetición Máxima",
+    "weightLifted": "Peso levantado",
+    "reps": "Repeticiones",
+    "calculate": "Calcular la Repetición Máxima",
+    "result": "Tu repetición máxima es {{value}} kg",
+    "percentage": "% de 1RM"
+  },
   "progress": {
     "tabWeight": "Peso",
     "tabPhoto": "Foto",

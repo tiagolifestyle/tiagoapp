@@ -98,6 +98,14 @@
     "fat": "Fat",
     "water": "Water"
   },
+  "rmCalculator": {
+    "title": "One-Rep Max Calculator",
+    "weightLifted": "Weight lifted",
+    "reps": "Reps",
+    "calculate": "Calculate One-Rep Max",
+    "result": "Your one-rep max is {{value}} kg",
+    "percentage": "% of 1RM"
+  },
   "progress": {
     "tabWeight": "Weight",
     "tabPhoto": "Photo",
