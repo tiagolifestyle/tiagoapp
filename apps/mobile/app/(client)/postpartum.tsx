@@ -13,6 +13,12 @@ import { TextField } from "@/components/TextField";
 
 const screenWidth = Dimensions.get("window").width;
 
+const BABY_SEX_COLORS: Record<BabySex, string> = {
+  boy: "#60A5FA",
+  girl: "#F472B6",
+  twins: "#3FAE6E",
+};
+
 type PostpartumTabKey = "birth" | "pelvicFloor" | "diastasis";
 
 function Pill({ selected, label, onPress }: { selected: boolean; label: string; onPress: () => void }) {
@@ -148,6 +154,12 @@ export default function PostpartumScreen() {
             </View>
           ) : null}
         </View>
+
+        {pp?.baby_sex ? (
+          <Text className="text-base font-medium" style={{ color: BABY_SEX_COLORS[pp.baby_sex] }}>
+            {t(`postpartum.greeting${pp.baby_sex === "boy" ? "Boy" : pp.baby_sex === "girl" ? "Girl" : "Twins"}`)}
+          </Text>
+        ) : null}
 
         <View className="flex-row gap-2">
           {tabs.map((tab) => (
