@@ -159,6 +159,8 @@
     "supraumbilical": "Separación supraumbilical",
     "umbilical": "Separación umbilical",
     "infraumbilical": "Separación infraumbilical",
+    "functional": "¿Funcional?",
+    "notAssessed": "No evaluado",
     "noPelvicFloorHistory": "Todavía no tienes evaluaciones registradas.",
     "noDiastasisHistory": "Todavía no tienes evaluaciones registradas."
   },

@@ -274,6 +274,42 @@ export default function PostpartumScreen() {
 
         {activeTab === "diastasis" && (
           <>
+            <Card className="gap-2">
+              <Text className="text-sm font-medium text-foreground">{t("postpartum.functional")}</Text>
+              <View className="gap-1">
+                <View className="flex-row justify-between">
+                  <Text className="text-sm text-muted">{t("postpartum.supraumbilical")}</Text>
+                  <Text className="text-sm font-medium text-foreground">
+                    {pp?.supraumbilical_functional == null
+                      ? t("postpartum.notAssessed")
+                      : pp.supraumbilical_functional
+                        ? t("postpartum.yes")
+                        : t("postpartum.no")}
+                  </Text>
+                </View>
+                <View className="flex-row justify-between">
+                  <Text className="text-sm text-muted">{t("postpartum.umbilical")}</Text>
+                  <Text className="text-sm font-medium text-foreground">
+                    {pp?.umbilical_functional == null
+                      ? t("postpartum.notAssessed")
+                      : pp.umbilical_functional
+                        ? t("postpartum.yes")
+                        : t("postpartum.no")}
+                  </Text>
+                </View>
+                <View className="flex-row justify-between">
+                  <Text className="text-sm text-muted">{t("postpartum.infraumbilical")}</Text>
+                  <Text className="text-sm font-medium text-foreground">
+                    {pp?.infraumbilical_functional == null
+                      ? t("postpartum.notAssessed")
+                      : pp.infraumbilical_functional
+                        ? t("postpartum.yes")
+                        : t("postpartum.no")}
+                  </Text>
+                </View>
+              </View>
+            </Card>
+
             {diastasisChartData.length >= 2 && (
               <Card>
                 <LineChart

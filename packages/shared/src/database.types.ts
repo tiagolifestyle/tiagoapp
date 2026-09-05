@@ -199,6 +199,9 @@ export interface PostpartumProfile {
   baby_sex: BabySex | null;
   breastfeeding: boolean | null;
   complications: string | null;
+  supraumbilical_functional: boolean | null;
+  umbilical_functional: boolean | null;
+  infraumbilical_functional: boolean | null;
   created_at: string;
   updated_at: string;
 }

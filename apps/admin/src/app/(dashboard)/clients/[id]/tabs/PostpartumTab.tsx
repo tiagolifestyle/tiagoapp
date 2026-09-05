@@ -38,11 +38,54 @@ function Field({ label, value }: { label: string; value: string }) {
   );
 }
 
+type TriState = "" | "yes" | "no";
+
+function triStateToValue(value: TriState): boolean | null {
+  if (value === "yes") return true;
+  if (value === "no") return false;
+  return null;
+}
+
+function valueToTriState(value: boolean | null): TriState {
+  if (value === true) return "yes";
+  if (value === false) return "no";
+  return "";
+}
+
+function FunctionalSelect({ label, value, onChange }: { label: string; value: TriState; onChange: (value: TriState) => void }) {
+  return (
+    <div className="flex flex-1 flex-col gap-2">
+      <label className="text-sm font-medium text-muted">{label}</label>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value as TriState)}
+        className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
+      >
+        <option value="">Não avaliado</option>
+        <option value="yes">Sim</option>
+        <option value="no">Não</option>
+      </select>
+    </div>
+  );
+}
+
 export function PostpartumTab({ clientId }: { clientId: string }) {
   const [subTab, setSubTab] = useState<SubTabKey>("birth");
   const [profile, setProfile] = useState<PostpartumProfile | null>(null);
   const [pelvicFloor, setPelvicFloor] = useState<PelvicFloorAssessment[]>([]);
   const [diastasis, setDiastasis] = useState<DiastasisAssessment[]>([]);
+
+  const [supraFunctional, setSupraFunctional] = useState<TriState>("");
+  const [umbilicalFunctional, setUmbilicalFunctional] = useState<TriState>("");
+  const [infraFunctional, setInfraFunctional] = useState<TriState>("");
+  const [savingFunctional, setSavingFunctional] = useState(false);
+
+  useEffect(() => {
+    if (!profile) return;
+    setSupraFunctional(valueToTriState(profile.supraumbilical_functional));
+    setUmbilicalFunctional(valueToTriState(profile.umbilical_functional));
+    setInfraFunctional(valueToTriState(profile.infraumbilical_functional));
+  }, [profile]);
 
   useEffect(() => {
     const supabase = createBrowserSupabaseClient();
@@ -68,6 +111,26 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
       .order("assessed_at", { ascending: false })
       .then(({ data }) => setDiastasis((data ?? []) as DiastasisAssessment[]));
   }, [clientId]);
+
+  async function handleSaveFunctional() {
+    setSavingFunctional(true);
+    const supabase = createBrowserSupabaseClient();
+    const { data } = await supabase
+      .from("postpartum_profiles")
+      .upsert(
+        {
+          client_id: clientId,
+          supraumbilical_functional: triStateToValue(supraFunctional),
+          umbilical_functional: triStateToValue(umbilicalFunctional),
+          infraumbilical_functional: triStateToValue(infraFunctional),
+        },
+        { onConflict: "client_id" }
+      )
+      .select("*")
+      .single();
+    setProfile((data as PostpartumProfile | null) ?? null);
+    setSavingFunctional(false);
+  }
 
   return (
     <div className="flex flex-col gap-4">
@@ -118,8 +181,25 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
       )}
 
       {subTab === "diastasis" && (
-        <Card className="divide-y divide-border p-0">
-          {diastasis.length === 0 && <p className="px-6 py-6 text-sm text-muted">Sem avaliações ainda.</p>}
+        <>
+          <Card className="max-w-xl gap-4">
+            <p className="text-sm font-medium text-foreground">Funcional?</p>
+            <div className="flex flex-wrap gap-4">
+              <FunctionalSelect label="Separação supraumbilical" value={supraFunctional} onChange={setSupraFunctional} />
+              <FunctionalSelect label="Separação umbilical" value={umbilicalFunctional} onChange={setUmbilicalFunctional} />
+              <FunctionalSelect label="Separação infraumbilical" value={infraFunctional} onChange={setInfraFunctional} />
+            </div>
+            <button
+              onClick={handleSaveFunctional}
+              disabled={savingFunctional}
+              className="self-start rounded-2xl bg-accent px-6 py-2.5 text-sm font-semibold text-background hover:opacity-90 disabled:opacity-50"
+            >
+              {savingFunctional ? "A guardar…" : "Guardar"}
+            </button>
+          </Card>
+
+          <Card className="divide-y divide-border p-0">
+            {diastasis.length === 0 && <p className="px-6 py-6 text-sm text-muted">Sem avaliações ainda.</p>}
           {diastasis.map((entry) => (
             <div key={entry.id} className="flex flex-col gap-1 px-6 py-3 text-sm">
               <span className="text-muted">{entry.assessed_at}</span>
@@ -137,7 +217,8 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
               {entry.notes && <span className="text-muted">{entry.notes}</span>}
             </div>
           ))}
-        </Card>
+          </Card>
+        </>
       )}
     </div>
   );
