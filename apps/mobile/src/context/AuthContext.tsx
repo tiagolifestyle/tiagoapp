@@ -5,6 +5,10 @@ import type { Profile } from "@tiagolifestyle/shared";
 import { supabase } from "@/lib/supabase";
 import i18n from "@/lib/i18n";
 
+// Endereço público da app do cliente — usado para o Supabase saber para
+// onde reencaminhar depois do clique no link de recuperação de password.
+const RESET_PASSWORD_REDIRECT_URL = "https://tiagolifestyle-app.vercel.app/login";
+
 interface AuthContextValue {
   session: Session | null;
   profile: Profile | null;
@@ -88,7 +92,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         await supabase.auth.signOut();
       },
       resetPassword: async (email) => {
-        const { error } = await supabase.auth.resetPasswordForEmail(email);
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: RESET_PASSWORD_REDIRECT_URL,
+        });
         return { error: error?.message ?? null };
       },
       updatePassword: async (password) => {

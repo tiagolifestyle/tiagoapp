@@ -44,6 +44,7 @@
     "passwordMismatch": "As passwords não coincidem.",
     "passwordTooShort": "A password tem de ter pelo menos 8 caracteres.",
     "signUpError": "Não foi possível criar a tua conta. Tenta novamente.",
+    "updatePasswordError": "Não foi possível atualizar a password. Pede um novo link e tenta outra vez.",
     "signUpSuccess": "Conta criada! Já tens sessão iniciada.",
     "manager": "Gestor",
     "managerPassword": "Password de gestor",

@@ -32,7 +32,7 @@ export default function ResetPasswordScreen() {
     setLoading(false);
 
     if (updateError) {
-      setError(t("auth.signUpError"));
+      setError(t("auth.updatePasswordError"));
       return;
     }
 

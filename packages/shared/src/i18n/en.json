@@ -44,6 +44,7 @@
     "passwordMismatch": "Passwords don't match.",
     "passwordTooShort": "Password must be at least 8 characters.",
     "signUpError": "Couldn't create your account. Please try again.",
+    "updatePasswordError": "Couldn't update your password. Request a new link and try again.",
     "signUpSuccess": "Account created! You're now signed in.",
     "manager": "Manager",
     "managerPassword": "Manager password",
