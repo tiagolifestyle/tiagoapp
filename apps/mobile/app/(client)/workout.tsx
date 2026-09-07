@@ -7,6 +7,7 @@ import { useWorkoutPlan, type PlanDay } from "@/hooks/useWorkoutPlan";
 import { Card } from "@/components/Card";
 import { ExerciseRow } from "@/components/ExerciseRow";
 import { RmCalculatorButton } from "@/components/RmCalculatorButton";
+import { Button } from "@/components/Button";
 
 // Ordem de exibição Segunda→Domingo; os valores são o índice de Date.getDay() (0=Domingo).
 const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
@@ -14,7 +15,7 @@ const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 export default function WorkoutScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { plan, loads, saveLoad, isLoading, refresh } = useWorkoutPlan(profile?.id);
+  const { plan, loads, saveLoad, completedToday, markComplete, isLoading, refresh } = useWorkoutPlan(profile?.id);
   const weekdayLabels = t("workout.weekdaysShort", { returnObjects: true }) as string[];
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
 
@@ -90,6 +91,15 @@ export default function WorkoutScreen() {
                     onSaveLoad={(value) => saveLoad(exercise.id, value)}
                   />
                 ))}
+
+                <View className="mt-3">
+                  <Button
+                    label={completedToday ? `✓ ${t("workout.completedToday")}` : t("workout.markComplete")}
+                    onPress={markComplete}
+                    disabled={completedToday}
+                    variant={completedToday ? "secondary" : "primary"}
+                  />
+                </View>
               </Card>
             ) : (
               <Text className="text-base text-muted">{t("workout.restDay")}</Text>

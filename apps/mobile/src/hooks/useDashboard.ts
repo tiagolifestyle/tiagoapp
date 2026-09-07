@@ -35,25 +35,12 @@ function currentWeekStart(): string {
 }
 
 async function computeStreak(clientId: string): Promise<number> {
-  const { data } = await supabase
-    .from("exercise_logs")
-    .select("performed_at")
-    .eq("client_id", clientId)
-    .order("performed_at", { ascending: false })
-    .limit(60);
+  const { count } = await supabase
+    .from("workout_completions")
+    .select("id", { count: "exact", head: true })
+    .eq("client_id", clientId);
 
-  if (!data || data.length === 0) return 0;
-
-  const days = new Set(data.map((row) => new Date(row.performed_at).toDateString()));
-  let streak = 0;
-  const cursor = new Date();
-
-  while (days.has(cursor.toDateString())) {
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-
-  return streak;
+  return count ?? 0;
 }
 
 export function useDashboard(clientId: string | undefined) {

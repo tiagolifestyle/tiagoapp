@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import type { Client, SubscriptionTier } from "@tiagolifestyle/shared";
+import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { StatusBadge } from "@/components/StatusBadge";
 
 const TIER_LABELS: Record<SubscriptionTier, string> = {
@@ -47,6 +48,16 @@ export function ClientProfileView({
   const requestedTab = searchParams.get("tab");
   const initialTab = TABS.some((tab) => tab.key === requestedTab) ? (requestedTab as TabKey) : "info";
   const [activeTab, setActiveTab] = useState<TabKey>(initialTab);
+  const [consistencyDays, setConsistencyDays] = useState<number | null>(null);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    supabase
+      .from("workout_completions")
+      .select("id", { count: "exact", head: true })
+      .eq("client_id", clientId)
+      .then(({ count }) => setConsistencyDays(count ?? 0));
+  }, [clientId]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -65,6 +76,9 @@ export function ClientProfileView({
             <div className="mt-1 flex items-center gap-2">
               <StatusBadge status={initialClient.status} />
               <span className="text-sm text-muted">{TIER_LABELS[initialClient.subscription_tier]}</span>
+              {consistencyDays != null && (
+                <span className="text-sm text-muted">🔥 {consistencyDays} dias de consistência</span>
+              )}
             </div>
           </div>
         </div>

@@ -228,6 +228,13 @@ export interface DiastasisAssessment {
   created_at: string;
 }
 
+export interface WorkoutCompletion {
+  id: string;
+  client_id: string;
+  completed_at: string;
+  created_at: string;
+}
+
 export interface Conversation {
   id: string;
   client_id: string;

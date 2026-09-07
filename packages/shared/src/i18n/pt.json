@@ -83,6 +83,7 @@
     "noDetails": "O teu coach ainda não adicionou detalhes para este exercício.",
     "startWorkout": "Iniciar treino",
     "markComplete": "Marcar como concluído",
+    "completedToday": "Treino de hoje registado",
     "planVersion": "Versão {{version}}",
     "restDay": "Dia de descanso",
     "load": "Carga",

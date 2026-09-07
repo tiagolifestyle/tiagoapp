@@ -83,6 +83,7 @@
     "noDetails": "Your coach hasn't added details for this exercise yet.",
     "startWorkout": "Start workout",
     "markComplete": "Mark as complete",
+    "completedToday": "Today's workout logged",
     "planVersion": "Version {{version}}",
     "restDay": "Rest day",
     "load": "Load",

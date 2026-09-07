@@ -14,14 +14,27 @@ export interface ActivePlan extends WorkoutPlan {
   days: PlanDay[];
 }
 
+function todayDate(): string {
+  return new Date().toISOString().slice(0, 10);
+}
+
 export function useWorkoutPlan(clientId: string | undefined) {
   const [plan, setPlan] = useState<ActivePlan | null>(null);
   const [loads, setLoads] = useState<Record<string, string>>({});
+  const [completedToday, setCompletedToday] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const load = useCallback(async () => {
     if (!clientId) return;
     setIsLoading(true);
+
+    const { data: completion } = await supabase
+      .from("workout_completions")
+      .select("id")
+      .eq("client_id", clientId)
+      .eq("completed_at", todayDate())
+      .maybeSingle();
+    setCompletedToday(!!completion);
 
     const { data: planRow } = await supabase
       .from("workout_plans")
@@ -90,5 +103,11 @@ export function useWorkoutPlan(clientId: string | undefined) {
     });
   }
 
-  return { plan, loads, saveLoad, isLoading, refresh: load };
+  async function markComplete() {
+    if (!clientId || completedToday) return;
+    setCompletedToday(true);
+    await supabase.from("workout_completions").insert({ client_id: clientId, completed_at: todayDate() });
+  }
+
+  return { plan, loads, saveLoad, completedToday, markComplete, isLoading, refresh: load };
 }
