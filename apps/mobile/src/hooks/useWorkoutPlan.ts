@@ -20,7 +20,7 @@ function todayDate(): string {
 
 export function useWorkoutPlan(clientId: string | undefined) {
   const [plan, setPlan] = useState<ActivePlan | null>(null);
-  const [loads, setLoads] = useState<Record<string, string>>({});
+  const [loads, setLoads] = useState<Record<string, string[]>>({});
   const [completedToday, setCompletedToday] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -74,12 +74,12 @@ export function useWorkoutPlan(clientId: string | undefined) {
         .in("workout_exercise_id", exerciseIds)
         .order("performed_at", { ascending: false });
 
-      const nextLoads: Record<string, string> = {};
+      const nextLoads: Record<string, string[]> = {};
       for (const log of logs ?? []) {
         const exerciseId = log.workout_exercise_id as string | null;
         if (!exerciseId || nextLoads[exerciseId] !== undefined) continue;
-        const entry = Array.isArray(log.sets_completed) ? log.sets_completed[0] : null;
-        if (entry?.load) nextLoads[exerciseId] = String(entry.load);
+        const entries = Array.isArray(log.sets_completed) ? log.sets_completed : [];
+        nextLoads[exerciseId] = entries.map((entry) => (entry?.load != null ? String(entry.load) : ""));
       }
       setLoads(nextLoads);
     } else {
@@ -93,13 +93,17 @@ export function useWorkoutPlan(clientId: string | undefined) {
     load();
   }, [load]);
 
-  async function saveLoad(workoutExerciseId: string, value: string) {
+  async function saveLoad(workoutExerciseId: string, setIndex: number, value: string) {
     if (!clientId) return;
-    setLoads((prev) => ({ ...prev, [workoutExerciseId]: value }));
+    const previous = loads[workoutExerciseId] ?? [];
+    const nextSets = Array.from({ length: Math.max(previous.length, setIndex + 1) }, (_, i) =>
+      i === setIndex ? value : (previous[i] ?? "")
+    );
+    setLoads((prev) => ({ ...prev, [workoutExerciseId]: nextSets }));
     await supabase.from("exercise_logs").insert({
       client_id: clientId,
       workout_exercise_id: workoutExerciseId,
-      sets_completed: [{ load: value }],
+      sets_completed: nextSets.map((load) => ({ load })),
     });
   }
 

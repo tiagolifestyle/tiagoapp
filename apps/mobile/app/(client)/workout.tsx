@@ -87,8 +87,8 @@ export default function WorkoutScreen() {
                     key={exercise.id}
                     item={exercise}
                     index={index}
-                    load={loads[exercise.id] ?? ""}
-                    onSaveLoad={(value) => saveLoad(exercise.id, value)}
+                    loads={loads[exercise.id] ?? []}
+                    onSaveLoad={(setIndex, value) => saveLoad(exercise.id, setIndex, value)}
                   />
                 ))}
 

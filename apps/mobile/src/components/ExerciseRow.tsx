@@ -7,26 +7,50 @@ import type { PlanExercise } from "@/hooks/useWorkoutPlan";
 interface ExerciseRowProps {
   item: PlanExercise;
   index: number;
-  load: string;
-  onSaveLoad: (value: string) => void;
+  loads: string[];
+  onSaveLoad: (setIndex: number, value: string) => void;
 }
 
-export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps) {
+function SetLoadBox({
+  setNumber,
+  value,
+  onSave,
+}: {
+  setNumber: number;
+  value: string;
+  onSave: (value: string) => void;
+}) {
+  const [draft, setDraft] = useState(value);
+
+  useEffect(() => {
+    setDraft(value);
+  }, [value]);
+
+  return (
+    <View className="items-center gap-1">
+      <Text className="text-xs text-muted">{setNumber}</Text>
+      <TextInput
+        value={draft}
+        onChangeText={setDraft}
+        onBlur={() => {
+          if (draft !== value) onSave(draft);
+        }}
+        keyboardType="numeric"
+        placeholder="—"
+        placeholderTextColor="#6B6B76"
+        className="w-16 rounded-lg border border-border bg-surface-elevated px-2 py-1 text-center text-sm text-foreground"
+      />
+    </View>
+  );
+}
+
+export function ExerciseRow({ item, index, loads, onSaveLoad }: ExerciseRowProps) {
   const { t } = useTranslation();
-  const [draft, setDraft] = useState(load);
   const [imageExpanded, setImageExpanded] = useState(false);
   const [detailsOpen, setDetailsOpen] = useState(false);
 
   const hasDetails =
     item.exercise.video_url || item.exercise.instructions || item.exercise.common_mistakes || item.exercise.tips;
-
-  useEffect(() => {
-    setDraft(load);
-  }, [load]);
-
-  function handleBlur() {
-    if (draft !== load) onSaveLoad(draft);
-  }
 
   return (
     <View className="flex-row gap-3 border-b border-border py-4 last:border-b-0">
@@ -138,18 +162,18 @@ export function ExerciseRow({ item, index, load, onSaveLoad }: ExerciseRowProps)
           </View>
         ) : null}
 
-        <View className="mt-2 flex-row items-center gap-2">
-          <Text className="text-sm text-muted">{t("workout.load")}:</Text>
-          <TextInput
-            value={draft}
-            onChangeText={setDraft}
-            onBlur={handleBlur}
-            keyboardType="numeric"
-            placeholder="—"
-            placeholderTextColor="#6B6B76"
-            className="w-16 rounded-lg border border-border bg-surface-elevated px-2 py-1 text-center text-sm text-foreground"
-          />
-          <Text className="text-sm text-muted">kg</Text>
+        <View className="mt-2 gap-2">
+          <Text className="text-sm text-muted">{t("workout.load")} (kg):</Text>
+          <View className="flex-row flex-wrap gap-2">
+            {Array.from({ length: item.sets ?? 0 }).map((_, setIndex) => (
+              <SetLoadBox
+                key={setIndex}
+                setNumber={setIndex + 1}
+                value={loads[setIndex] ?? ""}
+                onSave={(value) => onSaveLoad(setIndex, value)}
+              />
+            ))}
+          </View>
         </View>
       </View>
     </View>
