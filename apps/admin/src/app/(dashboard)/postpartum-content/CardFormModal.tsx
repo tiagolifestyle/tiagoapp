@@ -14,8 +14,12 @@ interface CardFormModalProps {
 }
 
 export function CardFormModal({ card, category, nextOrderIndex, onClose, onSaved }: CardFormModalProps) {
-  const [title, setTitle] = useState(card?.title ?? "");
-  const [body, setBody] = useState(card?.body ?? "");
+  const [titlePt, setTitlePt] = useState(card?.title_pt ?? "");
+  const [titleEs, setTitleEs] = useState(card?.title_es ?? "");
+  const [titleEn, setTitleEn] = useState(card?.title_en ?? "");
+  const [bodyPt, setBodyPt] = useState(card?.body_pt ?? "");
+  const [bodyEs, setBodyEs] = useState(card?.body_es ?? "");
+  const [bodyEn, setBodyEn] = useState(card?.body_en ?? "");
   const [imageUrl, setImageUrl] = useState(card?.image_url ?? "");
   const [videoUrl, setVideoUrl] = useState(card?.video_url ?? "");
   const [uploading, setUploading] = useState(false);
@@ -39,8 +43,12 @@ export function CardFormModal({ card, category, nextOrderIndex, onClose, onSaved
 
     const payload = {
       category,
-      title,
-      body: body || null,
+      title_pt: titlePt,
+      title_es: titleEs,
+      title_en: titleEn,
+      body_pt: bodyPt || null,
+      body_es: bodyEs || null,
+      body_en: bodyEn || null,
       image_url: imageUrl || null,
       video_url: videoUrl || null,
       order_index: card?.order_index ?? nextOrderIndex,
@@ -66,13 +74,35 @@ export function CardFormModal({ card, category, nextOrderIndex, onClose, onSaved
         </div>
 
         <div className="flex flex-col gap-4">
-          <Field label="Título">
-            <input value={title} onChange={(e) => setTitle(e.target.value)} className={inputClass} />
-          </Field>
+          <div className="flex flex-col gap-3 rounded-xl border border-border p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Português</p>
+            <Field label="Título">
+              <input value={titlePt} onChange={(e) => setTitlePt(e.target.value)} className={inputClass} />
+            </Field>
+            <Field label="Texto">
+              <textarea rows={4} value={bodyPt} onChange={(e) => setBodyPt(e.target.value)} className={inputClass} />
+            </Field>
+          </div>
 
-          <Field label="Texto">
-            <textarea rows={5} value={body} onChange={(e) => setBody(e.target.value)} className={inputClass} />
-          </Field>
+          <div className="flex flex-col gap-3 rounded-xl border border-border p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">Español</p>
+            <Field label="Título">
+              <input value={titleEs} onChange={(e) => setTitleEs(e.target.value)} className={inputClass} />
+            </Field>
+            <Field label="Texto">
+              <textarea rows={4} value={bodyEs} onChange={(e) => setBodyEs(e.target.value)} className={inputClass} />
+            </Field>
+          </div>
+
+          <div className="flex flex-col gap-3 rounded-xl border border-border p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-accent">English</p>
+            <Field label="Título">
+              <input value={titleEn} onChange={(e) => setTitleEn(e.target.value)} className={inputClass} />
+            </Field>
+            <Field label="Texto">
+              <textarea rows={4} value={bodyEn} onChange={(e) => setBodyEn(e.target.value)} className={inputClass} />
+            </Field>
+          </div>
 
           <Field label="Imagem (opcional)">
             <div className="flex items-center gap-3">
@@ -96,7 +126,7 @@ export function CardFormModal({ card, category, nextOrderIndex, onClose, onSaved
 
           <button
             onClick={handleSave}
-            disabled={saving || !title}
+            disabled={saving || !titlePt || !titleEs || !titleEn}
             className="mt-2 rounded-2xl bg-accent px-6 py-3 text-sm font-semibold text-background hover:opacity-90 disabled:opacity-50"
           >
             {saving ? "A guardar…" : "Guardar cartão"}

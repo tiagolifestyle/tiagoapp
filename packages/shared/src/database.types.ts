@@ -239,8 +239,12 @@ export interface WorkoutCompletion {
 export interface PostpartumContentCard {
   id: string;
   category: PostpartumContentCategory;
-  title: string;
-  body: string | null;
+  title_pt: string;
+  title_es: string;
+  title_en: string;
+  body_pt: string | null;
+  body_es: string | null;
+  body_en: string | null;
   image_url: string | null;
   video_url: string | null;
   order_index: number;

@@ -23,15 +23,26 @@ const BABY_SEX_COLORS: Record<BabySex, string> = {
 
 type PostpartumTabKey = "birth" | "pelvicFloor" | "diastasis" | "info" | "hypopressive";
 
+function pickLocalized(card: PostpartumContentCard, field: "title" | "body", locale: string): string {
+  const order = [locale, "pt", "es", "en"];
+  for (const loc of order) {
+    const value = card[`${field}_${loc}` as keyof PostpartumContentCard] as string | null;
+    if (value) return value;
+  }
+  return "";
+}
+
 function ContentCardView({ card }: { card: PostpartumContentCard }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const title = pickLocalized(card, "title", i18n.language);
+  const body = pickLocalized(card, "body", i18n.language);
   return (
     <Card className="gap-3">
       {card.image_url ? (
         <Image source={{ uri: card.image_url }} className="h-40 w-full rounded-xl bg-surface-elevated" resizeMode="cover" />
       ) : null}
-      <Text className="text-base font-semibold text-foreground">{card.title}</Text>
-      {card.body ? <Text className="text-sm text-muted">{card.body}</Text> : null}
+      <Text className="text-base font-semibold text-foreground">{title}</Text>
+      {body ? <Text className="text-sm text-muted">{body}</Text> : null}
       {card.video_url ? (
         <Pressable
           onPress={() => Linking.openURL(card.video_url!)}

@@ -29,7 +29,7 @@ export function PostpartumContentView({ initialCards }: { initialCards: Postpart
   }
 
   async function handleDelete(card: PostpartumContentCard) {
-    if (!confirm(`Eliminar "${card.title}"?`)) return;
+    if (!confirm(`Eliminar "${card.title_pt}"?`)) return;
     const supabase = createBrowserSupabaseClient();
     await supabase.from("postpartum_content_cards").delete().eq("id", card.id);
     setCards((prev) => prev.filter((c) => c.id !== card.id));
@@ -104,8 +104,8 @@ export function PostpartumContentView({ initialCards }: { initialCards: Postpart
               </div>
             )}
             <div className="flex-1">
-              <p className="font-medium text-foreground">{card.title}</p>
-              {card.body && <p className="mt-1 line-clamp-2 text-sm text-muted">{card.body}</p>}
+              <p className="font-medium text-foreground">{card.title_pt}</p>
+              {card.body_pt && <p className="mt-1 line-clamp-2 text-sm text-muted">{card.body_pt}</p>}
               {card.video_url && <p className="mt-1 text-xs text-accent">Tem vídeo</p>}
             </div>
             <div className="flex flex-col items-center gap-1">
