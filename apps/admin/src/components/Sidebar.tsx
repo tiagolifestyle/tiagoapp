@@ -7,6 +7,7 @@ import {
   Users,
   Dumbbell,
   LayoutTemplate,
+  HeartPulse,
   LogOut,
 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
   { href: "/clients", label: "Clientes", icon: Users },
   { href: "/exercises", label: "Biblioteca de exercícios", icon: Dumbbell },
   { href: "/templates", label: "Templates", icon: LayoutTemplate },
+  { href: "/postpartum-content", label: "Conteúdo Pós-parto", icon: HeartPulse },
 ];
 
 export function Sidebar({ coachName }: { coachName: string }) {

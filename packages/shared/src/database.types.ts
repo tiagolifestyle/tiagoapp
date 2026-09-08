@@ -16,6 +16,7 @@ export type PhotoAngle = "front" | "side" | "back";
 export type ExerciseDifficulty = "iniciante" | "intermedio" | "avancado";
 export type DeliveryType = "vaginal" | "cesarean";
 export type BabySex = "boy" | "girl" | "twins";
+export type PostpartumContentCategory = "info" | "hypopressive";
 
 export interface Profile {
   id: string;
@@ -233,6 +234,18 @@ export interface WorkoutCompletion {
   client_id: string;
   completed_at: string;
   created_at: string;
+}
+
+export interface PostpartumContentCard {
+  id: string;
+  category: PostpartumContentCategory;
+  title: string;
+  body: string | null;
+  image_url: string | null;
+  video_url: string | null;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface Conversation {

@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { View, Text, ScrollView, Pressable, TextInput, Dimensions } from "react-native";
+import { View, Text, ScrollView, Pressable, TextInput, Image, Linking, Dimensions } from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
-import type { BabySex, DeliveryType } from "@tiagolifestyle/shared";
+import { Ionicons } from "@expo/vector-icons";
+import type { BabySex, DeliveryType, PostpartumContentCard } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
 import { usePostpartum } from "@/hooks/usePostpartum";
+import { usePostpartumContent } from "@/hooks/usePostpartumContent";
 import { Card } from "@/components/Card";
 import { Button } from "@/components/Button";
 import { TextField } from "@/components/TextField";
@@ -19,7 +21,29 @@ const BABY_SEX_COLORS: Record<BabySex, string> = {
   twins: "#3FAE6E",
 };
 
-type PostpartumTabKey = "birth" | "pelvicFloor" | "diastasis";
+type PostpartumTabKey = "birth" | "pelvicFloor" | "diastasis" | "info" | "hypopressive";
+
+function ContentCardView({ card }: { card: PostpartumContentCard }) {
+  const { t } = useTranslation();
+  return (
+    <Card className="gap-3">
+      {card.image_url ? (
+        <Image source={{ uri: card.image_url }} className="h-40 w-full rounded-xl bg-surface-elevated" resizeMode="cover" />
+      ) : null}
+      <Text className="text-base font-semibold text-foreground">{card.title}</Text>
+      {card.body ? <Text className="text-sm text-muted">{card.body}</Text> : null}
+      {card.video_url ? (
+        <Pressable
+          onPress={() => Linking.openURL(card.video_url!)}
+          className="flex-row items-center gap-2 self-start rounded-full border border-accent px-4 py-2"
+        >
+          <Ionicons name="play-circle-outline" size={18} color="#C9A227" />
+          <Text className="text-sm font-semibold text-accent">{t("workout.watchVideo")}</Text>
+        </Pressable>
+      ) : null}
+    </Card>
+  );
+}
 
 function Pill({ selected, label, onPress }: { selected: boolean; label: string; onPress: () => void }) {
   return (
@@ -48,6 +72,7 @@ export default function PostpartumScreen() {
   const { profile } = useAuth();
   const { profile: pp, pelvicFloor, diastasis, saveProfile, addPelvicFloorAssessment, addDiastasisAssessment } =
     usePostpartum(profile?.id);
+  const { cards: contentCards } = usePostpartumContent();
   const [activeTab, setActiveTab] = useState<PostpartumTabKey>("birth");
 
   const [birthDate, setBirthDate] = useState("");
@@ -86,7 +111,12 @@ export default function PostpartumScreen() {
     { key: "birth", label: t("postpartum.tabBirth") },
     { key: "pelvicFloor", label: t("postpartum.tabPelvicFloor") },
     { key: "diastasis", label: t("postpartum.tabDiastasis") },
+    { key: "info", label: t("postpartum.tabInfo") },
+    { key: "hypopressive", label: t("postpartum.tabHypopressive") },
   ];
+
+  const infoCards = contentCards.filter((card) => card.category === "info");
+  const hypopressiveCards = contentCards.filter((card) => card.category === "hypopressive");
 
   const weeksPostpartum = useMemo(() => {
     if (!pp?.birth_date) return null;
@@ -161,11 +191,20 @@ export default function PostpartumScreen() {
           </Text>
         ) : null}
 
-        <View className="flex-row gap-2">
-          {tabs.map((tab) => (
-            <Pill key={tab.key} selected={activeTab === tab.key} label={tab.label} onPress={() => setActiveTab(tab.key)} />
-          ))}
-        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2 pb-1">
+          {tabs.map((tab) => {
+            const isSelected = activeTab === tab.key;
+            return (
+              <Pressable
+                key={tab.key}
+                onPress={() => setActiveTab(tab.key)}
+                className={`rounded-full border px-4 py-2 ${isSelected ? "border-accent bg-surface-elevated" : "border-border"}`}
+              >
+                <Text className={`text-sm font-semibold ${isSelected ? "text-accent" : "text-muted"}`}>{tab.label}</Text>
+              </Pressable>
+            );
+          })}
+        </ScrollView>
 
         {activeTab === "birth" && (
           <Card className="gap-4">
@@ -431,6 +470,20 @@ export default function PostpartumScreen() {
             )}
           </>
         )}
+
+        {activeTab === "info" &&
+          (infoCards.length === 0 ? (
+            <Text className="text-sm text-muted">{t("postpartum.noContent")}</Text>
+          ) : (
+            infoCards.map((card) => <ContentCardView key={card.id} card={card} />)
+          ))}
+
+        {activeTab === "hypopressive" &&
+          (hypopressiveCards.length === 0 ? (
+            <Text className="text-sm text-muted">{t("postpartum.noContent")}</Text>
+          ) : (
+            hypopressiveCards.map((card) => <ContentCardView key={card.id} card={card} />)
+          ))}
       </ScrollView>
     </SafeAreaView>
   );
