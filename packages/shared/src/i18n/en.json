@@ -98,7 +98,8 @@
     "protein": "Protein",
     "carbs": "Carbs",
     "fat": "Fat",
-    "water": "Water"
+    "water": "Water",
+    "noMealsForDay": "No meals planned for this day."
   },
   "rmCalculator": {
     "title": "One-Rep Max Calculator",

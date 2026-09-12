@@ -135,6 +135,7 @@ export interface Meal {
   nutrition_plan_id: string;
   name: string;
   time: string | null;
+  weekday: number | null;
   order_index: number;
   notes: string | null;
 }

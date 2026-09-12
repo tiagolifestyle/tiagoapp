@@ -6,6 +6,7 @@ import type { Meal, MealItem, NutritionPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
 import { StatusBadge } from "@/components/StatusBadge";
+import { WeekdayTabs } from "../../../workouts/builder/[planId]/WeekdayTabs";
 
 interface EditableMeal extends Meal {
   items: MealItem[];
@@ -25,6 +26,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   const [meals, setMeals] = useState<EditableMeal[]>([]);
   const [macros, setMacros] = useState<Partial<NutritionPlan>>({});
   const [saving, setSaving] = useState(false);
+  const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
 
   async function loadPlans() {
     const supabase = createBrowserSupabaseClient();
@@ -72,14 +74,23 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   function addMeal() {
     setMeals((prev) => [
       ...prev,
-      { id: `tmp-${Date.now()}`, nutrition_plan_id: activePlanId!, name: "Nova refeição", time: null, order_index: prev.length, notes: null, items: [] },
+      {
+        id: `tmp-${Date.now()}`,
+        nutrition_plan_id: activePlanId!,
+        name: "Nova refeição",
+        time: null,
+        weekday: selectedWeekday,
+        order_index: prev.length,
+        notes: null,
+        items: [],
+      },
     ]);
   }
 
-  function addItem(mealIndex: number) {
+  function addItem(mealId: string) {
     setMeals((prev) =>
-      prev.map((meal, index) =>
-        index === mealIndex
+      prev.map((meal) =>
+        meal.id === mealId
           ? { ...meal, items: [...meal.items, { id: `tmp-${Date.now()}`, meal_id: meal.id, food_name: "", quantity: null, unit: null, notes: null }] }
           : meal
       )
@@ -137,6 +148,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   }
 
   const activePlan = plans.find((plan) => plan.id === activePlanId);
+  const visibleMeals = meals.filter((meal) => meal.weekday === selectedWeekday);
 
   return (
     <div className="flex flex-col gap-4">
@@ -199,13 +211,19 @@ export function NutritionTab({ clientId }: { clientId: string }) {
             ))}
           </div>
 
+          <WeekdayTabs
+            selected={selectedWeekday}
+            onSelect={setSelectedWeekday}
+            countFor={(weekday) => meals.filter((meal) => meal.weekday === weekday).length}
+          />
+
           <div className="flex flex-col gap-4">
-            {meals.map((meal, mealIndex) => (
+            {visibleMeals.map((meal) => (
               <div key={meal.id} className="rounded-2xl border border-border p-4">
                 <input
                   value={meal.name}
                   onChange={(event) =>
-                    setMeals((prev) => prev.map((m, i) => (i === mealIndex ? { ...m, name: event.target.value } : m)))
+                    setMeals((prev) => prev.map((m) => (m.id === meal.id ? { ...m, name: event.target.value } : m)))
                   }
                   className="mb-3 w-full bg-transparent text-base font-medium text-foreground outline-none"
                 />
@@ -216,8 +234,8 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                       value={item.food_name}
                       onChange={(event) =>
                         setMeals((prev) =>
-                          prev.map((m, i) =>
-                            i === mealIndex
+                          prev.map((m) =>
+                            m.id === meal.id
                               ? { ...m, items: m.items.map((it, j) => (j === itemIndex ? { ...it, food_name: event.target.value } : it)) }
                               : m
                           )
@@ -230,8 +248,8 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                       value={item.quantity ?? ""}
                       onChange={(event) =>
                         setMeals((prev) =>
-                          prev.map((m, i) =>
-                            i === mealIndex
+                          prev.map((m) =>
+                            m.id === meal.id
                               ? {
                                   ...m,
                                   items: m.items.map((it, j) =>
@@ -249,8 +267,8 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                       value={item.unit ?? ""}
                       onChange={(event) =>
                         setMeals((prev) =>
-                          prev.map((m, i) =>
-                            i === mealIndex
+                          prev.map((m) =>
+                            m.id === meal.id
                               ? { ...m, items: m.items.map((it, j) => (j === itemIndex ? { ...it, unit: event.target.value } : it)) }
                               : m
                           )
@@ -260,7 +278,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                     />
                   </div>
                 ))}
-                <button onClick={() => addItem(mealIndex)} className="mt-1 flex items-center gap-1 text-xs text-accent">
+                <button onClick={() => addItem(meal.id)} className="mt-1 flex items-center gap-1 text-xs text-accent">
                   <Plus size={14} /> Adicionar alimento
                 </button>
               </div>

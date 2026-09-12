@@ -98,7 +98,8 @@
     "protein": "Proteína",
     "carbs": "Carbohidratos",
     "fat": "Grasa",
-    "water": "Agua"
+    "water": "Agua",
+    "noMealsForDay": "Sin comidas planificadas para este día."
   },
   "rmCalculator": {
     "title": "Calculadora de Repetición Máxima",
