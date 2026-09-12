@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import type { Meal, MealItem, NutritionPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
@@ -122,6 +122,20 @@ export function NutritionTab({ clientId }: { clientId: string }) {
     setSaving(false);
   }
 
+  async function handleDeletePlan(plan: NutritionPlan) {
+    if (!confirm(`Eliminar o plano "${plan.name}"? Esta ação não pode ser desfeita.`)) return;
+    const supabase = createBrowserSupabaseClient();
+    const { error } = await supabase.from("nutrition_plans").delete().eq("id", plan.id);
+    if (!error) {
+      setPlans((prev) => prev.filter((p) => p.id !== plan.id));
+      if (activePlanId === plan.id) {
+        setActivePlanId(null);
+        setMeals([]);
+        setMacros({});
+      }
+    }
+  }
+
   const activePlan = plans.find((plan) => plan.id === activePlanId);
 
   return (
@@ -136,21 +150,41 @@ export function NutritionTab({ clientId }: { clientId: string }) {
 
       <div className="flex flex-col gap-3">
         {plans.map((plan) => (
-          <button
+          <div
             key={plan.id}
-            onClick={() => openPlan(plan)}
-            className={`flex items-center justify-between rounded-2xl border p-5 text-left transition ${
+            className={`flex items-center justify-between rounded-2xl border p-5 transition ${
               activePlanId === plan.id ? "border-accent bg-surface-elevated" : "border-border bg-surface hover:bg-surface-elevated"
             }`}
           >
-            <span className="font-medium text-foreground">{plan.name}</span>
-            <StatusBadge status={plan.status} />
-          </button>
+            <button onClick={() => openPlan(plan)} className="flex-1 text-left">
+              <span className="font-medium text-foreground">{plan.name}</span>
+            </button>
+            <div className="flex items-center gap-4">
+              <StatusBadge status={plan.status} />
+              <button onClick={() => handleDeletePlan(plan)} className="text-muted hover:text-danger" title="Eliminar plano">
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
         ))}
       </div>
 
       {activePlan && (
         <Card className="flex flex-col gap-6">
+          <div className="flex flex-col gap-1.5 sm:w-64">
+            <label className="text-xs font-medium text-muted">Estado</label>
+            <select
+              value={macros.status ?? "draft"}
+              onChange={(event) => setMacros((prev) => ({ ...prev, status: event.target.value as NutritionPlan["status"] }))}
+              className="rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+            >
+              <option value="draft">Rascunho</option>
+              <option value="active">Ativo</option>
+              <option value="completed">Concluído</option>
+              <option value="archived">Arquivado</option>
+            </select>
+          </div>
+
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
             {MACRO_FIELDS.map((field) => (
               <div key={field.key} className="flex flex-col gap-1.5">
