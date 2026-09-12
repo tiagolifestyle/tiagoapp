@@ -41,14 +41,14 @@ export default function NutritionScreen() {
 
         {plan && (
           <View className="flex-row gap-3">
-            <StatTile label={t("nutrition.calories")} value={`${plan.calories ?? "—"}`} />
-            <StatTile label={t("nutrition.protein")} value={`${plan.protein_g ?? "—"}g`} />
+            <StatTile label={t("nutrition.calories")} value={`${plan.calories ?? "—"}`} accentColor="#F97316" />
+            <StatTile label={t("nutrition.protein")} value={`${plan.protein_g ?? "—"}g`} accentColor="#3B82F6" />
           </View>
         )}
         {plan && (
           <View className="flex-row gap-3">
-            <StatTile label={t("nutrition.carbs")} value={`${plan.carbs_g ?? "—"}g`} />
-            <StatTile label={t("nutrition.fat")} value={`${plan.fat_g ?? "—"}g`} />
+            <StatTile label={t("nutrition.carbs")} value={`${plan.carbs_g ?? "—"}g`} accentColor="#FBBF24" />
+            <StatTile label={t("nutrition.fat")} value={`${plan.fat_g ?? "—"}g`} accentColor="#3FAE6E" />
           </View>
         )}
 
