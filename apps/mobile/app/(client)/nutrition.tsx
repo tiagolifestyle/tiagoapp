@@ -10,6 +10,9 @@ import { StatTile } from "@/components/StatTile";
 // Ordem de exibição Segunda→Domingo; os valores são o índice de Date.getDay() (0=Domingo).
 const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
 
+// Cores por refeição (pequeno-almoço, meio da manhã, almoço, lanche, jantar), na ordem em que aparecem no dia.
+const MEAL_COLORS = ["#F97316", "#3B82F6", "#FBBF24", "#3FAE6E", "#C9A227"];
+
 export default function NutritionScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
@@ -88,10 +91,12 @@ export default function NutritionScreen() {
             {visibleMeals.length === 0 ? (
               <Text className="text-base text-muted">{t("nutrition.noMealsForDay")}</Text>
             ) : (
-              visibleMeals.map((meal) => (
-                <Card key={meal.id} className="gap-2">
+              visibleMeals.map((meal, index) => {
+                const accentColor = MEAL_COLORS[index % MEAL_COLORS.length];
+                return (
+                <Card key={meal.id} className="gap-2" style={{ borderColor: accentColor, backgroundColor: `${accentColor}1A` }}>
                   <View className="flex-row items-center justify-between">
-                    <Text className="text-lg font-semibold text-foreground">{meal.name}</Text>
+                    <Text className="text-lg font-semibold" style={{ color: accentColor }}>{meal.name}</Text>
                     {meal.time ? <Text className="text-sm text-muted">{meal.time}</Text> : null}
                   </View>
                   {meal.items.map((item) => (
@@ -101,7 +106,8 @@ export default function NutritionScreen() {
                     </Text>
                   ))}
                 </Card>
-              ))
+                );
+              })
             )}
           </>
         )}
