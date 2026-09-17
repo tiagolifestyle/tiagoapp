@@ -1,5 +1,6 @@
 import { View, Text, ScrollView, RefreshControl } from "react-native";
 import { Link } from "expo-router";
+import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -71,15 +72,32 @@ export default function DashboardScreen() {
           />
           <View className="flex-1">
             <Link href="/(client)/postpartum">
-              <Card
-                className="w-full gap-1.5"
-                style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)" }}
+              <View
+                className="w-full rounded-3xl"
+                style={{
+                  shadowColor: "#F472B6",
+                  shadowOpacity: 0.35,
+                  shadowRadius: 18,
+                  shadowOffset: { width: 0, height: 10 },
+                  elevation: 10,
+                }}
               >
-                <Text className="text-xs uppercase tracking-wide" style={{ color: "#F472B6" }}>
-                  {t("postpartum.tileLabel")}
-                </Text>
-                <Text className="text-2xl">👩‍🍼</Text>
-              </Card>
+                <View
+                  className="w-full gap-1.5 overflow-hidden rounded-3xl border p-5"
+                  style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)" }}
+                >
+                  <LinearGradient
+                    colors={["rgba(244,114,182,0.9)", "rgba(244,114,182,0)"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2 }}
+                  />
+                  <Text className="text-xs uppercase tracking-wide" style={{ color: "#F472B6" }}>
+                    {t("postpartum.tileLabel")}
+                  </Text>
+                  <Text className="text-2xl">👩‍🍼</Text>
+                </View>
+              </View>
             </Link>
           </View>
         </View>
