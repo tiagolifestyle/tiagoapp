@@ -1,7 +1,10 @@
 import { View, Text } from "react-native";
-import { BlurView } from "expo-blur";
 import { LinearGradient } from "expo-linear-gradient";
 import type { PlanMeal } from "@/hooks/useNutritionPlan";
+
+// Base fixa do "vidro escuro" — independente do tema claro/escuro do telemóvel,
+// para o cartão manter sempre o mesmo aspeto premium.
+const GLASS_BASE = "#1B1B22F2";
 
 function formatTime(time: string | null) {
   return time ? time.slice(0, 5) : null;
@@ -30,7 +33,7 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
         className="overflow-hidden rounded-3xl border"
         style={{ borderColor: `${accentColor}3D` }}
       >
-        <BlurView intensity={45} tint="dark" style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: GLASS_BASE }} />
         <LinearGradient
           colors={[`${accentColor}29`, `${accentColor}05`, "transparent"]}
           start={{ x: 0, y: 0 }}

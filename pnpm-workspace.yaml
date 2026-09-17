@@ -16,9 +16,6 @@ packageExtensions:
   react-native-chart-kit:
     peerDependencies:
       "@types/react": "*"
-  expo-blur:
-    peerDependencies:
-      "@types/react": "*"
   expo-linear-gradient:
     peerDependencies:
       "@types/react": "*"
