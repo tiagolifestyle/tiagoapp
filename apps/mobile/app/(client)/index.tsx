@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, RefreshControl } from "react-native";
+import { View, Text, Image, ScrollView, RefreshControl } from "react-native";
 import { Link } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
@@ -8,6 +8,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useDashboard } from "@/hooks/useDashboard";
 import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
+import postpartumIllustration from "../../assets/postpartum-illustration.png";
 
 function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfternoon" | "dashboard.greetingEvening" {
   const hour = new Date().getHours();
@@ -83,20 +84,32 @@ export default function DashboardScreen() {
                 }}
               >
                 <View
-                  className="w-full gap-1.5 overflow-hidden rounded-3xl border p-5"
-                  style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)" }}
+                  className="w-full items-end rounded-3xl border p-5"
+                  style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)", minHeight: 104 }}
                 >
                   <LinearGradient
                     colors={["rgba(244,114,182,0.9)", "rgba(244,114,182,0)"]}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2 }}
+                    style={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      height: 2,
+                      borderTopLeftRadius: 24,
+                      borderTopRightRadius: 24,
+                    }}
                   />
-                  <Text className="text-xs uppercase tracking-wide" style={{ color: "#F472B6" }}>
+                  <Text className="text-right text-xs uppercase tracking-wide" style={{ color: "#F472B6" }}>
                     {t("postpartum.tileLabel")}
                   </Text>
-                  <Text className="text-2xl">👩‍🍼</Text>
                 </View>
+                <Image
+                  source={postpartumIllustration}
+                  resizeMode="contain"
+                  style={{ position: "absolute", left: -16, bottom: -10, width: 82, height: 100 }}
+                />
               </View>
             </Link>
           </View>
