@@ -84,7 +84,7 @@ export default function DashboardScreen() {
                 }}
               >
                 <View
-                  className="w-full items-end rounded-3xl border p-5"
+                  className="w-full items-end overflow-hidden rounded-3xl border p-5"
                   style={{ borderColor: "rgba(244,114,182,0.4)", backgroundColor: "rgba(244,114,182,0.08)", minHeight: 104 }}
                 >
                   <LinearGradient
