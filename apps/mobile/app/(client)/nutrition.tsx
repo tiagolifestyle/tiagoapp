@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
 import { useNutritionPlan, type PlanMeal } from "@/hooks/useNutritionPlan";
-import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
+import { MealCard } from "@/components/MealCard";
 
 // Ordem de exibição Segunda→Domingo; os valores são o índice de Date.getDay() (0=Domingo).
 const WEEKDAY_ORDER = [1, 2, 3, 4, 5, 6, 0];
@@ -91,23 +91,9 @@ export default function NutritionScreen() {
             {visibleMeals.length === 0 ? (
               <Text className="text-base text-muted">{t("nutrition.noMealsForDay")}</Text>
             ) : (
-              visibleMeals.map((meal, index) => {
-                const accentColor = MEAL_COLORS[index % MEAL_COLORS.length];
-                return (
-                <Card key={meal.id} className="gap-2" style={{ borderColor: accentColor, backgroundColor: `${accentColor}1A` }}>
-                  <View className="flex-row items-center justify-between">
-                    <Text className="text-lg font-semibold" style={{ color: accentColor }}>{meal.name}</Text>
-                    {meal.time ? <Text className="text-sm text-muted">{meal.time}</Text> : null}
-                  </View>
-                  {meal.items.map((item) => (
-                    <Text key={item.id} className="text-sm text-muted">
-                      • {item.food_name}
-                      {item.quantity ? ` — ${item.quantity}${item.unit ?? ""}` : ""}
-                    </Text>
-                  ))}
-                </Card>
-                );
-              })
+              visibleMeals.map((meal, index) => (
+                <MealCard key={meal.id} meal={meal} accentColor={MEAL_COLORS[index % MEAL_COLORS.length]} />
+              ))
             )}
           </>
         )}
