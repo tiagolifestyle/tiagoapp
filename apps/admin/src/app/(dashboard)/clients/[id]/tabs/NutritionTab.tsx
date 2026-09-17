@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, FileText, Upload } from "lucide-react";
 import type { Meal, MealItem, NutritionPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
@@ -27,6 +27,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   const [macros, setMacros] = useState<Partial<NutritionPlan>>({});
   const [saving, setSaving] = useState(false);
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
+  const [docUploading, setDocUploading] = useState(false);
 
   async function loadPlans() {
     const supabase = createBrowserSupabaseClient();
@@ -133,9 +134,34 @@ export function NutritionTab({ clientId }: { clientId: string }) {
     setSaving(false);
   }
 
+  async function handleUploadDocument(file: File) {
+    if (!activePlanId) return;
+    setDocUploading(true);
+    const supabase = createBrowserSupabaseClient();
+    const path = `${clientId}/${activePlanId}-${Date.now()}-${file.name}`;
+    const { error } = await supabase.storage.from("nutrition-documents").upload(path, file);
+    if (!error) {
+      if (macros.document_url) {
+        await supabase.storage.from("nutrition-documents").remove([macros.document_url]);
+      }
+      setMacros((prev) => ({ ...prev, document_url: path, document_name: file.name }));
+    }
+    setDocUploading(false);
+  }
+
+  async function handleRemoveDocument() {
+    if (!macros.document_url) return;
+    const supabase = createBrowserSupabaseClient();
+    await supabase.storage.from("nutrition-documents").remove([macros.document_url]);
+    setMacros((prev) => ({ ...prev, document_url: null, document_name: null }));
+  }
+
   async function handleDeletePlan(plan: NutritionPlan) {
     if (!confirm(`Eliminar o plano "${plan.name}"? Esta ação não pode ser desfeita.`)) return;
     const supabase = createBrowserSupabaseClient();
+    if (plan.document_url) {
+      await supabase.storage.from("nutrition-documents").remove([plan.document_url]);
+    }
     const { error } = await supabase.from("nutrition_plans").delete().eq("id", plan.id);
     if (!error) {
       setPlans((prev) => prev.filter((p) => p.id !== plan.id));
@@ -195,6 +221,40 @@ export function NutritionTab({ clientId }: { clientId: string }) {
               <option value="completed">Concluído</option>
               <option value="archived">Arquivado</option>
             </select>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-muted">Documento completo (Word/PDF, opcional)</label>
+            {macros.document_name ? (
+              <div className="flex items-center gap-3 rounded-xl border border-border bg-surface-elevated px-3 py-2.5">
+                <FileText size={16} className="shrink-0 text-accent" />
+                <span className="flex-1 truncate text-sm text-foreground">{macros.document_name}</span>
+                <label className="cursor-pointer text-xs font-medium text-accent hover:underline">
+                  Substituir
+                  <input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    className="hidden"
+                    onChange={(event) => event.target.files?.[0] && handleUploadDocument(event.target.files[0])}
+                  />
+                </label>
+                <button onClick={handleRemoveDocument} className="text-xs font-medium text-danger hover:underline">
+                  Remover
+                </button>
+              </div>
+            ) : (
+              <label className="flex w-fit cursor-pointer items-center gap-2 rounded-xl border border-dashed border-border px-4 py-2.5 text-sm text-muted hover:border-accent hover:text-accent">
+                <Upload size={16} />
+                {docUploading ? "A carregar…" : "Anexar documento"}
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  className="hidden"
+                  disabled={docUploading}
+                  onChange={(event) => event.target.files?.[0] && handleUploadDocument(event.target.files[0])}
+                />
+              </label>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">

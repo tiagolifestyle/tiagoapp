@@ -1,9 +1,11 @@
 import { useMemo, useState } from "react";
-import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
+import { View, Text, ScrollView, Pressable, RefreshControl, Linking } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
 import { useNutritionPlan, type PlanMeal } from "@/hooks/useNutritionPlan";
+import { supabase } from "@/lib/supabase";
 import { StatTile } from "@/components/StatTile";
 import { MealCard } from "@/components/MealCard";
 
@@ -19,6 +21,17 @@ export default function NutritionScreen() {
   const { plan, isLoading, refresh } = useNutritionPlan(profile?.id);
   const weekdayLabels = t("workout.weekdaysShort", { returnObjects: true }) as string[];
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
+  const [downloading, setDownloading] = useState(false);
+
+  async function handleDownloadDocument() {
+    if (!plan?.document_url) return;
+    setDownloading(true);
+    const { data } = await supabase.storage.from("nutrition-documents").createSignedUrl(plan.document_url, 60);
+    if (data?.signedUrl) {
+      Linking.openURL(data.signedUrl);
+    }
+    setDownloading(false);
+  }
 
   const mealsByWeekday = useMemo(() => {
     const map = new Map<number, PlanMeal[]>();
@@ -40,7 +53,18 @@ export default function NutritionScreen() {
         contentContainerClassName="gap-4 pb-10"
         refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} tintColor="#C9A227" />}
       >
-        <Text className="mt-4 text-2xl font-semibold text-foreground">{plan?.name ?? t("dashboard.todayNutrition")}</Text>
+        <View className="mt-4 flex-row items-start justify-between gap-3">
+          <Text className="flex-1 text-2xl font-semibold text-foreground">{plan?.name ?? t("dashboard.todayNutrition")}</Text>
+          {plan?.document_url ? (
+            <Pressable
+              onPress={handleDownloadDocument}
+              disabled={downloading}
+              className="h-10 w-10 items-center justify-center rounded-full border border-accent bg-surface-elevated"
+            >
+              <Ionicons name="download-outline" size={18} color="#C9A227" />
+            </Pressable>
+          ) : null}
+        </View>
 
         {plan && (
           <View className="flex-row gap-3">

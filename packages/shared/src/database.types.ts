@@ -125,6 +125,8 @@ export interface NutritionPlan {
   version: number;
   parent_plan_id: string | null;
   status: PlanStatus;
+  document_url: string | null;
+  document_name: string | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
