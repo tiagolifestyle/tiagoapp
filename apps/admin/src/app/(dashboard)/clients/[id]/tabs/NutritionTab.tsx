@@ -28,6 +28,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   const [saving, setSaving] = useState(false);
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
   const [docUploading, setDocUploading] = useState(false);
+  const [docError, setDocError] = useState<string | null>(null);
 
   async function loadPlans() {
     const supabase = createBrowserSupabaseClient();
@@ -137,10 +138,17 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   async function handleUploadDocument(file: File) {
     if (!activePlanId) return;
     setDocUploading(true);
+    setDocError(null);
     const supabase = createBrowserSupabaseClient();
-    const path = `${clientId}/${activePlanId}-${Date.now()}-${file.name}`;
+    const safeName = file.name
+      .normalize("NFD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-zA-Z0-9._-]/g, "-");
+    const path = `${clientId}/${activePlanId}-${Date.now()}-${safeName}`;
     const { error } = await supabase.storage.from("nutrition-documents").upload(path, file);
-    if (!error) {
+    if (error) {
+      setDocError(error.message);
+    } else {
       if (macros.document_url) {
         await supabase.storage.from("nutrition-documents").remove([macros.document_url]);
       }
@@ -255,6 +263,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                 />
               </label>
             )}
+            {docError && <p className="text-xs text-danger">{docError}</p>}
           </div>
 
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-5">
