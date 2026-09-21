@@ -87,6 +87,9 @@
     "planVersion": "Versión {{version}}",
     "restDay": "Día de descanso",
     "load": "Carga",
+    "progression": "Progresión",
+    "progressionWeek": "Semana {{week}}",
+    "exercise": "Ejercicio",
     "weekdaysShort": ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"]
   },
   "nutrition": {

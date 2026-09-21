@@ -7,6 +7,7 @@ import { useWorkoutPlan, type PlanDay } from "@/hooks/useWorkoutPlan";
 import { Card } from "@/components/Card";
 import { ExerciseRow } from "@/components/ExerciseRow";
 import { RmCalculatorButton } from "@/components/RmCalculatorButton";
+import { PlanProgressButton } from "@/components/PlanProgressButton";
 import { Button } from "@/components/Button";
 
 // Ordem de exibição Segunda→Domingo; os valores são o índice de Date.getDay() (0=Domingo).
@@ -42,6 +43,15 @@ export default function WorkoutScreen() {
             <View className="flex-row items-center gap-2">
               <Text className="text-sm text-muted">{t("workout.planVersion", { version: plan.version })}</Text>
               <RmCalculatorButton />
+              {selectedDay && profile?.id ? (
+                <PlanProgressButton
+                  clientId={profile.id}
+                  planId={plan.id}
+                  parentPlanId={plan.parent_plan_id}
+                  dayName={selectedDay.name}
+                  weekday={selectedWeekday}
+                />
+              ) : null}
             </View>
           ) : null}
         </View>
