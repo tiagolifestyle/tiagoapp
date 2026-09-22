@@ -182,7 +182,16 @@
     "functional": "¿Funcional?",
     "notAssessed": "No evaluado",
     "noPelvicFloorHistory": "Todavía no tienes evaluaciones registradas.",
-    "noDiastasisHistory": "Todavía no tienes evaluaciones registradas."
+    "noDiastasisHistory": "Todavía no tienes evaluaciones registradas.",
+    "phaseLabel": "Fase de recuperación",
+    "phaseInitialTitle": "Recuperación inicial",
+    "phaseInitialText": "Enfócate en respiración, activación suave del core y caminatas cortas. Evita ejercicios de impacto o abdominales intensos en esta fase.",
+    "phaseReintroductionTitle": "Reintroducción gradual",
+    "phaseReintroductionText": "Puedes empezar a reintroducir ejercicios de fuerza ligera y de core, respetando siempre las señales de tu cuerpo. El impacto todavía debe evitarse sin evaluación.",
+    "phaseBuildingTitle": "Construcción de fuerza",
+    "phaseBuildingText": "Fase de construir fuerza de forma progresiva. Si la diástasis está funcional, puedes avanzar con entrenamiento de fuerza más estructurado.",
+    "phaseReturningTitle": "Retorno pleno",
+    "phaseReturningText": "Puedes reintroducir gradualmente impacto y entrenamiento de mayor intensidad, siempre junto a tu coach."
   },
   "checkin": {
     "title": "Check-in semanal",

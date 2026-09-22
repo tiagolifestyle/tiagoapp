@@ -80,6 +80,15 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
   const [infraFunctional, setInfraFunctional] = useState<TriState>("");
   const [savingFunctional, setSavingFunctional] = useState(false);
 
+  const latestPelvicFloor = pelvicFloor[0] ?? null;
+  const alerts: string[] = [];
+  if (latestPelvicFloor?.stress_incontinence) alerts.push("Perda de urina ao esforço reportada na última avaliação do soalho pélvico.");
+  if (latestPelvicFloor?.urgency_incontinence) alerts.push("Urgência urinária reportada na última avaliação do soalho pélvico.");
+  if (latestPelvicFloor?.pelvic_pain) alerts.push("Dor pélvica reportada na última avaliação do soalho pélvico.");
+  if (profile?.supraumbilical_functional === false) alerts.push("Diástase supraumbilical ainda não está funcional.");
+  if (profile?.umbilical_functional === false) alerts.push("Diástase umbilical ainda não está funcional.");
+  if (profile?.infraumbilical_functional === false) alerts.push("Diástase infraumbilical ainda não está funcional.");
+
   useEffect(() => {
     if (!profile) return;
     setSupraFunctional(valueToTriState(profile.supraumbilical_functional));
@@ -134,6 +143,20 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
+      {alerts.length > 0 && (
+        <div className="flex flex-col gap-2 rounded-2xl border border-danger bg-danger/10 px-5 py-4">
+          <p className="text-sm font-semibold text-danger">⚠️ Sinais a validar (só visível para ti)</p>
+          <ul className="flex flex-col gap-1">
+            {alerts.map((alert) => (
+              <li key={alert} className="text-sm text-foreground">
+                • {alert}
+              </li>
+            ))}
+          </ul>
+          <p className="text-xs text-muted">Recomenda-se avaliar com atenção antes de avançar com exercícios de impacto ou core intenso.</p>
+        </div>
+      )}
+
       <div className="flex gap-2">
         {SUB_TABS.map((tab) => (
           <button

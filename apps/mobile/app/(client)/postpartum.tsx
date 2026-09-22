@@ -139,6 +139,14 @@ export default function PostpartumScreen() {
 
   const diastasisChartData = useMemo(() => [...diastasis].reverse().slice(-6), [diastasis]);
 
+  const recoveryPhase = useMemo(() => {
+    if (weeksPostpartum == null) return null;
+    if (weeksPostpartum <= 6) return "initial";
+    if (weeksPostpartum <= 12) return "reintroduction";
+    if (weeksPostpartum <= 24) return "building";
+    return "returning";
+  }, [weeksPostpartum]);
+
   async function handleSaveProfile() {
     setSavingProfile(true);
     const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(birthDate);
@@ -200,6 +208,14 @@ export default function PostpartumScreen() {
           <Text className="text-base font-medium" style={{ color: BABY_SEX_COLORS[pp.baby_sex] }}>
             {t(`postpartum.greeting${pp.baby_sex === "boy" ? "Boy" : pp.baby_sex === "girl" ? "Girl" : "Twins"}`)}
           </Text>
+        ) : null}
+
+        {recoveryPhase ? (
+          <Card className="gap-1.5 border-accent">
+            <Text className="text-xs font-semibold uppercase tracking-wide text-accent">{t("postpartum.phaseLabel")}</Text>
+            <Text className="text-base font-semibold text-foreground">{t(`postpartum.phase${recoveryPhase[0].toUpperCase()}${recoveryPhase.slice(1)}Title`)}</Text>
+            <Text className="text-sm text-muted">{t(`postpartum.phase${recoveryPhase[0].toUpperCase()}${recoveryPhase.slice(1)}Text`)}</Text>
+          </Card>
         ) : null}
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerClassName="gap-2 pb-1">

@@ -182,7 +182,16 @@
     "functional": "Functional?",
     "notAssessed": "Not assessed",
     "noPelvicFloorHistory": "No assessments logged yet.",
-    "noDiastasisHistory": "No assessments logged yet."
+    "noDiastasisHistory": "No assessments logged yet.",
+    "phaseLabel": "Recovery phase",
+    "phaseInitialTitle": "Initial recovery",
+    "phaseInitialText": "Focus on breathing, gentle core activation and short walks. Avoid impact or intense ab exercises at this stage.",
+    "phaseReintroductionTitle": "Gradual reintroduction",
+    "phaseReintroductionText": "You can start reintroducing light strength and core work, always listening to your body. Impact should still be avoided without assessment.",
+    "phaseBuildingTitle": "Building strength",
+    "phaseBuildingText": "Time to progressively build strength. If your diastasis is functional, you can move to more structured strength training.",
+    "phaseReturningTitle": "Full return",
+    "phaseReturningText": "You can gradually reintroduce impact and higher-intensity training, always alongside your coach."
   },
   "checkin": {
     "title": "Weekly check-in",
