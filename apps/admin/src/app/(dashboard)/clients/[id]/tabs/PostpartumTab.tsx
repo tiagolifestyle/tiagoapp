@@ -24,6 +24,17 @@ const BABY_SEX_LABELS: Record<BabySex, string> = {
   twins: "Gémeos",
 };
 
+const RECOVERY_PHASES = [
+  { maxWeeks: 6, title: "Recuperação inicial", range: "0-6 semanas" },
+  { maxWeeks: 12, title: "Reintrodução gradual", range: "7-12 semanas" },
+  { maxWeeks: 24, title: "Construção de força", range: "3-6 meses" },
+  { maxWeeks: Infinity, title: "Retorno pleno", range: "6+ meses" },
+] as const;
+
+function getRecoveryPhase(weeksPostpartum: number) {
+  return RECOVERY_PHASES.find((phase) => weeksPostpartum <= phase.maxWeeks) ?? RECOVERY_PHASES[RECOVERY_PHASES.length - 1];
+}
+
 function yesNo(value: boolean | null) {
   if (value == null) return "—";
   return value ? "Sim" : "Não";
@@ -79,6 +90,11 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
   const [umbilicalFunctional, setUmbilicalFunctional] = useState<TriState>("");
   const [infraFunctional, setInfraFunctional] = useState<TriState>("");
   const [savingFunctional, setSavingFunctional] = useState(false);
+
+  const weeksPostpartum = profile?.birth_date
+    ? Math.floor((Date.now() - new Date(profile.birth_date).getTime()) / (7 * 24 * 60 * 60 * 1000))
+    : null;
+  const recoveryPhase = weeksPostpartum != null && weeksPostpartum >= 0 ? getRecoveryPhase(weeksPostpartum) : null;
 
   const latestPelvicFloor = pelvicFloor[0] ?? null;
   const alerts: string[] = [];
@@ -143,6 +159,17 @@ export function PostpartumTab({ clientId }: { clientId: string }) {
 
   return (
     <div className="flex flex-col gap-4">
+      {recoveryPhase && weeksPostpartum != null && (
+        <div className="flex flex-col gap-1 rounded-2xl border border-accent bg-surface-elevated px-5 py-4">
+          <span className="text-xs font-semibold uppercase tracking-wide text-accent">
+            Fase de recuperação · {weeksPostpartum} semanas pós-parto
+          </span>
+          <span className="text-sm font-medium text-foreground">
+            {recoveryPhase.title} · {recoveryPhase.range}
+          </span>
+        </div>
+      )}
+
       {alerts.length > 0 && (
         <div className="flex flex-col gap-2 rounded-2xl border border-danger bg-danger/10 px-5 py-4">
           <p className="text-sm font-semibold text-danger">⚠️ Sinais a validar (só visível para ti)</p>

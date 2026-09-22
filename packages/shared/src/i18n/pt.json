@@ -184,13 +184,13 @@
     "noPelvicFloorHistory": "Ainda não tens avaliações registadas.",
     "noDiastasisHistory": "Ainda não tens avaliações registadas.",
     "phaseLabel": "Fase de recuperação",
-    "phaseInitialTitle": "Recuperação inicial",
+    "phaseInitialTitle": "Recuperação inicial · 0-6 semanas",
     "phaseInitialText": "Foco em respiração, ativação suave do core e caminhadas curtas. Evita exercícios de impacto ou abdominais intensos nesta fase.",
-    "phaseReintroductionTitle": "Reintrodução gradual",
+    "phaseReintroductionTitle": "Reintrodução gradual · 7-12 semanas",
     "phaseReintroductionText": "Podes começar a reintroduzir exercícios de força leve e de core, sempre respeitando os sinais do teu corpo. O impacto ainda deve ser evitado sem avaliação.",
-    "phaseBuildingTitle": "Construção de força",
+    "phaseBuildingTitle": "Construção de força · 3-6 meses",
     "phaseBuildingText": "Fase de construir força de forma progressiva. Se a diástase estiver funcional, podes avançar com treino de força mais estruturado.",
-    "phaseReturningTitle": "Retorno pleno",
+    "phaseReturningTitle": "Retorno pleno · 6+ meses",
     "phaseReturningText": "Podes reintroduzir gradualmente impacto e treino de maior intensidade, sempre em conjunto com o teu coach."
   },
   "checkin": {
