@@ -45,12 +45,13 @@ export default function ProgressScreen() {
   const photosByDate = useMemo(() => {
     const groups: { date: string; items: ProgressPhotoWithUrl[] }[] = [];
     for (const photo of photos) {
+      if (photo.angle !== selectedAngle) continue;
       const group = groups.find((g) => g.date === photo.taken_at);
       if (group) group.items.push(photo);
       else groups.push({ date: photo.taken_at, items: [photo] });
     }
     return groups;
-  }, [photos]);
+  }, [photos, selectedAngle]);
 
   const tabs: { key: ProgressTabKey; label: string }[] = [
     { key: "weight", label: t("progress.tabWeight") },
