@@ -126,7 +126,14 @@
     "arm": "Brazo",
     "legs": "Piernas",
     "diastasis": "Diástasis",
-    "noMeasurements": "Todavía no tienes medidas registradas."
+    "noMeasurements": "Todavía no tienes medidas registradas.",
+    "bmiTitle": "IMC",
+    "bmiCategoryUnderweight": "Bajo peso",
+    "bmiCategoryNormal": "Peso normal",
+    "bmiCategoryOverweight": "Sobrepeso",
+    "bmiCategoryObese": "Obesidad",
+    "bmiDisclaimer": "El IMC no distingue masa muscular de masa grasa. Si tienes bastante masa muscular, tu IMC puede aparecer más alto sin que eso signifique exceso de grasa.",
+    "bmiNoHeight": "Pide a tu coach que añada tu altura para ver tu IMC."
   },
   "profile": {
     "title": "Perfil",

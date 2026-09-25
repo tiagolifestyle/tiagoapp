@@ -126,7 +126,14 @@
     "arm": "Arm",
     "legs": "Legs",
     "diastasis": "Diastasis",
-    "noMeasurements": "No measurements logged yet."
+    "noMeasurements": "No measurements logged yet.",
+    "bmiTitle": "BMI",
+    "bmiCategoryUnderweight": "Underweight",
+    "bmiCategoryNormal": "Normal weight",
+    "bmiCategoryOverweight": "Overweight",
+    "bmiCategoryObese": "Obesity",
+    "bmiDisclaimer": "BMI doesn't distinguish muscle mass from fat mass. If you have significant muscle mass, your BMI may show higher without meaning excess fat.",
+    "bmiNoHeight": "Ask your coach to add your height to see your BMI."
   },
   "profile": {
     "title": "Profile",

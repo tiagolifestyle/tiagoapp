@@ -10,6 +10,7 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
   const [status, setStatus] = useState<ClientStatus>(initialClient.status);
   const [activeUntil, setActiveUntil] = useState(initialClient.active_until ?? "");
   const [tier, setTier] = useState<SubscriptionTier>(initialClient.subscription_tier);
+  const [heightCm, setHeightCm] = useState(initialClient.height_cm != null ? String(initialClient.height_cm) : "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
@@ -17,9 +18,16 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
     setSaving(true);
     setSaved(false);
     const supabase = createBrowserSupabaseClient();
+    const parsedHeight = heightCm ? Number(heightCm.replace(",", ".")) : null;
     await supabase
       .from("clients")
-      .update({ goal, status, active_until: activeUntil || null, subscription_tier: tier })
+      .update({
+        goal,
+        status,
+        active_until: activeUntil || null,
+        subscription_tier: tier,
+        height_cm: parsedHeight != null && !Number.isNaN(parsedHeight) ? parsedHeight : null,
+      })
       .eq("id", clientId);
     setSaving(false);
     setSaved(true);
@@ -73,6 +81,18 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
             <option value="premium">Premium</option>
             <option value="vip">VIP</option>
           </select>
+        </div>
+
+        <div className="flex flex-1 flex-col gap-2">
+          <label className="text-sm font-medium text-muted">Altura (cm)</label>
+          <input
+            type="number"
+            inputMode="decimal"
+            value={heightCm}
+            onChange={(event) => setHeightCm(event.target.value)}
+            placeholder="165"
+            className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
+          />
         </div>
       </div>
 

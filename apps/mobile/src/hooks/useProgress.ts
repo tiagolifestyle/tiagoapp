@@ -9,13 +9,14 @@ export interface ProgressPhotoWithUrl extends ProgressPhoto {
 export function useProgress(clientId: string | undefined) {
   const [metrics, setMetrics] = useState<ProgressMetric[]>([]);
   const [photos, setPhotos] = useState<ProgressPhotoWithUrl[]>([]);
+  const [heightCm, setHeightCm] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const load = useCallback(async () => {
     if (!clientId) return;
     setIsLoading(true);
 
-    const [metricsResult, photosResult] = await Promise.all([
+    const [metricsResult, photosResult, clientResult] = await Promise.all([
       supabase
         .from("progress_metrics")
         .select("*")
@@ -28,9 +29,11 @@ export function useProgress(clientId: string | undefined) {
         .eq("client_id", clientId)
         .order("taken_at", { ascending: false })
         .limit(60),
+      supabase.from("clients").select("height_cm").eq("id", clientId).maybeSingle(),
     ]);
 
     setMetrics((metricsResult.data ?? []) as ProgressMetric[]);
+    setHeightCm((clientResult.data as { height_cm: number | null } | null)?.height_cm ?? null);
 
     const photoRows = (photosResult.data ?? []) as ProgressPhoto[];
     const withUrls = await Promise.all(
@@ -84,5 +87,5 @@ export function useProgress(clientId: string | undefined) {
     await load();
   }
 
-  return { metrics, photos, isLoading, refresh: load, logWeight, logMeasurements, uploadPhoto };
+  return { metrics, photos, heightCm, isLoading, refresh: load, logWeight, logMeasurements, uploadPhoto };
 }

@@ -13,6 +13,22 @@ import { Button } from "@/components/Button";
 
 const screenWidth = Dimensions.get("window").width;
 
+const BMI_MIN = 15;
+const BMI_MAX = 40;
+const BMI_SEGMENTS = [
+  { upTo: 18.5, color: "#F59E0B" },
+  { upTo: 25, color: "#22C55E" },
+  { upTo: 30, color: "#F59E0B" },
+  { upTo: BMI_MAX, color: "#EF4444" },
+];
+
+function getBmiCategory(bmi: number): { color: string; labelKey: string } {
+  if (bmi < 18.5) return { color: "#F59E0B", labelKey: "progress.bmiCategoryUnderweight" };
+  if (bmi < 25) return { color: "#22C55E", labelKey: "progress.bmiCategoryNormal" };
+  if (bmi < 30) return { color: "#F59E0B", labelKey: "progress.bmiCategoryOverweight" };
+  return { color: "#EF4444", labelKey: "progress.bmiCategoryObese" };
+}
+
 type ProgressTabKey = "weight" | "photo" | "measurements";
 
 const MEASUREMENT_FIELDS: { key: string; labelKey: string }[] = [
@@ -26,7 +42,7 @@ const MEASUREMENT_FIELDS: { key: string; labelKey: string }[] = [
 export default function ProgressScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { metrics, photos, isLoading, refresh, logWeight, logMeasurements, uploadPhoto } = useProgress(profile?.id);
+  const { metrics, photos, heightCm, isLoading, refresh, logWeight, logMeasurements, uploadPhoto } = useProgress(profile?.id);
   const [activeTab, setActiveTab] = useState<ProgressTabKey>("weight");
 
   const [weightInput, setWeightInput] = useState("");
@@ -41,6 +57,12 @@ export default function ProgressScreen() {
 
   const weighed = metrics.filter((metric) => metric.weight_kg != null);
   const measured = [...metrics].reverse().filter((metric) => Object.keys(metric.measurements ?? {}).length > 0);
+
+  const latestWeightKg = weighed.length > 0 ? weighed[weighed.length - 1].weight_kg : null;
+  const bmi = latestWeightKg != null && heightCm != null ? latestWeightKg / (heightCm / 100) ** 2 : null;
+  const bmiCategory = bmi != null ? getBmiCategory(bmi) : null;
+  const bmiMarkerPercent =
+    bmi != null ? ((Math.min(Math.max(bmi, BMI_MIN), BMI_MAX) - BMI_MIN) / (BMI_MAX - BMI_MIN)) * 100 : null;
 
   const photosByDate = useMemo(() => {
     const groups: { date: string; items: ProgressPhotoWithUrl[] }[] = [];
@@ -132,6 +154,36 @@ export default function ProgressScreen() {
 
         {activeTab === "weight" && (
           <>
+            {bmi != null && bmiCategory != null && bmiMarkerPercent != null && (
+              <Card className="gap-3">
+                <View className="flex-row items-center justify-between">
+                  <Text className="text-base font-medium text-foreground">{t("progress.bmiTitle")}</Text>
+                  <Text className="text-lg font-semibold" style={{ color: bmiCategory.color }}>
+                    {bmi.toFixed(1)}
+                  </Text>
+                </View>
+
+                <View className="relative h-3 w-full">
+                  <View className="absolute inset-0 flex-row overflow-hidden rounded-full">
+                    {BMI_SEGMENTS.map((segment, index) => {
+                      const prevUpTo = index === 0 ? BMI_MIN : BMI_SEGMENTS[index - 1].upTo;
+                      const widthPercent = ((segment.upTo - prevUpTo) / (BMI_MAX - BMI_MIN)) * 100;
+                      return <View key={segment.upTo} style={{ width: `${widthPercent}%`, backgroundColor: segment.color }} />;
+                    })}
+                  </View>
+                  <View
+                    className="absolute -top-0.5 h-4 w-1 rounded-full bg-foreground"
+                    style={{ left: `${bmiMarkerPercent}%` }}
+                  />
+                </View>
+
+                <Text className="text-sm font-medium" style={{ color: bmiCategory.color }}>
+                  {t(bmiCategory.labelKey)}
+                </Text>
+                <Text className="text-xs text-muted">{t("progress.bmiDisclaimer")}</Text>
+              </Card>
+            )}
+
             {weighed.length >= 2 && (
               <Card>
                 <LineChart
