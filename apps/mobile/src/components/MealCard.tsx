@@ -63,14 +63,17 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
 
           <View className="gap-2.5">
             {meal.items.map((item) => (
-              <View key={item.id} className="flex-row items-center justify-between">
-                <Text className="flex-1 pr-3 text-sm text-muted">{item.food_name}</Text>
-                {item.quantity ? (
-                  <Text className="text-sm font-bold" style={{ color: accentColor }}>
-                    {item.quantity}
-                    {item.unit ?? ""}
-                  </Text>
-                ) : null}
+              <View key={item.id} className="gap-0.5">
+                <View className="flex-row items-center justify-between">
+                  <Text className="flex-1 pr-3 text-sm text-muted">{item.food_name}</Text>
+                  {item.quantity ? (
+                    <Text className="text-sm font-bold" style={{ color: accentColor }}>
+                      {item.quantity}
+                      {item.unit ?? ""}
+                    </Text>
+                  ) : null}
+                </View>
+                {item.notes ? <Text className="text-xs text-muted/70">{item.notes}</Text> : null}
               </View>
             ))}
           </View>

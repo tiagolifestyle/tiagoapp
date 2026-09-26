@@ -345,6 +345,20 @@ export function NutritionTab({ clientId }: { clientId: string }) {
                       }
                       className="w-16 rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
                     />
+                    <input
+                      placeholder="Nota (ex: ≈245g cocido)"
+                      value={item.notes ?? ""}
+                      onChange={(event) =>
+                        setMeals((prev) =>
+                          prev.map((m) =>
+                            m.id === meal.id
+                              ? { ...m, items: m.items.map((it, j) => (j === itemIndex ? { ...it, notes: event.target.value || null } : it)) }
+                              : m
+                          )
+                        )
+                      }
+                      className="w-40 rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+                    />
                   </div>
                 ))}
                 <button onClick={() => addItem(meal.id)} className="mt-1 flex items-center gap-1 text-xs text-accent">
