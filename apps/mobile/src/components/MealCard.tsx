@@ -73,7 +73,11 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
                     </Text>
                   ) : null}
                 </View>
-                {item.notes ? <Text className="text-xs text-muted/70">{item.notes}</Text> : null}
+                {item.notes ? (
+                  <Text className="text-xs" style={{ color: accentColor }}>
+                    {item.notes}
+                  </Text>
+                ) : null}
               </View>
             ))}
           </View>
