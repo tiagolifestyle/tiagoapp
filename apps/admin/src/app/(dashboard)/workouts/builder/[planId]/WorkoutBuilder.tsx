@@ -18,6 +18,7 @@ import type { Exercise, WorkoutPlan } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { DayColumn, DAY_SLOT_DROPPABLE_ID } from "./DayColumn";
 import { LibraryPanel } from "./LibraryPanel";
+import { ProgressionModal } from "./ProgressionModal";
 import { WeekdayTabs, WEEKDAY_ORDER, WEEKDAY_LABELS } from "./WeekdayTabs";
 import type { BuilderDay, BuilderExercise } from "./types";
 
@@ -352,6 +353,15 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
               <option value="completed">Concluído</option>
               <option value="archived">Arquivado</option>
             </select>
+            {plan.client_id && (
+              <ProgressionModal
+                clientId={plan.client_id}
+                planId={plan.id}
+                parentPlanId={plan.parent_plan_id}
+                weekday={selectedWeekday}
+                dayName={selectedDay?.name ?? WEEKDAY_LABELS[selectedWeekday]}
+              />
+            )}
             <button
               onClick={duplicateAsNewVersion}
               disabled={saving}
