@@ -8,6 +8,16 @@ import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
 import { StatusBadge } from "@/components/StatusBadge";
 
+function localToday() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+}
+
+function formatShortDate(isoDate: string) {
+  const [, month, day] = isoDate.split("-");
+  return `${day}/${month}`;
+}
+
 export function WorkoutTab({ clientId }: { clientId: string }) {
   const router = useRouter();
   const [plans, setPlans] = useState<WorkoutPlan[]>([]);
@@ -56,6 +66,12 @@ export function WorkoutTab({ clientId }: { clientId: string }) {
     if (!error) setPlans((prev) => prev.filter((p) => p.id !== plan.id));
   }
 
+  const today = localToday();
+  // Mesma regra da app do cliente: a versão mais alta, não arquivada, cujas datas incluem hoje.
+  const currentWeekPlanId = plans
+    .filter((p) => p.status !== "archived" && p.start_date && p.end_date && p.start_date <= today && today <= p.end_date)
+    .sort((a, b) => b.version - a.version)[0]?.id;
+
   return (
     <div className="flex flex-col gap-4">
       <button
@@ -74,29 +90,46 @@ export function WorkoutTab({ clientId }: { clientId: string }) {
       )}
 
       <div className="flex flex-col gap-3">
-        {plans.map((plan) => (
-          <div
-            key={plan.id}
-            className="flex items-center justify-between rounded-2xl border border-border bg-surface p-5 transition hover:bg-surface-elevated"
-          >
-            <a href={`/workouts/builder/${plan.id}`} className="flex-1">
-              <p className="font-medium text-foreground">{plan.name}</p>
-              <p className="mt-0.5 text-xs text-muted">
-                v{plan.version} · criado em {new Date(plan.created_at).toLocaleDateString("pt-PT")}
-              </p>
-            </a>
-            <div className="flex items-center gap-4">
-              <StatusBadge status={plan.status} />
-              <button
-                onClick={() => handleDeletePlan(plan)}
-                className="text-muted hover:text-danger"
-                title="Eliminar plano"
-              >
-                <Trash2 size={16} />
-              </button>
+        {plans.map((plan) => {
+          const isCurrentWeek = plan.id === currentWeekPlanId;
+          return (
+            <div
+              key={plan.id}
+              className={`flex items-center justify-between rounded-2xl border bg-surface p-5 transition hover:bg-surface-elevated ${
+                isCurrentWeek ? "border-accent" : "border-border"
+              }`}
+            >
+              <a href={`/workouts/builder/${plan.id}`} className="flex-1">
+                <p className="flex flex-wrap items-center gap-2 font-medium text-foreground">
+                  {plan.name}
+                  {isCurrentWeek && (
+                    <span className="rounded-full bg-accent/15 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-accent">
+                      Esta semana
+                    </span>
+                  )}
+                </p>
+                <p className="mt-0.5 text-xs text-muted">
+                  {plan.start_date && plan.end_date && (
+                    <span className={isCurrentWeek ? "font-semibold text-accent" : "font-medium text-foreground"}>
+                      {formatShortDate(plan.start_date)} → {formatShortDate(plan.end_date)} ·{" "}
+                    </span>
+                  )}
+                  v{plan.version} · criado em {new Date(plan.created_at).toLocaleDateString("pt-PT")}
+                </p>
+              </a>
+              <div className="flex items-center gap-4">
+                <StatusBadge status={plan.status} />
+                <button
+                  onClick={() => handleDeletePlan(plan)}
+                  className="text-muted hover:text-danger"
+                  title="Eliminar plano"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
