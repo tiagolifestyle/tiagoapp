@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Exercise, NutritionPlan, ProgressMetric, WorkoutDay, WorkoutExercise } from "@tiagolifestyle/shared";
 import { supabase } from "@/lib/supabase";
+import { fetchCurrentWorkoutPlanId } from "@/lib/currentWorkoutPlan";
 
 export interface TodayWorkoutExercise extends WorkoutExercise {
   exercise: Pick<Exercise, "id" | "name" | "image_url" | "video_url">;
@@ -53,16 +54,9 @@ export function useDashboard(clientId: string | undefined) {
 
     const todayWeekday = new Date().getDay();
 
-    const [planResult, nutritionResult, metricResult, checkinResult, conversationResult, streak] =
+    const [currentPlanId, nutritionResult, metricResult, checkinResult, conversationResult, streak] =
       await Promise.all([
-        supabase
-          .from("workout_plans")
-          .select("id")
-          .eq("client_id", clientId)
-          .eq("status", "active")
-          .order("version", { ascending: false })
-          .limit(1)
-          .maybeSingle(),
+        fetchCurrentWorkoutPlanId(clientId),
         supabase
           .from("nutrition_plans")
           .select("*")
@@ -90,11 +84,11 @@ export function useDashboard(clientId: string | undefined) {
 
     let todayDay: DashboardData["todayDay"] = null;
 
-    if (planResult.data?.id) {
+    if (currentPlanId) {
       const { data: day } = await supabase
         .from("workout_days")
         .select("*")
-        .eq("plan_id", planResult.data.id)
+        .eq("plan_id", currentPlanId)
         .eq("weekday", todayWeekday)
         .maybeSingle();
 

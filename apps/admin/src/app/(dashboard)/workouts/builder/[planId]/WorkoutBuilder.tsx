@@ -30,6 +30,16 @@ function isTempId(id: string) {
   return id.startsWith("tmp-");
 }
 
+function addDays(isoDate: string, days: number) {
+  const [year, month, day] = isoDate.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day + days)).toISOString().slice(0, 10);
+}
+
+function formatShortDate(isoDate: string) {
+  const [, month, day] = isoDate.split("-");
+  return `${day}/${month}`;
+}
+
 interface WorkoutBuilderProps {
   plan: WorkoutPlan;
   initialDays: BuilderDay[];
@@ -41,6 +51,8 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
   const router = useRouter();
   const [planName, setPlanName] = useState(plan.name);
   const [planStatus, setPlanStatus] = useState(plan.status);
+  const [startDate, setStartDate] = useState(plan.start_date ?? "");
+  const [savedStartDate, setSavedStartDate] = useState(plan.start_date ?? "");
   const [days, setDays] = useState<BuilderDay[]>(initialDays);
   const [selectedWeekday, setSelectedWeekday] = useState(
     () => WEEKDAY_ORDER.find((w) => initialDays.some((d) => d.weekday === w)) ?? 1
@@ -197,7 +209,44 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
     const supabase = createBrowserSupabaseClient();
     const statusToSave = nextStatus ?? planStatus;
 
-    await supabase.from("workout_plans").update({ name: planName, status: statusToSave }).eq("id", plan.id);
+    await supabase
+      .from("workout_plans")
+      .update({
+        name: planName,
+        status: statusToSave,
+        start_date: startDate || null,
+        end_date: startDate ? addDays(startDate, 6) : null,
+      })
+      .eq("id", plan.id);
+
+    if (startDate && startDate !== savedStartDate && plan.client_id) {
+      const rootId = plan.parent_plan_id ?? plan.id;
+      const { data: laterVersions } = await supabase
+        .from("workout_plans")
+        .select("id, version")
+        .or(`id.eq.${rootId},parent_plan_id.eq.${rootId}`)
+        .gt("version", plan.version)
+        .order("version", { ascending: true });
+
+      if (
+        laterVersions &&
+        laterVersions.length > 0 &&
+        confirm(
+          `Preencher automaticamente as datas das versões seguintes (v${laterVersions[0].version} a v${
+            laterVersions[laterVersions.length - 1].version
+          }), uma semana cada?`
+        )
+      ) {
+        for (const later of laterVersions) {
+          const laterStart = addDays(startDate, 7 * (later.version - plan.version));
+          await supabase
+            .from("workout_plans")
+            .update({ start_date: laterStart, end_date: addDays(laterStart, 6) })
+            .eq("id", later.id);
+        }
+      }
+    }
+    setSavedStartDate(startDate);
 
     const originalDayIds = new Set(initialDays.map((d) => d.id));
     const currentDayIds = new Set(days.map((d) => d.id).filter((id) => !isTempId(id)));
@@ -342,7 +391,20 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-end gap-3">
+            {plan.client_id && (
+              <label className="flex flex-col gap-0.5">
+                <span className="text-[10px] uppercase tracking-wide text-muted">
+                  Data de início{startDate ? ` · até ${formatShortDate(addDays(startDate, 6))}` : ""}
+                </span>
+                <input
+                  type="date"
+                  value={startDate}
+                  onChange={(e) => setStartDate(e.target.value)}
+                  className="rounded-2xl border border-border bg-surface-elevated px-4 py-2 text-sm text-foreground outline-none"
+                />
+              </label>
+            )}
             <select
               value={planStatus}
               onChange={(e) => setPlanStatus(e.target.value as WorkoutPlan["status"])}

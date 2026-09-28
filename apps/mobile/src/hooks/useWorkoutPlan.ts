@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Exercise, WorkoutDay, WorkoutExercise, WorkoutPlan } from "@tiagolifestyle/shared";
 import { supabase } from "@/lib/supabase";
+import { fetchCurrentWorkoutPlanId } from "@/lib/currentWorkoutPlan";
 
 export interface PlanExercise extends WorkoutExercise {
   exercise: Exercise;
@@ -36,14 +37,10 @@ export function useWorkoutPlan(clientId: string | undefined) {
       .maybeSingle();
     setCompletedToday(!!completion);
 
-    const { data: planRow } = await supabase
-      .from("workout_plans")
-      .select("*")
-      .eq("client_id", clientId)
-      .eq("status", "active")
-      .order("version", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    const planId = await fetchCurrentWorkoutPlanId(clientId);
+    const { data: planRow } = planId
+      ? await supabase.from("workout_plans").select("*").eq("id", planId).maybeSingle()
+      : { data: null };
 
     if (!planRow) {
       setPlan(null);
