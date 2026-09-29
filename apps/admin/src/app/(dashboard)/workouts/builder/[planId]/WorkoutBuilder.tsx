@@ -54,6 +54,8 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
   const [startDate, setStartDate] = useState(plan.start_date ?? "");
   const [savedStartDate, setSavedStartDate] = useState(plan.start_date ?? "");
   const [days, setDays] = useState<BuilderDay[]>(initialDays);
+  const [savedDaysSnapshot, setSavedDaysSnapshot] = useState(() => JSON.stringify(initialDays));
+  const hasUnsavedDayChanges = JSON.stringify(days) !== savedDaysSnapshot;
   const [selectedWeekday, setSelectedWeekday] = useState(
     () => WEEKDAY_ORDER.find((w) => initialDays.some((d) => d.weekday === w)) ?? 1
   );
@@ -247,6 +249,7 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
       }
     }
     setSavedStartDate(startDate);
+    setSavedDaysSnapshot(JSON.stringify(days));
 
     const originalDayIds = new Set(initialDays.map((d) => d.id));
     const currentDayIds = new Set(days.map((d) => d.id).filter((id) => !isTempId(id)));
@@ -309,6 +312,23 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
 
     setSaving(false);
     setSaved(true);
+    router.refresh();
+  }
+
+  // Depois de editar na Progressão, recarrega os dias para o "Guardar" não gravar valores antigos por cima.
+  async function reloadDaysFromServer() {
+    const supabase = createBrowserSupabaseClient();
+    const { data } = await supabase
+      .from("workout_days")
+      .select("*, exercises:workout_exercises(*, exercise:exercises(*))")
+      .eq("plan_id", plan.id)
+      .order("day_order", { ascending: true });
+    const normalized = (data ?? []).map((day) => ({
+      ...day,
+      exercises: [...(day.exercises ?? [])].sort((a, b) => a.order_index - b.order_index),
+    })) as BuilderDay[];
+    setDays(normalized);
+    setSavedDaysSnapshot(JSON.stringify(normalized));
     router.refresh();
   }
 
@@ -422,6 +442,8 @@ export function WorkoutBuilder({ plan, initialDays, library, clientName }: Worko
                 parentPlanId={plan.parent_plan_id}
                 weekday={selectedWeekday}
                 dayName={selectedDay?.name ?? WEEKDAY_LABELS[selectedWeekday]}
+                hasUnsavedChanges={hasUnsavedDayChanges}
+                onSaved={reloadDaysFromServer}
               />
             )}
             <button
