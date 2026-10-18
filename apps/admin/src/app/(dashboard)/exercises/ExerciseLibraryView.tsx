@@ -6,8 +6,8 @@ import type { Exercise } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { ExerciseFormModal } from "./ExerciseFormModal";
 
-const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
-const MUSCLE_GROUPS = [
+export const EXERCISE_CATEGORIES = ["Suelo Pélvico", "Diastasis", "Perder grasa", "Hipertrofia"];
+export const MUSCLE_GROUPS = [
   "Pecho",
   "Espalda",
   "Hombros",
