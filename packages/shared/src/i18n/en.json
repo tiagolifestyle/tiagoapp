@@ -119,6 +119,24 @@
     "water": "Water",
     "noMealsForDay": "No meals planned for this day."
   },
+  "dishes": {
+    "button": "Special dishes",
+    "subtitle": "Meal ideas to adapt to your plan",
+    "title": "Special dishes",
+    "all": "All",
+    "breakfast": "Breakfast",
+    "lunch_dinner": "Lunch / Dinner",
+    "snack": "Snack",
+    "dessert": "Dessert",
+    "empty": "No dishes in this category yet.",
+    "ingredients": "Ingredients",
+    "preparation": "Preparation",
+    "notes": "Note",
+    "want": "I want this dish",
+    "wantSent": "Request sent to your coach",
+    "wantError": "Couldn't send the request. Please try again.",
+    "wantMessage": "Hi! I'd like to add the dish \"{{name}}\" to my meal plan."
+  },
   "rmCalculator": {
     "title": "One-Rep Max Calculator",
     "weightLifted": "Weight lifted",

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { View, Text, ScrollView, Pressable, RefreshControl, Linking } from "react-native";
+import { Link } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -80,6 +81,17 @@ export default function NutritionScreen() {
         )}
 
         {!plan && !isLoading && <Text className="text-base text-muted">—</Text>}
+
+        <Link href="/(client)/dishes">
+          <View className="w-full flex-row items-center gap-3 rounded-3xl border border-accent-muted bg-surface-elevated px-5 py-4">
+            <Ionicons name="restaurant" size={22} color="#C9A227" />
+            <View className="flex-1">
+              <Text className="text-base font-semibold text-foreground">{t("dishes.button")}</Text>
+              <Text className="text-xs text-muted">{t("dishes.subtitle")}</Text>
+            </View>
+            <Ionicons name="chevron-forward" size={18} color="#C9A227" />
+          </View>
+        </Link>
 
         {plan && (
           <>

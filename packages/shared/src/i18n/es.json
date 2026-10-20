@@ -119,6 +119,24 @@
     "water": "Agua",
     "noMealsForDay": "Sin comidas planificadas para este día."
   },
+  "dishes": {
+    "button": "Platos especiales",
+    "subtitle": "Ideas de comidas para adaptar a tu plan",
+    "title": "Platos especiales",
+    "all": "Todos",
+    "breakfast": "Desayuno",
+    "lunch_dinner": "Comida / Cena",
+    "snack": "Merienda",
+    "dessert": "Postre",
+    "empty": "Todavía no hay platos en esta categoría.",
+    "ingredients": "Ingredientes",
+    "preparation": "Preparación",
+    "notes": "Observación",
+    "want": "Quiero este plato",
+    "wantSent": "Solicitud enviada a tu coach",
+    "wantError": "No se pudo enviar la solicitud. Inténtalo de nuevo.",
+    "wantMessage": "¡Hola! Me gustaría incluir el plato «{{name}}» en mi plan de alimentación."
+  },
   "rmCalculator": {
     "title": "Calculadora de Repetición Máxima",
     "weightLifted": "Peso levantado",

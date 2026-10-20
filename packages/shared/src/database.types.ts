@@ -276,6 +276,32 @@ export interface RewardRedemption {
   delivered_at: string | null;
 }
 
+export type SpecialDishCategory = "breakfast" | "lunch_dinner" | "snack" | "dessert";
+
+export interface SpecialDish {
+  id: string;
+  category: SpecialDishCategory;
+  name_pt: string;
+  name_es: string;
+  name_en: string;
+  ingredients_pt: string | null;
+  ingredients_es: string | null;
+  ingredients_en: string | null;
+  preparation_pt: string | null;
+  preparation_es: string | null;
+  preparation_en: string | null;
+  notes_pt: string | null;
+  notes_es: string | null;
+  notes_en: string | null;
+  image_url: string | null;
+  calories: number | null;
+  protein_g: number | null;
+  carbs_g: number | null;
+  fat_g: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Conversation {
   id: string;
   client_id: string;
