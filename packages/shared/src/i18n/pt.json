@@ -68,6 +68,21 @@
     "noWorkoutToday": "Hoje é dia de descanso. Aproveita para recuperar.",
     "streak": "{{count}} dias de consistência"
   },
+  "rewards": {
+    "title": "Recompensas",
+    "points": "{{count}} pontos",
+    "howItWorks": "Cada dia de treino concluído vale 1 ponto. Os teus pontos nunca voltam a zero.",
+    "toNextLevel": "Faltam {{count}} pontos para {{level}}",
+    "maxLevel": "Atingiste o nível máximo!",
+    "levels": "Níveis",
+    "promotions": "Promoções",
+    "noPromotions": "Ainda não há promoções disponíveis.",
+    "unlocksAt": "Desbloqueia aos {{count}} pontos",
+    "redeem": "Resgatar",
+    "redeemed": "Resgatado · o teu coach vai entrar em contacto",
+    "delivered": "Entregue",
+    "redeemError": "Não foi possível resgatar. Tenta novamente."
+  },
   "workout": {
     "sets": "séries",
     "reps": "repetições",

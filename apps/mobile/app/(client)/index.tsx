@@ -8,6 +8,8 @@ import { useAuth } from "@/context/AuthContext";
 import { useDashboard } from "@/hooks/useDashboard";
 import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
+import { LEVEL_IMAGES } from "@/components/levelImages";
+import { getLevel } from "@tiagolifestyle/shared";
 import postpartumIllustration from "../../assets/postpartum-illustration.png";
 
 function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfternoon" | "dashboard.greetingEvening" {
@@ -47,14 +49,16 @@ export default function DashboardScreen() {
           </Link>
         </View>
 
-        {data.streakDays > 0 && (
-          <Card className="flex-row items-center gap-3 border-accent-muted bg-surface-elevated">
+        <Link href="/(client)/rewards">
+          <Card className="w-full flex-row items-center gap-3 border-accent-muted bg-surface-elevated">
             <Ionicons name="flame" size={22} color="#C9A227" />
-            <Text className="text-base font-medium text-foreground">
+            <Text className="flex-1 text-base font-medium text-foreground">
               {t("dashboard.streak", { count: data.streakDays })}
             </Text>
+            <Image source={LEVEL_IMAGES[getLevel(data.streakDays).current.key]} style={{ width: 30, height: 30 }} />
+            <Ionicons name="chevron-forward" size={18} color="#C9A227" />
           </Card>
-        )}
+        </Link>
 
         {data.pendingCheckin && (
           <Link href="/(client)/checkin">

@@ -68,6 +68,21 @@
     "noWorkoutToday": "Today is a rest day. Take the time to recover.",
     "streak": "{{count}}-day streak"
   },
+  "rewards": {
+    "title": "Rewards",
+    "points": "{{count}} points",
+    "howItWorks": "Every completed training day is worth 1 point. Your points never reset.",
+    "toNextLevel": "{{count}} points to {{level}}",
+    "maxLevel": "You've reached the top level!",
+    "levels": "Levels",
+    "promotions": "Promotions",
+    "noPromotions": "No promotions available yet.",
+    "unlocksAt": "Unlocks at {{count}} points",
+    "redeem": "Redeem",
+    "redeemed": "Redeemed · your coach will get in touch",
+    "delivered": "Delivered",
+    "redeemError": "Couldn't redeem. Please try again."
+  },
   "workout": {
     "sets": "sets",
     "reps": "reps",

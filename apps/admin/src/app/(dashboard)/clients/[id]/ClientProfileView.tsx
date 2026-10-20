@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import type { Client, SubscriptionTier } from "@tiagolifestyle/shared";
+import { getLevel, type Client, type SubscriptionTier } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { StatusBadge } from "@/components/StatusBadge";
 
@@ -78,6 +78,16 @@ export function ClientProfileView({
               <span className="text-sm text-muted">{TIER_LABELS[initialClient.subscription_tier]}</span>
               {consistencyDays != null && (
                 <span className="text-sm text-muted">🔥 {consistencyDays} dias de consistência</span>
+              )}
+              {consistencyDays != null && (
+                <span
+                  className="flex items-center gap-1 text-sm font-semibold"
+                  style={{ color: getLevel(consistencyDays).current.color }}
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={`/levels/${getLevel(consistencyDays).current.key}.png`} alt="" className="h-6 w-6" />
+                  {getLevel(consistencyDays).current.name}
+                </span>
               )}
             </div>
           </div>

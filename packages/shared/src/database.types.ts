@@ -255,6 +255,27 @@ export interface PostpartumContentCard {
   updated_at: string;
 }
 
+export interface Reward {
+  id: string;
+  title_pt: string;
+  title_es: string;
+  title_en: string;
+  description_pt: string | null;
+  description_es: string | null;
+  description_en: string | null;
+  points_required: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RewardRedemption {
+  id: string;
+  reward_id: string;
+  client_id: string;
+  redeemed_at: string;
+  delivered_at: string | null;
+}
+
 export interface Conversation {
   id: string;
   client_id: string;
