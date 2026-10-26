@@ -19,6 +19,7 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
   const [descriptionEs, setDescriptionEs] = useState(reward?.description_es ?? "");
   const [descriptionEn, setDescriptionEn] = useState(reward?.description_en ?? "");
   const [points, setPoints] = useState(reward?.points_required?.toString() ?? "");
+  const [unlocksDishes, setUnlocksDishes] = useState(reward?.unlocks_special_dishes ?? false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -38,6 +39,7 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
       description_es: descriptionEs || null,
       description_en: descriptionEn || null,
       points_required: pointsValue,
+      unlocks_special_dishes: unlocksDishes,
     };
 
     const query = reward
@@ -71,6 +73,22 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
               className={inputClass}
             />
           </Field>
+
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4">
+            <input
+              type="checkbox"
+              checked={unlocksDishes}
+              onChange={(e) => setUnlocksDishes(e.target.checked)}
+              className="mt-0.5 h-4 w-4 accent-[#C9A227]"
+            />
+            <span className="flex flex-col gap-0.5">
+              <span className="text-sm font-medium text-foreground">Esta promoção desbloqueia os Pratos especiais</span>
+              <span className="text-xs text-muted">
+                Os Pratos especiais ficam com cadeado até o cliente resgatar esta promoção. O resgate fica logo marcado como
+                entregue.
+              </span>
+            </span>
+          </label>
 
           <div className="flex flex-col gap-3 rounded-xl border border-border p-4">
             <p className="text-xs font-semibold uppercase tracking-wide text-accent">Português</p>

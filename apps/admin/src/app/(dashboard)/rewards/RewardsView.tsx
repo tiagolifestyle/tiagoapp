@@ -125,6 +125,9 @@ export function RewardsView({
               <p className="font-medium text-foreground">{reward.title_pt}</p>
               {reward.description_pt && <p className="mt-1 line-clamp-2 text-sm text-muted">{reward.description_pt}</p>}
               <p className="mt-1 text-xs font-semibold text-accent">{reward.points_required} pontos</p>
+              {reward.unlocks_special_dishes && (
+                <p className="mt-1 text-xs font-medium text-success">Desbloqueia os Pratos especiais (entrega automática)</p>
+              )}
             </div>
             <div className="flex items-center gap-3 text-xs text-muted">
               <button onClick={() => setEditingReward(reward)} className="flex items-center gap-1 hover:text-foreground">

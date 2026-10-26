@@ -20,6 +20,45 @@ export function useSpecialDishes() {
   return { dishes, isLoading, refresh: load };
 }
 
+// Os Pratos especiais ficam bloqueados enquanto o cliente não resgatar uma promoção que os desbloqueia.
+export function useDishesAccess(clientId: string | undefined) {
+  const [locked, setLocked] = useState(false);
+  const [pointsRequired, setPointsRequired] = useState<number | null>(null);
+
+  const load = useCallback(async () => {
+    if (!clientId) return;
+    const { data: unlockRewards } = await supabase
+      .from("rewards")
+      .select("id, points_required")
+      .eq("unlocks_special_dishes", true);
+
+    const rewards = unlockRewards ?? [];
+    if (rewards.length === 0) {
+      setLocked(false);
+      setPointsRequired(null);
+      return;
+    }
+
+    const { count } = await supabase
+      .from("reward_redemptions")
+      .select("id", { count: "exact", head: true })
+      .eq("client_id", clientId)
+      .in(
+        "reward_id",
+        rewards.map((r) => r.id)
+      );
+
+    setLocked((count ?? 0) === 0);
+    setPointsRequired(Math.min(...rewards.map((r) => r.points_required as number)));
+  }, [clientId]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { locked, pointsRequired, refresh: load };
+}
+
 // Envia ao coach, pelo chat, o pedido para incluir um prato no plano.
 export async function requestDish(clientId: string, body: string): Promise<boolean> {
   const { data: conversation } = await supabase

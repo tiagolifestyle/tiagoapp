@@ -1,11 +1,12 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { View, Text, ScrollView, Pressable, RefreshControl, Linking } from "react-native";
-import { Link } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
 import { useNutritionPlan, type PlanMeal } from "@/hooks/useNutritionPlan";
+import { useDishesAccess } from "@/hooks/useSpecialDishes";
 import { supabase } from "@/lib/supabase";
 import { StatTile } from "@/components/StatTile";
 import { MealCard } from "@/components/MealCard";
@@ -20,6 +21,16 @@ export default function NutritionScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
   const { plan, isLoading, refresh } = useNutritionPlan(profile?.id);
+  const { locked: dishesLocked, pointsRequired: dishesPointsRequired, refresh: refreshDishesAccess } = useDishesAccess(
+    profile?.id
+  );
+
+  // Ao voltar a este separador (por exemplo depois de resgatar), o cadeado atualiza-se.
+  useFocusEffect(
+    useCallback(() => {
+      refreshDishesAccess();
+    }, [refreshDishesAccess])
+  );
   const weekdayLabels = t("workout.weekdaysShort", { returnObjects: true }) as string[];
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
   const [downloading, setDownloading] = useState(false);
@@ -82,12 +93,16 @@ export default function NutritionScreen() {
 
         {!plan && !isLoading && <Text className="text-base text-muted">—</Text>}
 
-        <Link href="/(client)/dishes">
+        <Link href={dishesLocked ? "/(client)/rewards" : "/(client)/dishes"}>
           <View className="w-full flex-row items-center gap-3 rounded-3xl border border-accent-muted bg-surface-elevated px-5 py-4">
-            <Ionicons name="restaurant" size={22} color="#C9A227" />
+            <Ionicons name={dishesLocked ? "lock-closed" : "restaurant"} size={22} color="#C9A227" />
             <View className="flex-1">
               <Text className="text-base font-semibold text-foreground">{t("dishes.button")}</Text>
-              <Text className="text-xs text-muted">{t("dishes.subtitle")}</Text>
+              <Text className="text-xs text-muted">
+                {dishesLocked && dishesPointsRequired != null
+                  ? t("rewards.unlocksAt", { count: dishesPointsRequired })
+                  : t("dishes.subtitle")}
+              </Text>
             </View>
             <Ionicons name="chevron-forward" size={18} color="#C9A227" />
           </View>
