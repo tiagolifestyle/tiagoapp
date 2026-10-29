@@ -127,9 +127,15 @@ export interface NutritionPlan {
   status: PlanStatus;
   document_url: string | null;
   document_name: string | null;
+  shopping_list: ShoppingListCategory[] | null;
   created_by: string | null;
   created_at: string;
   updated_at: string;
+}
+
+export interface ShoppingListCategory {
+  category: string;
+  items: string[];
 }
 
 export interface Meal {

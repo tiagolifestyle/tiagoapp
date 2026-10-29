@@ -119,6 +119,13 @@
     "water": "Agua",
     "noMealsForDay": "Sin comidas planificadas para este día."
   },
+  "shopping": {
+    "button": "Lista de la compra",
+    "subtitle": "Todo lo que necesitas para la semana",
+    "title": "Lista de la compra",
+    "clear": "Limpiar",
+    "hint": "Toca un artículo para tacharlo."
+  },
   "dishes": {
     "button": "Platos especiales",
     "subtitle": "Ideas de comidas para adaptar a tu plan",

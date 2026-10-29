@@ -119,6 +119,13 @@
     "water": "Water",
     "noMealsForDay": "No meals planned for this day."
   },
+  "shopping": {
+    "button": "Shopping list",
+    "subtitle": "Everything you need for the week",
+    "title": "Shopping list",
+    "clear": "Clear",
+    "hint": "Tap an item to tick it off."
+  },
   "dishes": {
     "button": "Special dishes",
     "subtitle": "Meal ideas to adapt to your plan",

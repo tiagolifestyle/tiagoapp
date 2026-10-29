@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Trash2, FileText, Upload } from "lucide-react";
-import type { Meal, MealItem, NutritionPlan } from "@tiagolifestyle/shared";
+import { Plus, Trash2, FileText, Upload, ShoppingCart } from "lucide-react";
+import type { Meal, MealItem, NutritionPlan, ShoppingListCategory } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
 import { StatusBadge } from "@/components/StatusBadge";
@@ -20,6 +20,32 @@ const MACRO_FIELDS = [
   { key: "water_ml", label: "Água (ml)" },
 ] as const;
 
+// Lista de compras: no editor cada categoria tem um texto com um artigo por linha.
+interface EditableShoppingCategory {
+  category: string;
+  text: string;
+}
+
+const DEFAULT_SHOPPING_CATEGORIES = ["Proteína", "Hidratos", "Gorduras", "Verduras", "Fruta", "Outros"];
+
+function toEditableShoppingList(list: ShoppingListCategory[] | null | undefined): EditableShoppingCategory[] {
+  if (!list || list.length === 0) return DEFAULT_SHOPPING_CATEGORIES.map((category) => ({ category, text: "" }));
+  return list.map((entry) => ({ category: entry.category, text: entry.items.join("\n") }));
+}
+
+function toShoppingList(editable: EditableShoppingCategory[]): ShoppingListCategory[] | null {
+  const list = editable
+    .map((entry) => ({
+      category: entry.category.trim(),
+      items: entry.text
+        .split("\n")
+        .map((line) => line.trim())
+        .filter(Boolean),
+    }))
+    .filter((entry) => entry.category && entry.items.length > 0);
+  return list.length > 0 ? list : null;
+}
+
 export function NutritionTab({ clientId }: { clientId: string }) {
   const [plans, setPlans] = useState<NutritionPlan[]>([]);
   const [activePlanId, setActivePlanId] = useState<string | null>(null);
@@ -29,6 +55,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
   const [docUploading, setDocUploading] = useState(false);
   const [docError, setDocError] = useState<string | null>(null);
+  const [shoppingList, setShoppingList] = useState<EditableShoppingCategory[]>([]);
 
   async function loadPlans() {
     const supabase = createBrowserSupabaseClient();
@@ -48,6 +75,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
   async function openPlan(plan: NutritionPlan) {
     setActivePlanId(plan.id);
     setMacros(plan);
+    setShoppingList(toEditableShoppingList(plan.shopping_list));
     const supabase = createBrowserSupabaseClient();
     const { data } = await supabase
       .from("meals")
@@ -104,7 +132,10 @@ export function NutritionTab({ clientId }: { clientId: string }) {
     setSaving(true);
     const supabase = createBrowserSupabaseClient();
 
-    await supabase.from("nutrition_plans").update(macros).eq("id", activePlanId);
+    await supabase
+      .from("nutrition_plans")
+      .update({ ...macros, shopping_list: toShoppingList(shoppingList) })
+      .eq("id", activePlanId);
 
     for (const meal of meals) {
       const isNewMeal = meal.id.startsWith("tmp-");
@@ -177,6 +208,7 @@ export function NutritionTab({ clientId }: { clientId: string }) {
         setActivePlanId(null);
         setMeals([]);
         setMacros({});
+        setShoppingList([]);
       }
     }
   }
@@ -369,6 +401,59 @@ export function NutritionTab({ clientId }: { clientId: string }) {
 
             <button onClick={addMeal} className="flex w-fit items-center gap-2 text-sm text-accent">
               <Plus size={16} /> Adicionar refeição
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-3">
+            <div>
+              <h3 className="flex items-center gap-2 text-base font-semibold text-foreground">
+                <ShoppingCart size={18} className="text-accent" />
+                Lista de compras
+              </h3>
+              <p className="mt-1 text-xs text-muted">
+                Um artigo por linha. A quantidade é opcional, depois de um travessão (ex: Pechuga de pollo — 850 g). As
+                categorias vazias não aparecem ao cliente.
+              </p>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {shoppingList.map((entry, index) => (
+                <div key={index} className="flex flex-col gap-2 rounded-2xl border border-border p-4">
+                  <div className="flex items-center gap-2">
+                    <input
+                      placeholder="Categoria"
+                      value={entry.category}
+                      onChange={(event) =>
+                        setShoppingList((prev) =>
+                          prev.map((e, j) => (j === index ? { ...e, category: event.target.value } : e))
+                        )
+                      }
+                      className="flex-1 bg-transparent text-sm font-semibold text-foreground outline-none"
+                    />
+                    <button
+                      onClick={() => setShoppingList((prev) => prev.filter((_, j) => j !== index))}
+                      className="text-muted hover:text-danger"
+                      title="Eliminar categoria"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                  <textarea
+                    rows={5}
+                    placeholder="Um artigo por linha"
+                    value={entry.text}
+                    onChange={(event) =>
+                      setShoppingList((prev) => prev.map((e, j) => (j === index ? { ...e, text: event.target.value } : e)))
+                    }
+                    className="rounded-xl border border-border bg-surface-elevated px-3 py-2 text-sm text-foreground outline-none focus:border-accent"
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setShoppingList((prev) => [...prev, { category: "", text: "" }])}
+              className="flex w-fit items-center gap-2 text-sm text-accent"
+            >
+              <Plus size={16} /> Adicionar categoria
             </button>
           </div>
 

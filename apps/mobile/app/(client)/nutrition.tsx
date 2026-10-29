@@ -57,6 +57,7 @@ export default function NutritionScreen() {
   }, [plan]);
 
   const visibleMeals = mealsByWeekday.get(selectedWeekday) ?? [];
+  const hasShoppingList = (plan?.shopping_list ?? []).some((category) => category.items.length > 0);
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -107,6 +108,19 @@ export default function NutritionScreen() {
             <Ionicons name="chevron-forward" size={18} color="#C9A227" />
           </View>
         </Link>
+
+        {hasShoppingList && (
+          <Link href="/(client)/shopping">
+            <View className="w-full flex-row items-center gap-3 rounded-3xl border border-accent-muted bg-surface-elevated px-5 py-4">
+              <Ionicons name="cart" size={22} color="#C9A227" />
+              <View className="flex-1">
+                <Text className="text-base font-semibold text-foreground">{t("shopping.button")}</Text>
+                <Text className="text-xs text-muted">{t("shopping.subtitle")}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={18} color="#C9A227" />
+            </View>
+          </Link>
+        )}
 
         {plan && (
           <>
