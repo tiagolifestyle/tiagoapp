@@ -6,7 +6,7 @@
 window.SITE_CONFIG = {
   // Número de WhatsApp em formato internacional, só dígitos, sem "+" nem espaços.
   // Ex.: Portugal 351912345678 · Espanha 34612345678
-  whatsappNumber: "",
+  whatsappNumber: "351966530401",
 
   instagram: {
     handle: "tiagolifestyle_93",
