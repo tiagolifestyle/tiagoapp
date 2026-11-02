@@ -68,7 +68,7 @@
     "noWorkoutToday": "Hoje é dia de descanso. Aproveita para recuperar.",
     "streak": "{{count}} dias de consistência",
     "startWorkout": "Começar treino",
-    "workoutDone": "Treino concluído ✓",
+    "workoutDone": "Treino concluído",
     "planWeek": "Semana {{week}} de {{total}}"
   },
   "rewards": {

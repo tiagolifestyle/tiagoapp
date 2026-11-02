@@ -12,6 +12,7 @@ import { StatTile } from "@/components/StatTile";
 import { LEVEL_IMAGES } from "@/components/levelImages";
 import { getLevel } from "@tiagolifestyle/shared";
 import postpartumIllustration from "../../assets/postpartum-illustration.png";
+import brandLogo from "../../assets/logo.png";
 
 function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfternoon" | "dashboard.greetingEvening" {
   const hour = new Date().getHours();
@@ -47,21 +48,24 @@ export default function DashboardScreen() {
         contentContainerClassName="gap-4 pb-10"
         refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} tintColor="#C9A227" />}
       >
-        <View className="mt-4 mb-2 flex-row items-start justify-between">
-          <View className="gap-1">
+        <View className="mt-4 mb-2 flex-row items-center justify-between gap-3">
+          <View className="flex-1 gap-1">
+            <Text className="text-sm text-muted">TiagoLifeStyle</Text>
             <Text className="text-2xl font-semibold text-foreground">{t(greetingKey(), { name: firstName })}</Text>
-            <Text className="text-base text-muted">{t("dashboard.todayPlanIntro")}</Text>
           </View>
-          <Link href="/(client)/coach">
-            <View className="rounded-full border border-border bg-surface p-3">
-              <Ionicons name="chatbubble-ellipses-outline" size={20} color="#F5F5F2" />
-              {data.unreadMessagesCount > 0 && (
-                <View className="absolute -right-1 -top-1 h-4 w-4 items-center justify-center rounded-full bg-accent">
-                  <Text className="text-[10px] font-bold text-background">{data.unreadMessagesCount}</Text>
-                </View>
-              )}
-            </View>
-          </Link>
+          <View className="flex-row items-center gap-3">
+            <Link href="/(client)/coach">
+              <View className="rounded-full border border-border bg-surface p-3">
+                <Ionicons name="chatbubble-ellipses-outline" size={20} color="#F5F5F2" />
+                {data.unreadMessagesCount > 0 && (
+                  <View className="absolute -right-1 -top-1 h-4 w-4 items-center justify-center rounded-full bg-accent">
+                    <Text className="text-[10px] font-bold text-background">{data.unreadMessagesCount}</Text>
+                  </View>
+                )}
+              </View>
+            </Link>
+            <Image source={brandLogo} resizeMode="contain" style={{ width: 50, height: 53 }} />
+          </View>
         </View>
 
         <Link href="/(client)/rewards">
@@ -172,8 +176,11 @@ export default function DashboardScreen() {
           {data.todayDay && (
             <Pressable onPress={openTodayWorkout} className="mt-6 self-start active:opacity-80">
               {data.completedToday ? (
-                <View className="rounded-full border border-accent px-6 py-3">
-                  <Text className="text-base font-bold text-accent">{t("dashboard.workoutDone")}</Text>
+                <View className="flex-row items-center gap-1.5 rounded-full border border-accent px-5 py-3">
+                  <Text numberOfLines={1} className="text-[15px] font-bold text-accent">
+                    {t("dashboard.workoutDone")}
+                  </Text>
+                  <Ionicons name="checkmark" size={18} color="#C9A227" />
                 </View>
               ) : (
                 <LinearGradient

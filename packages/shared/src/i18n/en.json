@@ -68,7 +68,7 @@
     "noWorkoutToday": "Today is a rest day. Take the time to recover.",
     "streak": "{{count}}-day streak",
     "startWorkout": "Start workout",
-    "workoutDone": "Workout done ✓",
+    "workoutDone": "Workout done",
     "planWeek": "Week {{week}} of {{total}}"
   },
   "rewards": {
