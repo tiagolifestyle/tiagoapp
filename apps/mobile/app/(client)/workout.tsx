@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
+import { useLocalSearchParams } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
@@ -19,6 +20,12 @@ export default function WorkoutScreen() {
   const { plan, loads, saveLoad, completedToday, markComplete, isLoading, refresh } = useWorkoutPlan(profile?.id);
   const weekdayLabels = t("workout.weekdaysShort", { returnObjects: true }) as string[];
   const [selectedWeekday, setSelectedWeekday] = useState(() => new Date().getDay());
+
+  // "Começar treino" no Início abre este separador já no dia de hoje.
+  const { day: dayParam, at: openedAt } = useLocalSearchParams<{ day?: string; at?: string }>();
+  useEffect(() => {
+    if (dayParam != null) setSelectedWeekday(Number(dayParam));
+  }, [dayParam, openedAt]);
 
   const dayByWeekday = useMemo(() => {
     const map = new Map<number, PlanDay>();

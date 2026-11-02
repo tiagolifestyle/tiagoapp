@@ -66,7 +66,10 @@
     "coachMessages": "Mensajes del coach",
     "alerts": "Alertas",
     "noWorkoutToday": "Hoy es día de descanso. Aprovecha para recuperar.",
-    "streak": "{{count}} días de consistencia"
+    "streak": "{{count}} días de consistencia",
+    "startWorkout": "Empezar entrenamiento",
+    "workoutDone": "Entrenamiento completado ✓",
+    "planWeek": "Semana {{week}} de {{total}}"
   },
   "rewards": {
     "title": "Recompensas",

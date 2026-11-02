@@ -1,5 +1,6 @@
-import { View, Text, Image, ScrollView, RefreshControl } from "react-native";
-import { Link } from "expo-router";
+import { useCallback } from "react";
+import { View, Text, Image, ScrollView, RefreshControl, Pressable } from "react-native";
+import { Link, router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -22,8 +23,22 @@ function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfterno
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
-  const { data, isLoading, refresh } = useDashboard(profile?.id);
+  const { data, isLoading, refresh, refreshCompletedToday } = useDashboard(profile?.id);
   const firstName = profile?.full_name?.split(" ")[0] ?? "";
+
+  useFocusEffect(
+    useCallback(() => {
+      refreshCompletedToday();
+    }, [refreshCompletedToday])
+  );
+
+  // Abre o separador Treino já no dia de hoje (o "at" garante que muda mesmo que o cliente tenha escolhido outro dia).
+  function openTodayWorkout() {
+    router.push({
+      pathname: "/(client)/workout",
+      params: { day: String(new Date().getDay()), at: String(Date.now()) },
+    });
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -119,27 +134,62 @@ export default function DashboardScreen() {
           </View>
         </View>
 
-        <Card className="gap-3">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-lg font-semibold text-foreground">{t("dashboard.todayWorkout")}</Text>
-            <Link href="/(client)/workout">
-              <Text className="text-sm font-medium text-accent">{t("common.seeAll")}</Text>
-            </Link>
-          </View>
+        <View className="overflow-hidden rounded-3xl border bg-surface-elevated p-6" style={{ borderColor: "rgba(201,162,39,0.45)" }}>
+          <LinearGradient
+            colors={["rgba(201,162,39,0.16)", "rgba(201,162,39,0)"]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0.8, y: 1 }}
+            style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          />
+          <Text className="text-xs font-semibold uppercase text-accent" style={{ letterSpacing: 3 }}>
+            {t("dashboard.todayWorkout")}
+          </Text>
+          {/* Nomes como "Pecho+Deltoides+Tríceps" partem a linha no "+" e não a meio de uma palavra. */}
+          <Text className="mt-3 text-2xl font-bold text-foreground">
+            {data.todayDay?.name.replace(/([+/])/g, "$1​") ?? t("workout.restDay")}
+          </Text>
 
-          {data.todayDay ? (
-            <View className="gap-2">
-              <Text className="text-base font-medium text-foreground">{data.todayDay.name}</Text>
-              {data.todayDay.exercises.slice(0, 3).map((item, index) => (
-                <Text key={item.id} className="text-sm text-muted">
-                  {index + 1}. {item.exercise.name} · {item.sets}×{item.reps}
-                </Text>
-              ))}
-            </View>
-          ) : (
-            <Text className="text-sm text-muted">{t("dashboard.noWorkoutToday")}</Text>
+          {data.planWeek && (
+            <>
+              <Text className="mt-2 text-base text-muted">
+                {data.planWeek.total
+                  ? t("dashboard.planWeek", { week: data.planWeek.week, total: data.planWeek.total })
+                  : t("workout.progressionWeek", { week: data.planWeek.week })}
+              </Text>
+              {data.planWeek.total ? (
+                <View className="mt-4 h-1.5 w-full overflow-hidden rounded-full bg-border">
+                  <LinearGradient
+                    colors={["#A8862A", "#E9CF7A", "#C9A227"]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 0 }}
+                    style={{ height: "100%", width: `${Math.min(100, (data.planWeek.week / data.planWeek.total) * 100)}%` }}
+                  />
+                </View>
+              ) : null}
+            </>
           )}
-        </Card>
+
+          {data.todayDay && (
+            <Pressable onPress={openTodayWorkout} className="mt-6 self-start active:opacity-80">
+              {data.completedToday ? (
+                <View className="rounded-full border border-accent px-6 py-3">
+                  <Text className="text-base font-bold text-accent">{t("dashboard.workoutDone")}</Text>
+                </View>
+              ) : (
+                <LinearGradient
+                  colors={["#E9CF7A", "#C9A227", "#A8862A"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{ borderRadius: 999, paddingHorizontal: 24, paddingVertical: 12 }}
+                >
+                  <Text className="text-base font-bold" style={{ color: "#0B0B0F" }}>
+                    {t("dashboard.startWorkout")}
+                  </Text>
+                </LinearGradient>
+              )}
+            </Pressable>
+          )}
+        </View>
 
         <Card className="gap-3">
           <View className="flex-row items-center justify-between">
