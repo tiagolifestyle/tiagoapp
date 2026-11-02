@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="pt">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>TiagoLifeStyle — Personal Trainer · Treino e Nutrição Online</title>
+    <meta
+      name="description"
+      content="Coaching de fitness personalizado com o Tiago: treino, nutrição e acompanhamento real, tudo na app TiagoLifeStyle. Planos Basic, Premium e VIP."
+    />
+    <meta name="theme-color" content="#0B0B0F" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TiagoLifeStyle — Personal Trainer" />
+    <meta property="og:description" content="Transformar o teu corpo é possível. A mudança começa aqui." />
+    <meta property="og:image" content="assets/img/icon-512.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png" />
+    <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- Ícones reutilizáveis -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <symbol id="i-whatsapp" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.82c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.16.04-.31-.02-.43-.06-.13-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.87.85-.87 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.29Z"
+        />
+      </symbol>
+      <symbol id="i-instagram" viewBox="0 0 24 24">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm5 5a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm5.25-1.75h.01"
+        />
+      </symbol>
+      <symbol id="i-apple" viewBox="0 0 24 24">
+        <path
+          fill="currentColor"
+          d="M16.37 12.6c-.02-2.2 1.8-3.26 1.88-3.31-1.03-1.5-2.62-1.7-3.18-1.73-1.35-.14-2.64.8-3.33.8-.69 0-1.74-.78-2.86-.76-1.47.02-2.83.86-3.59 2.18-1.53 2.66-.39 6.59 1.1 8.75.73 1.05 1.6 2.24 2.73 2.2 1.1-.05 1.51-.71 2.84-.71 1.32 0 1.7.71 2.86.69 1.18-.02 1.93-1.07 2.65-2.13.84-1.22 1.18-2.4 1.2-2.46-.03-.01-2.3-.88-2.32-3.52ZM14.2 6.13c.6-.73 1.01-1.75.9-2.76-.87.04-1.92.58-2.54 1.31-.56.65-1.05 1.69-.92 2.68.97.08 1.96-.49 2.56-1.23Z"
+        />
+      </symbol>
+      <symbol id="i-play" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M4.6 2.3 14 11.7 4.6 21.1c-.36-.2-.6-.6-.6-1.06V3.36c0-.46.24-.86.6-1.06ZM15.1 12.8l2.5 2.5-11.3 6.5 8.8-9Zm0-2.2-8.8-9 11.3 6.5-2.5 2.5Zm3.7-1.4 2.4 1.4c.75.43.75 1.5 0 1.93l-2.4 1.4-2.6-2.36 2.6-2.37Z" />
+      </symbol>
+      <symbol id="i-globe" viewBox="0 0 24 24">
+        <path
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18Zm-9 9h18M12 3c2.5 2.6 3.75 5.6 3.75 9S14.5 18.4 12 21c-2.5-2.6-3.75-5.6-3.75-9S9.5 5.6 12 3Z"
+        />
+      </symbol>
+      <symbol id="i-check" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" d="m5 12.5 4.5 4.5L19 7.5" />
+      </symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6" />
+      </symbol>
+      <symbol id="i-crown" viewBox="0 0 24 24">
+        <path fill="currentColor" d="M3 8.5 7.5 12 12 5l4.5 7L21 8.5 19.2 18H4.8L3 8.5ZM5 19.5h14V21H5v-1.5Z" />
+      </symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24">
+        <path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 5v14M5 12h14" />
+      </symbol>
+    </svg>
+
+    <!-- ===================== Cabeçalho ===================== -->
+    <header class="site-header" id="top">
+      <div class="container header-inner">
+        <a href="#top" class="brand" aria-label="TiagoLifeStyle">
+          <img src="assets/img/logo-mark-sm.png" alt="" width="40" height="42" />
+          <span class="brand-name">Tiago<span>LifeStyle</span></span>
+        </a>
+
+        <nav class="main-nav" id="main-nav" aria-label="Principal">
+          <a href="#about" data-i18n="nav.about">Sobre</a>
+          <a href="#app" data-i18n="nav.app">App</a>
+          <a href="#plans" data-i18n="nav.plans">Planos</a>
+          <a href="#postpartum" data-i18n="nav.postpartum">Pós-parto</a>
+          <a href="#shop" data-i18n="nav.shop">Loja</a>
+          <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+
+        <div class="header-actions">
+          <div class="lang-switch" role="group" data-i18n-attr="aria-label:nav.language">
+            <button type="button" data-lang="pt">PT</button>
+            <button type="button" data-lang="es">ES</button>
+            <button type="button" data-lang="en">EN</button>
+          </div>
+          <a href="#plans" class="btn btn-gold btn-sm header-cta" data-i18n="nav.cta">Começar</a>
+          <button type="button" class="menu-toggle" aria-controls="main-nav" aria-expanded="false" data-i18n-attr="aria-label:nav.menu">
+            <span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- ===================== Hero (escuro) ===================== -->
+      <section class="hero section-dark">
+        <div class="hero-glow" aria-hidden="true"></div>
+        <div class="container hero-inner">
+          <div class="hero-logo reveal">
+            <video autoplay muted loop playsinline preload="auto" poster="assets/video/logo-poster.jpg" aria-hidden="true">
+              <source src="assets/video/logo-shine.mp4" type="video/mp4" />
+            </video>
+          </div>
+          <div class="hero-copy">
+            <p class="eyebrow reveal" data-i18n="hero.eyebrow">Personal Trainer · Coaching online</p>
+            <h1 class="hero-title reveal">
+              <span data-i18n="hero.title">Transformar o teu corpo é possível.</span>
+              <em class="gold-text" data-i18n="hero.subtitle">A mudança começa aqui.</em>
+            </h1>
+            <p class="hero-text reveal" data-i18n="hero.text">
+              Treino e nutrição feitos à tua medida, com acompanhamento real do teu coach — tudo dentro da app TiagoLifeStyle.
+            </p>
+            <div class="hero-ctas reveal">
+              <a href="#plans" class="btn btn-gold"><span data-i18n="hero.ctaPlans">Ver planos</span><svg><use href="#i-arrow" /></svg></a>
+              <a href="#app" class="btn btn-ghost" data-i18n="hero.ctaApp">Descarregar a app</a>
+            </div>
+            <ul class="hero-trust reveal">
+              <li><svg><use href="#i-check" /></svg><span data-i18n="hero.trust1">100% personalizado</span></li>
+              <li><svg><use href="#i-check" /></svg><span data-i18n="hero.trust2">Treino + Nutrição</span></li>
+              <li><svg><use href="#i-check" /></svg><span data-i18n="hero.trust3">Acompanhamento 1:1</span></li>
+              <li><svg><use href="#i-globe" /></svg><span>PT · ES · EN</span></li>
+            </ul>
+          </div>
+        </div>
+        <a href="#about" class="scroll-cue" aria-hidden="true"><span data-i18n="hero.scroll">Descobrir</span><i></i></a>
+      </section>
+
+      <!-- Faixa animada -->
+      <div class="ticker" aria-hidden="true">
+        <div class="ticker-track" id="ticker"></div>
+      </div>
+
+      <!-- ===================== Sobre (claro) ===================== -->
+      <section class="section section-cream" id="about">
+        <div class="container about-grid">
+          <div class="about-visual reveal">
+            <!-- Trocar por uma fotografia tua: assets/img/tiago.webp -->
+            <div class="about-frame">
+              <img src="assets/img/logo-mark.webp" alt="TiagoLifeStyle" loading="lazy" width="486" height="513" />
+            </div>
+            <div class="about-signature">TiagoLifeStyle</div>
+          </div>
+          <div class="about-copy">
+            <p class="eyebrow eyebrow-dark reveal" data-i18n="about.eyebrow">Sobre mim</p>
+            <h2 class="section-title reveal" data-i18n="about.title">Olá, sou o Tiago.</h2>
+            <p class="lead reveal" data-i18n="about.p1"></p>
+            <p class="reveal" data-i18n="about.p2"></p>
+            <div class="pillars">
+              <div class="pillar reveal">
+                <span class="pillar-num">01</span>
+                <h3 data-i18n="about.pillar1Title"></h3>
+                <p data-i18n="about.pillar1Text"></p>
+              </div>
+              <div class="pillar reveal">
+                <span class="pillar-num">02</span>
+                <h3 data-i18n="about.pillar2Title"></h3>
+                <p data-i18n="about.pillar2Text"></p>
+              </div>
+              <div class="pillar reveal">
+                <span class="pillar-num">03</span>
+                <h3 data-i18n="about.pillar3Title"></h3>
+                <p data-i18n="about.pillar3Text"></p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Como funciona ===================== -->
+      <section class="section section-sand" id="how">
+        <div class="container">
+          <div class="section-head center">
+            <p class="eyebrow eyebrow-dark reveal" data-i18n="how.eyebrow">Como funciona</p>
+            <h2 class="section-title reveal" data-i18n="how.title"></h2>
+          </div>
+          <ol class="steps">
+            <li class="step reveal"><span class="step-num">1</span><h3 data-i18n="how.s1Title"></h3><p data-i18n="how.s1Text"></p></li>
+            <li class="step reveal"><span class="step-num">2</span><h3 data-i18n="how.s2Title"></h3><p data-i18n="how.s2Text"></p></li>
+            <li class="step reveal"><span class="step-num">3</span><h3 data-i18n="how.s3Title"></h3><p data-i18n="how.s3Text"></p></li>
+            <li class="step reveal"><span class="step-num">4</span><h3 data-i18n="how.s4Title"></h3><p data-i18n="how.s4Text"></p></li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ===================== App (escuro) ===================== -->
+      <section class="section section-dark app-section" id="app">
+        <div class="container app-grid">
+          <div class="app-copy">
+            <p class="eyebrow reveal" data-i18n="app.eyebrow">A app TiagoLifeStyle</p>
+            <h2 class="section-title light reveal" data-i18n="app.title"></h2>
+            <p class="lead light reveal" data-i18n="app.text"></p>
+
+            <div class="store-buttons reveal" id="store-buttons">
+              <a class="store-btn" data-store="appStore">
+                <svg><use href="#i-apple" /></svg>
+                <span><small data-i18n="app.soon" class="store-soon"></small><b data-i18n="app.appStore">App Store</b></span>
+              </a>
+              <a class="store-btn" data-store="googlePlay">
+                <svg><use href="#i-play" /></svg>
+                <span><small data-i18n="app.soon" class="store-soon"></small><b data-i18n="app.googlePlay">Google Play</b></span>
+              </a>
+              <a class="store-btn" data-store="web">
+                <svg><use href="#i-globe" /></svg>
+                <span><small data-i18n="app.soon" class="store-soon"></small><b data-i18n="app.web">Versão web</b></span>
+              </a>
+            </div>
+            <p class="devices reveal" data-i18n="app.devices"></p>
+          </div>
+
+          <div class="phone-wrap reveal" aria-hidden="true">
+            <div class="phone">
+              <div class="phone-notch"></div>
+              <div class="phone-screen">
+                <div class="mock-top">
+                  <div>
+                    <small class="mock-muted">TiagoLifeStyle</small>
+                    <div class="mock-greeting" data-i18n="app.mockGreeting">Bom dia, Ana</div>
+                  </div>
+                  <img src="assets/img/logo-mark-sm.png" alt="" width="34" height="36" />
+                </div>
+                <div class="mock-card mock-hero">
+                  <small data-i18n="app.mockToday">Treino de hoje</small>
+                  <strong data-i18n="app.mockWorkout">Pernas &amp; Glúteos</strong>
+                  <span class="mock-muted" data-i18n="app.mockWeek">Semana 3 de 8</span>
+                  <div class="mock-bar"><i style="width: 38%"></i></div>
+                  <span class="mock-btn" data-i18n="app.mockStart">Começar treino</span>
+                </div>
+                <div class="mock-row">
+                  <div class="mock-card">
+                    <strong class="gold-text">1 850</strong>
+                    <small class="mock-muted" data-i18n="app.mockKcal">kcal hoje</small>
+                    <div class="mock-macros"><i style="--w: 70%"></i><i style="--w: 45%"></i><i style="--w: 60%"></i></div>
+                  </div>
+                  <div class="mock-card">
+                    <strong class="gold-text">12</strong>
+                    <small class="mock-muted" data-i18n="app.mockStreak">dias seguidos</small>
+                    <div class="mock-dots"><i></i><i></i><i></i><i></i><i></i><i class="off"></i><i class="off"></i></div>
+                  </div>
+                </div>
+                <div class="mock-card mock-chart">
+                  <svg viewBox="0 0 200 60" preserveAspectRatio="none">
+                    <defs>
+                      <linearGradient id="mockfill" x1="0" x2="0" y1="0" y2="1">
+                        <stop offset="0" stop-color="#C9A227" stop-opacity=".45" />
+                        <stop offset="1" stop-color="#C9A227" stop-opacity="0" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M0 48 L25 44 L50 46 L75 36 L100 34 L125 26 L150 24 L175 15 L200 10 L200 60 L0 60 Z" fill="url(#mockfill)" />
+                    <path d="M0 48 L25 44 L50 46 L75 36 L100 34 L125 26 L150 24 L175 15 L200 10" fill="none" stroke="#C9A227" stroke-width="2" />
+                  </svg>
+                </div>
+                <div class="mock-tabbar"><i class="on"></i><i></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="container">
+          <div class="features">
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f1Title"></h3><p data-i18n="app.f1Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f2Title"></h3><p data-i18n="app.f2Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f3Title"></h3><p data-i18n="app.f3Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f4Title"></h3><p data-i18n="app.f4Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f5Title"></h3><p data-i18n="app.f5Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f6Title"></h3><p data-i18n="app.f6Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f7Title"></h3><p data-i18n="app.f7Text"></p></div>
+            <div class="feature reveal"><span class="feature-ico">◆</span><h3 data-i18n="app.f8Title"></h3><p data-i18n="app.f8Text"></p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Planos (claro, estilo mármore) ===================== -->
+      <section class="section plans-section" id="plans">
+        <div class="plans-bg" aria-hidden="true"></div>
+        <div class="container">
+          <div class="plans-head">
+            <img class="plans-photo plans-photo-left reveal" src="assets/img/plan-mom.webp" alt="" loading="lazy" />
+            <div class="plans-title-wrap">
+              <p class="eyebrow eyebrow-dark reveal" data-i18n="plans.eyebrow">Planos e preços</p>
+              <h2 class="plans-title reveal">
+                <span data-i18n="plans.title"></span>
+                <span data-i18n="plans.subtitle"></span>
+              </h2>
+            </div>
+            <img class="plans-photo plans-photo-right reveal" src="assets/img/plan-group.webp" alt="" loading="lazy" />
+          </div>
+
+          <div class="plans-grid" id="plans-grid"></div>
+
+          <p class="plans-note reveal" data-i18n="plans.note"></p>
+
+          <div class="goal-box reveal">
+            <div>
+              <h3 data-i18n="plans.goalTitle"></h3>
+              <p data-i18n="plans.goalText"></p>
+            </div>
+            <a class="btn btn-dark" data-wa="general" target="_blank" rel="noopener">
+              <svg><use href="#i-whatsapp" /></svg><span data-i18n="plans.goalCta"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Pós-parto ===================== -->
+      <section class="section section-cream postpartum" id="postpartum">
+        <div class="container pp-grid">
+          <div class="pp-visual reveal">
+            <img src="assets/img/plan-mom.webp" alt="" loading="lazy" />
+          </div>
+          <div class="pp-copy">
+            <p class="eyebrow eyebrow-dark reveal" data-i18n="postpartum.eyebrow">Gravidez &amp; pós-parto</p>
+            <h2 class="section-title reveal" data-i18n="postpartum.title"></h2>
+            <p class="lead reveal" data-i18n="postpartum.text"></p>
+            <ul class="check-list reveal">
+              <li><svg><use href="#i-check" /></svg><span data-i18n="postpartum.l1"></span></li>
+              <li><svg><use href="#i-check" /></svg><span data-i18n="postpartum.l2"></span></li>
+              <li><svg><use href="#i-check" /></svg><span data-i18n="postpartum.l3"></span></li>
+              <li><svg><use href="#i-check" /></svg><span data-i18n="postpartum.l4"></span></li>
+            </ul>
+            <a class="btn btn-dark reveal" data-wa="postpartum" target="_blank" rel="noopener">
+              <svg><use href="#i-whatsapp" /></svg><span data-i18n="postpartum.cta"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Recompensas (faixa escura) ===================== -->
+      <section class="rewards section-dark">
+        <div class="container rewards-inner reveal">
+          <div class="rewards-badge"><svg><use href="#i-crown" /></svg></div>
+          <div>
+            <h2 data-i18n="rewards.title"></h2>
+            <p data-i18n="rewards.text"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Loja ===================== -->
+      <section class="section section-cream" id="shop">
+        <div class="container">
+          <div class="shop-head">
+            <div>
+              <p class="eyebrow eyebrow-dark reveal" data-i18n="shop.eyebrow">Loja oficial</p>
+              <h2 class="section-title reveal" data-i18n="shop.title"></h2>
+              <p class="lead reveal" data-i18n="shop.text"></p>
+            </div>
+            <div class="shop-filters reveal" role="tablist">
+              <button type="button" class="chip is-active" data-filter="all" data-i18n="shop.all">Tudo</button>
+              <button type="button" class="chip" data-filter="apparel" data-i18n="shop.apparel">Roupa</button>
+              <button type="button" class="chip" data-filter="towels" data-i18n="shop.towels">Toalhas</button>
+              <button type="button" class="chip" data-filter="accessories" data-i18n="shop.accessories">Acessórios</button>
+            </div>
+          </div>
+
+          <div class="drop-banner reveal">
+            <img src="assets/img/logo-mark-sm.png" alt="" width="64" height="68" />
+            <div class="drop-copy">
+              <small data-i18n="shop.dropEyebrow">Coleção 01</small>
+              <h3 data-i18n="shop.dropTitle">Edição limitada</h3>
+              <p data-i18n="shop.dropText"></p>
+            </div>
+            <a class="btn btn-gold" data-wa="drop" target="_blank" rel="noopener">
+              <span data-i18n="shop.dropCta"></span><svg><use href="#i-arrow" /></svg>
+            </a>
+          </div>
+
+          <div class="products" id="products"></div>
+        </div>
+      </section>
+
+      <!-- ===================== FAQ ===================== -->
+      <section class="section section-sand" id="faq">
+        <div class="container faq-wrap">
+          <div class="section-head center">
+            <p class="eyebrow eyebrow-dark reveal" data-i18n="faq.eyebrow">Perguntas frequentes</p>
+            <h2 class="section-title reveal" data-i18n="faq.title"></h2>
+          </div>
+          <div class="faq-list">
+            <details class="reveal"><summary><span data-i18n="faq.q1"></span><svg><use href="#i-plus" /></svg></summary><p data-i18n="faq.a1"></p></details>
+            <details class="reveal"><summary><span data-i18n="faq.q2"></span><svg><use href="#i-plus" /></svg></summary><p data-i18n="faq.a2"></p></details>
+            <details class="reveal"><summary><span data-i18n="faq.q3"></span><svg><use href="#i-plus" /></svg></summary><p data-i18n="faq.a3"></p></details>
+            <details class="reveal"><summary><span data-i18n="faq.q4"></span><svg><use href="#i-plus" /></svg></summary><p data-i18n="faq.a4"></p></details>
+            <details class="reveal"><summary><span data-i18n="faq.q5"></span><svg><use href="#i-plus" /></svg></summary><p data-i18n="faq.a5"></p></details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== Chamada final (escuro) ===================== -->
+      <section class="final section-dark">
+        <div class="final-bg" aria-hidden="true"></div>
+        <div class="container final-inner">
+          <img class="final-logo reveal" src="assets/img/logo-mark.webp" alt="" width="120" height="127" loading="lazy" />
+          <h2 class="reveal" data-i18n="final.title"></h2>
+          <p class="reveal" data-i18n="final.text"></p>
+          <div class="final-ctas reveal">
+            <a class="btn btn-gold" data-wa="general" target="_blank" rel="noopener">
+              <svg><use href="#i-whatsapp" /></svg><span data-i18n="final.whatsapp"></span>
+            </a>
+            <a class="btn btn-ghost" data-instagram target="_blank" rel="noopener">
+              <svg><use href="#i-instagram" /></svg><span data-i18n="final.instagram"></span>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== Rodapé ===================== -->
+    <footer class="site-footer section-dark">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <img src="assets/img/logo-mark-sm.png" alt="" width="48" height="51" />
+          <div>
+            <strong>TiagoLifeStyle</strong>
+            <p data-i18n="footer.tagline"></p>
+          </div>
+        </div>
+        <nav class="footer-nav">
+          <a href="#about" data-i18n="nav.about"></a>
+          <a href="#app" data-i18n="nav.app"></a>
+          <a href="#plans" data-i18n="nav.plans"></a>
+          <a href="#postpartum" data-i18n="nav.postpartum"></a>
+          <a href="#shop" data-i18n="nav.shop"></a>
+          <a href="#faq" data-i18n="nav.faq"></a>
+        </nav>
+        <div class="footer-social">
+          <a data-instagram target="_blank" rel="noopener" aria-label="Instagram"><svg><use href="#i-instagram" /></svg><span class="ig-handle"></span></a>
+          <a data-wa="general" target="_blank" rel="noopener" aria-label="WhatsApp"><svg><use href="#i-whatsapp" /></svg>WhatsApp</a>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <small>© <span id="year"></span> TiagoLifeStyle. <span data-i18n="footer.rights"></span></small>
+        <div class="lang-switch lang-switch-footer" role="group" data-i18n-attr="aria-label:nav.language">
+          <button type="button" data-lang="pt">PT</button>
+          <button type="button" data-lang="es">ES</button>
+          <button type="button" data-lang="en">EN</button>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Botão flutuante de WhatsApp -->
+    <a class="wa-float" data-wa="general" target="_blank" rel="noopener" data-i18n-attr="aria-label:wa.floating">
+      <svg><use href="#i-whatsapp" /></svg>
+    </a>
+
+    <script src="js/config.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>
