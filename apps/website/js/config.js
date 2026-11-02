@@ -17,7 +17,7 @@ window.SITE_CONFIG = {
   appLinks: {
     appStore: "",
     googlePlay: "",
-    web: "",
+    web: "https://tiagolifestyle-app.vercel.app/login",
   },
 
   // Planos. O "id" liga aos textos em i18n.js (plans.<id>.*).
