@@ -2,19 +2,11 @@ import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import type { PlanMeal } from "@/hooks/useNutritionPlan";
 import { useTheme } from "@/context/ThemeContext";
+import { darkenColor } from "@/lib/darkenColor";
 
 // Base do "vidro escuro" no modo escuro; no modo claro o cartão fica claro com texto escuro.
 const GLASS_BASE = "#1B1B22F2";
 const LIGHT_BASE = "#FFFFFF";
-
-// No fundo claro, as cores (sobretudo o amarelo) escurecem um pouco para se lerem bem.
-function darken(hex: string, amount = 0.25) {
-  const channel = (start: number) =>
-    Math.round(parseInt(hex.slice(start, start + 2), 16) * (1 - amount))
-      .toString(16)
-      .padStart(2, "0");
-  return `#${channel(1)}${channel(3)}${channel(5)}`;
-}
 
 function formatTime(time: string | null) {
   return time ? time.slice(0, 5) : null;
@@ -29,7 +21,7 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
   const time = formatTime(meal.time);
   const { theme } = useTheme();
   const isLight = theme === "light";
-  const textColor = isLight ? darken(accentColor) : accentColor;
+  const textColor = isLight ? darkenColor(accentColor) : accentColor;
 
   return (
     <View
