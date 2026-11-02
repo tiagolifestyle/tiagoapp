@@ -878,6 +878,20 @@ p {
   color: var(--white);
 }
 
+.phone:has(.has-shot) {
+  height: auto;
+}
+
+.phone-screen.has-shot {
+  padding: 46px 0 0;
+  display: block;
+}
+
+.phone-shot {
+  width: 100%;
+  height: auto;
+}
+
 .mock-top {
   display: flex;
   justify-content: space-between;
@@ -2205,6 +2219,10 @@ p {
     width: 260px;
     height: 530px;
     transform: none;
+  }
+
+  .phone:has(.has-shot) {
+    height: auto;
   }
 
   .feature {
