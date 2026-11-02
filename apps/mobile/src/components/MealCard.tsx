@@ -1,10 +1,20 @@
 import { View, Text } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import type { PlanMeal } from "@/hooks/useNutritionPlan";
+import { useTheme } from "@/context/ThemeContext";
 
-// Base fixa do "vidro escuro" — independente do tema claro/escuro do telemóvel,
-// para o cartão manter sempre o mesmo aspeto premium.
+// Base do "vidro escuro" no modo escuro; no modo claro o cartão fica claro com texto escuro.
 const GLASS_BASE = "#1B1B22F2";
+const LIGHT_BASE = "#FFFFFF";
+
+// No fundo claro, as cores (sobretudo o amarelo) escurecem um pouco para se lerem bem.
+function darken(hex: string, amount = 0.25) {
+  const channel = (start: number) =>
+    Math.round(parseInt(hex.slice(start, start + 2), 16) * (1 - amount))
+      .toString(16)
+      .padStart(2, "0");
+  return `#${channel(1)}${channel(3)}${channel(5)}`;
+}
 
 function formatTime(time: string | null) {
   return time ? time.slice(0, 5) : null;
@@ -17,6 +27,9 @@ interface MealCardProps {
 
 export function MealCard({ meal, accentColor }: MealCardProps) {
   const time = formatTime(meal.time);
+  const { theme } = useTheme();
+  const isLight = theme === "light";
+  const textColor = isLight ? darken(accentColor) : accentColor;
 
   return (
     <View
@@ -33,7 +46,7 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
         className="overflow-hidden rounded-3xl border"
         style={{ borderColor: `${accentColor}3D` }}
       >
-        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: GLASS_BASE }} />
+        <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: isLight ? LIGHT_BASE : GLASS_BASE }} />
         <LinearGradient
           colors={[`${accentColor}29`, `${accentColor}05`, "transparent"]}
           start={{ x: 0, y: 0 }}
@@ -49,12 +62,12 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
 
         <View className="gap-3 p-5">
           <View className="flex-row items-center justify-between">
-            <Text className="text-lg font-semibold" style={{ color: accentColor }}>
+            <Text className="text-lg font-semibold" style={{ color: textColor }}>
               {meal.name}
             </Text>
             {time ? (
               <View className="rounded-full px-2.5 py-1" style={{ backgroundColor: `${accentColor}1F` }}>
-                <Text className="text-xs font-semibold" style={{ color: accentColor }}>
+                <Text className="text-xs font-semibold" style={{ color: textColor }}>
                   {time}
                 </Text>
               </View>
@@ -65,16 +78,16 @@ export function MealCard({ meal, accentColor }: MealCardProps) {
             {meal.items.map((item) => (
               <View key={item.id} className="gap-0.5">
                 <View className="flex-row items-center justify-between">
-                  <Text className="flex-1 pr-3 text-sm text-muted">{item.food_name}</Text>
+                  <Text className={`flex-1 pr-3 text-sm ${isLight ? "text-foreground" : "text-muted"}`}>{item.food_name}</Text>
                   {item.quantity ? (
-                    <Text className="text-sm font-bold" style={{ color: accentColor }}>
+                    <Text className="text-sm font-bold" style={{ color: textColor }}>
                       {item.quantity}
                       {item.unit ?? ""}
                     </Text>
                   ) : null}
                 </View>
                 {item.notes ? (
-                  <Text className="text-xs" style={{ color: accentColor }}>
+                  <Text className="text-xs" style={{ color: textColor }}>
                     {item.notes}
                   </Text>
                 ) : null}
