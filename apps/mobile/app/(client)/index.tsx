@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/context/AuthContext";
+import { useTheme } from "@/context/ThemeContext";
 import { useDashboard } from "@/hooks/useDashboard";
 import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
@@ -24,6 +25,7 @@ function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfterno
 export default function DashboardScreen() {
   const { t } = useTranslation();
   const { profile } = useAuth();
+  const { theme } = useTheme();
   const { data, isLoading, refresh, refreshCompletedToday } = useDashboard(profile?.id);
   const firstName = profile?.full_name?.split(" ")[0] ?? "";
 
@@ -56,7 +58,11 @@ export default function DashboardScreen() {
           <View className="flex-row items-center gap-3">
             <Link href="/(client)/coach">
               <View className="rounded-full border border-border bg-surface p-3">
-                <Ionicons name="chatbubble-ellipses-outline" size={20} color="#F5F5F2" />
+                <Ionicons
+                  name="chatbubble-ellipses-outline"
+                  size={20}
+                  color={theme === "light" ? "#14141A" : "#F5F5F2"}
+                />
                 {data.unreadMessagesCount > 0 && (
                   <View className="absolute -right-1 -top-1 h-4 w-4 items-center justify-center rounded-full bg-accent">
                     <Text className="text-[10px] font-bold text-background">{data.unreadMessagesCount}</Text>
