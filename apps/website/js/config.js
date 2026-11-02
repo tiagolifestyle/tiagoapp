@@ -23,7 +23,7 @@ window.SITE_CONFIG = {
   // Planos. O "id" liga aos textos em i18n.js (plans.<id>.*).
   // Na base de dados, "basic" corresponde ao tier interno "free".
   plans: [
-    { id: "basic", price: 25, badge: null, choice: true },
+    { id: "basic", price: 29.99, badge: null, choice: true },
     { id: "premium", price: 45, badge: "popular", choice: false },
     { id: "vip", price: 89.99, badge: "vip", choice: false },
   ],
