@@ -76,8 +76,7 @@
     "nutritionCardCta": "See plan →",
     "mentorTitle": "Beyond the physical",
     "mentorSubtitle": "Mindset, habits and lifestyle",
-    "mentorCta": "See more →",
-    "comingSoon": "Coming soon"
+    "mentorCta": "See more →"
   },
   "rewards": {
     "title": "Rewards",
@@ -136,6 +135,14 @@
     "title": "Shopping list",
     "clear": "Clear",
     "hint": "Tap an item to tick it off."
+  },
+  "mentor": {
+    "progressToday": "Your progress today",
+    "done": "Done",
+    "pending": "Pending",
+    "hint": "Tap a habit when you do it. Everything resets at midnight.",
+    "allDone": "Day complete! 💪",
+    "empty": "Your coach hasn't added any habits yet."
   },
   "dishes": {
     "button": "Special dishes",

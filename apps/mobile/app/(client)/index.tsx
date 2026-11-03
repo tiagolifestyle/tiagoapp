@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { View, Text, Image, ScrollView, RefreshControl, Pressable } from "react-native";
 import { Link, router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -37,14 +37,6 @@ export default function DashboardScreen() {
   // No fundo claro, o dourado e o rosa escurecem um pouco para se lerem bem.
   const nutritionColor = theme === "light" ? darkenColor(NUTRITION_COLOR) : NUTRITION_COLOR;
   const mentorColor = theme === "light" ? darkenColor(MENTOR_COLOR) : MENTOR_COLOR;
-  // O Mentor LifeStyle ainda não tem conteúdo: ao tocar mostra "Em breve" durante uns segundos.
-  const [mentorSoon, setMentorSoon] = useState(false);
-
-  useEffect(() => {
-    if (!mentorSoon) return;
-    const timer = setTimeout(() => setMentorSoon(false), 2500);
-    return () => clearTimeout(timer);
-  }, [mentorSoon]);
 
   useFocusEffect(
     useCallback(() => {
@@ -245,7 +237,7 @@ export default function DashboardScreen() {
           </Pressable>
 
           <Pressable
-            onPress={() => setMentorSoon(true)}
+            onPress={() => router.push("/(client)/mentor")}
             className="flex-1 rounded-3xl border bg-surface-elevated p-3 active:opacity-80"
             style={{ borderColor: `${MENTOR_COLOR}99` }}
           >
@@ -259,7 +251,7 @@ export default function DashboardScreen() {
               <Text className="text-sm font-bold text-foreground">{t("dashboard.mentorTitle")}</Text>
               <Text className="text-xs text-muted">{t("dashboard.mentorSubtitle")}</Text>
               <Text className="mt-auto pt-2 text-xs font-semibold uppercase" style={{ color: mentorColor }}>
-                {mentorSoon ? t("dashboard.comingSoon") : t("dashboard.mentorCta")}
+                {t("dashboard.mentorCta")}
               </Text>
             </View>
           </Pressable>

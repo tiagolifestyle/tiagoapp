@@ -76,8 +76,7 @@
     "nutritionCardCta": "Ver plano →",
     "mentorTitle": "Além do físico",
     "mentorSubtitle": "Mentalidade, hábitos e estilo de vida",
-    "mentorCta": "Ver mais →",
-    "comingSoon": "Em breve"
+    "mentorCta": "Ver mais →"
   },
   "rewards": {
     "title": "Recompensas",
@@ -136,6 +135,14 @@
     "title": "Lista de compras",
     "clear": "Limpar",
     "hint": "Toca num artigo para o riscar."
+  },
+  "mentor": {
+    "progressToday": "O teu progresso de hoje",
+    "done": "Concluído",
+    "pending": "Pendente",
+    "hint": "Toca num hábito quando o fizeres. Tudo recomeça à meia-noite.",
+    "allDone": "Dia completo! 💪",
+    "empty": "O teu coach ainda não adicionou hábitos."
   },
   "dishes": {
     "button": "Pratos especiais",

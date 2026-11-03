@@ -309,6 +309,17 @@ export interface SpecialDish {
   updated_at: string;
 }
 
+export interface Habit {
+  id: string;
+  title_pt: string;
+  title_es: string;
+  title_en: string;
+  icon: string;
+  order_index: number;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Conversation {
   id: string;
   client_id: string;
