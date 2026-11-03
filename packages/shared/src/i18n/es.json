@@ -69,7 +69,15 @@
     "streak": "{{count}} días de consistencia",
     "startWorkout": "Empezar entrenamiento",
     "workoutDone": "Entrenamiento completado",
-    "planWeek": "Semana {{week}} de {{total}}"
+    "planWeek": "Semana {{week}} de {{total}}",
+    "nutritionCardLabel": "Nutrición",
+    "nutritionCardTitle": "Plan de alimentación",
+    "nutritionCardKcal": "{{kcal}} kcal diarias",
+    "nutritionCardCta": "Ver plan →",
+    "mentorTitle": "Más allá del físico",
+    "mentorSubtitle": "Mentalidad, hábitos y estilo de vida",
+    "mentorCta": "Ver más →",
+    "comingSoon": "Próximamente"
   },
   "rewards": {
     "title": "Recompensas",

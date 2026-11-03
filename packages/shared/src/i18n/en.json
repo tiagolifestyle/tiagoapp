@@ -69,7 +69,15 @@
     "streak": "{{count}}-day streak",
     "startWorkout": "Start workout",
     "workoutDone": "Workout done",
-    "planWeek": "Week {{week}} of {{total}}"
+    "planWeek": "Week {{week}} of {{total}}",
+    "nutritionCardLabel": "Nutrition",
+    "nutritionCardTitle": "Meal plan",
+    "nutritionCardKcal": "{{kcal}} kcal per day",
+    "nutritionCardCta": "See plan →",
+    "mentorTitle": "Beyond the physical",
+    "mentorSubtitle": "Mindset, habits and lifestyle",
+    "mentorCta": "See more →",
+    "comingSoon": "Coming soon"
   },
   "rewards": {
     "title": "Rewards",

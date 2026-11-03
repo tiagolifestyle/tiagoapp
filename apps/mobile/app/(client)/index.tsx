@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, Text, Image, ScrollView, RefreshControl, Pressable } from "react-native";
 import { Link, router, useFocusEffect } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -12,8 +12,14 @@ import { Card } from "@/components/Card";
 import { StatTile } from "@/components/StatTile";
 import { LEVEL_IMAGES } from "@/components/levelImages";
 import { getLevel } from "@tiagolifestyle/shared";
+import { darkenColor } from "@/lib/darkenColor";
 import postpartumIllustration from "../../assets/postpartum-illustration.png";
 import brandLogo from "../../assets/logo.png";
+import nutritionCardPhoto from "../../assets/card-nutrition.jpg";
+import mentorCardPhoto from "../../assets/card-mentor.jpg";
+
+const NUTRITION_COLOR = "#C9A227";
+const MENTOR_COLOR = "#F472B6";
 
 function greetingKey(): "dashboard.greetingMorning" | "dashboard.greetingAfternoon" | "dashboard.greetingEvening" {
   const hour = new Date().getHours();
@@ -28,6 +34,17 @@ export default function DashboardScreen() {
   const { theme } = useTheme();
   const { data, isLoading, refresh, refreshCompletedToday } = useDashboard(profile?.id);
   const firstName = profile?.full_name?.split(" ")[0] ?? "";
+  // No fundo claro, o dourado e o rosa escurecem um pouco para se lerem bem.
+  const nutritionColor = theme === "light" ? darkenColor(NUTRITION_COLOR) : NUTRITION_COLOR;
+  const mentorColor = theme === "light" ? darkenColor(MENTOR_COLOR) : MENTOR_COLOR;
+  // O Mentor LifeStyle ainda não tem conteúdo: ao tocar mostra "Em breve" durante uns segundos.
+  const [mentorSoon, setMentorSoon] = useState(false);
+
+  useEffect(() => {
+    if (!mentorSoon) return;
+    const timer = setTimeout(() => setMentorSoon(false), 2500);
+    return () => clearTimeout(timer);
+  }, [mentorSoon]);
 
   useFocusEffect(
     useCallback(() => {
@@ -204,24 +221,49 @@ export default function DashboardScreen() {
           )}
         </View>
 
-        <Card className="gap-3">
-          <View className="flex-row items-center justify-between">
-            <Text className="text-lg font-semibold text-foreground">{t("dashboard.todayNutrition")}</Text>
-            <Link href="/(client)/nutrition">
-              <Text className="text-sm font-medium text-accent">{t("common.seeAll")}</Text>
-            </Link>
-          </View>
-          {data.nutritionPlan ? (
-            <View className="flex-row flex-wrap gap-x-6 gap-y-1">
-              <Text className="text-sm text-muted">{t("nutrition.calories")}: {data.nutritionPlan.calories ?? "—"}</Text>
-              <Text className="text-sm text-muted">{t("nutrition.protein")}: {data.nutritionPlan.protein_g ?? "—"}g</Text>
-              <Text className="text-sm text-muted">{t("nutrition.carbs")}: {data.nutritionPlan.carbs_g ?? "—"}g</Text>
-              <Text className="text-sm text-muted">{t("nutrition.fat")}: {data.nutritionPlan.fat_g ?? "—"}g</Text>
+        <View className="flex-row gap-3">
+          <Pressable
+            onPress={() => router.push("/(client)/nutrition")}
+            className="flex-1 rounded-3xl border bg-surface-elevated p-3 active:opacity-80"
+            style={{ borderColor: `${NUTRITION_COLOR}99` }}
+          >
+            <View className="h-28 w-full overflow-hidden rounded-2xl">
+              <Image source={nutritionCardPhoto} resizeMode="cover" style={{ width: "100%", height: "100%" }} />
             </View>
-          ) : (
-            <Text className="text-sm text-muted">—</Text>
-          )}
-        </Card>
+            <View className="flex-1 gap-1 px-1 pt-3">
+              <Text className="text-xs font-bold uppercase" style={{ color: nutritionColor }}>
+                {t("dashboard.nutritionCardLabel")}
+              </Text>
+              <Text className="text-sm font-bold text-foreground">{t("dashboard.nutritionCardTitle")}</Text>
+              <Text className="text-xs text-muted">
+                {data.nutritionPlan?.calories ? t("dashboard.nutritionCardKcal", { kcal: data.nutritionPlan.calories }) : "—"}
+              </Text>
+              <Text className="mt-auto pt-2 text-xs font-semibold uppercase" style={{ color: nutritionColor }}>
+                {t("dashboard.nutritionCardCta")}
+              </Text>
+            </View>
+          </Pressable>
+
+          <Pressable
+            onPress={() => setMentorSoon(true)}
+            className="flex-1 rounded-3xl border bg-surface-elevated p-3 active:opacity-80"
+            style={{ borderColor: `${MENTOR_COLOR}99` }}
+          >
+            <View className="h-28 w-full overflow-hidden rounded-2xl">
+              <Image source={mentorCardPhoto} resizeMode="cover" style={{ width: "100%", height: "100%" }} />
+            </View>
+            <View className="flex-1 gap-1 px-1 pt-3">
+              <Text className="text-xs font-bold uppercase" style={{ color: mentorColor }}>
+                Mentor LifeStyle
+              </Text>
+              <Text className="text-sm font-bold text-foreground">{t("dashboard.mentorTitle")}</Text>
+              <Text className="text-xs text-muted">{t("dashboard.mentorSubtitle")}</Text>
+              <Text className="mt-auto pt-2 text-xs font-semibold uppercase" style={{ color: mentorColor }}>
+                {mentorSoon ? t("dashboard.comingSoon") : t("dashboard.mentorCta")}
+              </Text>
+            </View>
+          </Pressable>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
