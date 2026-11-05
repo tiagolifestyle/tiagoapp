@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable } from "react-native";
+import { View, Text, ScrollView, Pressable, Linking } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
 import { supportedLocales, type SupportedLocale, type SubscriptionTier } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, type ThemeMode } from "@/context/ThemeContext";
@@ -16,6 +17,9 @@ const localeLabels: Record<SupportedLocale, string> = {
 };
 
 const THEME_MODES: ThemeMode[] = ["dark", "light"];
+
+const WEBSITE_URL = "https://www.tiagolifestyle.com/";
+const INSTAGRAM_URL = "https://www.instagram.com/tiagolifestyle_93/";
 
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
@@ -99,6 +103,26 @@ export default function ProfileScreen() {
                 <Text className="text-foreground">{t(`profile.theme${mode === "dark" ? "Dark" : "Light"}`)}</Text>
               </Pressable>
             ))}
+          </View>
+        </Card>
+
+        <Card className="gap-3">
+          <Text className="text-base font-medium text-foreground">TiagoLifeStyle</Text>
+          <View className="flex-row gap-3">
+            <Pressable
+              onPress={() => Linking.openURL(WEBSITE_URL)}
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
+            >
+              <Ionicons name="globe-outline" size={18} color="#C9A227" />
+              <Text className="text-foreground">{t("profile.website")}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => Linking.openURL(INSTAGRAM_URL)}
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
+            >
+              <Ionicons name="logo-instagram" size={18} color="#C9A227" />
+              <Text className="text-foreground">Instagram</Text>
+            </Pressable>
           </View>
         </Card>
 

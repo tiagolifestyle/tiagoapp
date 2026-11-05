@@ -208,7 +208,8 @@
     "tierVip": "VIP",
     "validUntil": "Válido até {{date}}",
     "personalInfo": "Informação pessoal",
-    "security": "Segurança"
+    "security": "Segurança",
+    "website": "Página web"
   },
   "account": {
     "inactiveTitle": "Conta inativa",
