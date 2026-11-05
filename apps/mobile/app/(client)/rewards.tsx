@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { View, Text, ScrollView, RefreshControl, Image, Pressable, ActivityIndicator } from "react-native";
 import { router } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
 import { LEVELS, getLevel, type Reward } from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
 import { useRewards } from "@/hooks/useRewards";
@@ -17,6 +18,42 @@ function pickLocalized(reward: Reward, field: "title" | "description", locale: s
     if (value) return value;
   }
   return "";
+}
+
+// Código promocional (igual para todos) que aparece depois de resgatar e fica sempre visível.
+function PromoCode({ code }: { code: string }) {
+  const { t } = useTranslation();
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const timer = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  async function handleCopy() {
+    await Clipboard.setStringAsync(code);
+    setCopied(true);
+  }
+
+  return (
+    <View className="gap-2 rounded-2xl border border-dashed border-accent bg-surface-elevated p-4">
+      <Text className="text-xs font-semibold uppercase text-muted">{t("rewards.promoCode")}</Text>
+      <View className="flex-row items-center justify-between gap-3">
+        <Text selectable className="text-2xl font-bold tracking-widest text-accent">
+          {code}
+        </Text>
+        <Pressable
+          onPress={handleCopy}
+          className="flex-row items-center gap-1.5 rounded-full bg-accent px-4 py-2 active:opacity-80"
+        >
+          <Ionicons name={copied ? "checkmark" : "copy-outline"} size={14} color="#0B0B0F" />
+          <Text className="text-xs font-semibold text-background">{copied ? t("rewards.copied") : t("rewards.copyCode")}</Text>
+        </Pressable>
+      </View>
+      <Text className="text-xs text-muted">{t("rewards.promoCodeHint")}</Text>
+    </View>
+  );
 }
 
 export default function RewardsScreen() {
@@ -135,6 +172,8 @@ export default function RewardsScreen() {
                 ) : (
                   <Text className="text-sm text-muted">{t("rewards.unlocksAt", { count: reward.points_required })}</Text>
                 )}
+
+                {redemption && reward.promo_code ? <PromoCode code={reward.promo_code} /> : null}
 
                 {errorId === reward.id && <Text className="text-sm text-danger">{t("rewards.redeemError")}</Text>}
               </Card>

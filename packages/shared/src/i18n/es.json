@@ -91,7 +91,11 @@
     "redeem": "Canjear",
     "redeemed": "Canjeado · tu coach se pondrá en contacto",
     "delivered": "Entregado",
-    "redeemError": "No se pudo canjear. Inténtalo de nuevo."
+    "redeemError": "No se pudo canjear. Inténtalo de nuevo.",
+    "promoCode": "Tu código promocional",
+    "copyCode": "Copiar código",
+    "copied": "¡Copiado!",
+    "promoCodeHint": "Úsalo en la tienda TLifeStyle siempre que quieras comprar."
   },
   "workout": {
     "sets": "series",

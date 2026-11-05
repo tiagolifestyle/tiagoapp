@@ -91,7 +91,11 @@
     "redeem": "Redeem",
     "redeemed": "Redeemed · your coach will get in touch",
     "delivered": "Delivered",
-    "redeemError": "Couldn't redeem. Please try again."
+    "redeemError": "Couldn't redeem. Please try again.",
+    "promoCode": "Your promo code",
+    "copyCode": "Copy code",
+    "copied": "Copied!",
+    "promoCodeHint": "Use it at the TLifeStyle store whenever you shop."
   },
   "workout": {
     "sets": "sets",

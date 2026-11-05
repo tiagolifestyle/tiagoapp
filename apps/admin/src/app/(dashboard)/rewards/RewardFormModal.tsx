@@ -20,6 +20,7 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
   const [descriptionEn, setDescriptionEn] = useState(reward?.description_en ?? "");
   const [points, setPoints] = useState(reward?.points_required?.toString() ?? "");
   const [unlocksDishes, setUnlocksDishes] = useState(reward?.unlocks_special_dishes ?? false);
+  const [promoCode, setPromoCode] = useState(reward?.promo_code ?? "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -40,6 +41,7 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
       description_en: descriptionEn || null,
       points_required: pointsValue,
       unlocks_special_dishes: unlocksDishes,
+      promo_code: promoCode.trim() || null,
     };
 
     const query = reward
@@ -72,6 +74,18 @@ export function RewardFormModal({ reward, onClose, onSaved }: RewardFormModalPro
               onChange={(e) => setPoints(e.target.value)}
               className={inputClass}
             />
+          </Field>
+
+          <Field label="Código promocional (opcional)">
+            <input
+              value={promoCode}
+              onChange={(e) => setPromoCode(e.target.value.toUpperCase())}
+              placeholder="Ex: TLS10"
+              className={inputClass}
+            />
+            <span className="text-xs text-muted">
+              Igual para todos. O cliente vê-o depois de resgatar e o resgate fica logo marcado como entregue.
+            </span>
           </Field>
 
           <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-border p-4">

@@ -271,6 +271,7 @@ export interface Reward {
   description_en: string | null;
   points_required: number;
   unlocks_special_dishes: boolean;
+  promo_code: string | null;
   created_at: string;
   updated_at: string;
 }

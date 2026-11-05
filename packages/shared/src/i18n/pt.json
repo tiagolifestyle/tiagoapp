@@ -91,7 +91,11 @@
     "redeem": "Resgatar",
     "redeemed": "Resgatado · o teu coach vai entrar em contacto",
     "delivered": "Entregue",
-    "redeemError": "Não foi possível resgatar. Tenta novamente."
+    "redeemError": "Não foi possível resgatar. Tenta novamente.",
+    "promoCode": "O teu código promocional",
+    "copyCode": "Copiar código",
+    "copied": "Copiado!",
+    "promoCodeHint": "Usa-o na loja TLifeStyle sempre que quiseres comprar."
   },
   "workout": {
     "sets": "séries",
