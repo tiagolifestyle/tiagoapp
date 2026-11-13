@@ -224,7 +224,14 @@
     "security": "Segurança",
     "website": "Página web",
     "showInRanking": "Aparecer no ranking",
-    "showInRankingHint": "Os outros clientes veem o teu primeiro nome, a inicial do apelido, o teu nível e os teus pontos."
+    "showInRankingHint": "Os outros clientes veem a tua alcunha (ou o teu primeiro nome e a inicial do apelido), o teu nível e os teus pontos.",
+    "rankingNickname": "Alcunha no ranking",
+    "rankingNicknameHint": "Se deixares vazio, aparece «{{name}}».",
+    "save": "Guardar",
+    "saved": "Guardado ✓",
+    "nicknameTaken": "Essa alcunha já está a ser usada. Escolhe outra.",
+    "nicknameInvalid": "A alcunha deve ter entre 2 e 20 caracteres.",
+    "nicknameError": "Não foi possível guardar. Tenta novamente."
   },
   "account": {
     "inactiveTitle": "Conta inativa",

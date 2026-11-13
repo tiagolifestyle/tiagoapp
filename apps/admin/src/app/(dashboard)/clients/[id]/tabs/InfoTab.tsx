@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Client, ClientStatus, SubscriptionTier } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
@@ -13,6 +13,25 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
   const [heightCm, setHeightCm] = useState(initialClient.height_cm != null ? String(initialClient.height_cm) : "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  // Alcunha que o cliente escolheu para o ranking; o coach pode removê-la se for inadequada.
+  const [nickname, setNickname] = useState<string | null>(null);
+
+  useEffect(() => {
+    const supabase = createBrowserSupabaseClient();
+    supabase
+      .from("profiles")
+      .select("ranking_nickname")
+      .eq("id", clientId)
+      .single()
+      .then(({ data }) => setNickname((data?.ranking_nickname as string | null) ?? null));
+  }, [clientId]);
+
+  async function handleRemoveNickname() {
+    if (!nickname || !confirm(`Remover a alcunha "${nickname}" do ranking?`)) return;
+    const supabase = createBrowserSupabaseClient();
+    const { error } = await supabase.from("profiles").update({ ranking_nickname: null }).eq("id", clientId);
+    if (!error) setNickname(null);
+  }
 
   async function handleSave() {
     setSaving(true);
@@ -105,6 +124,18 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
           {saving ? "A guardar…" : "Guardar"}
         </button>
         {saved && <span className="text-sm text-success">Guardado</span>}
+      </div>
+
+      <div className="flex flex-col gap-2 border-t border-border pt-5">
+        <label className="text-sm font-medium text-muted">Alcunha no ranking</label>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-foreground">{nickname ?? "Sem alcunha (aparece o primeiro nome e a inicial)"}</span>
+          {nickname && (
+            <button onClick={handleRemoveNickname} className="text-xs font-medium text-danger hover:underline">
+              Remover alcunha
+            </button>
+          )}
+        </div>
       </div>
     </Card>
   );

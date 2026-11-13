@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, Linking, Switch } from "react-native";
+import { View, Text, ScrollView, Pressable, Linking, Switch, TextInput } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +18,13 @@ const localeLabels: Record<SupportedLocale, string> = {
 
 const THEME_MODES: ThemeMode[] = ["dark", "light"];
 
+// O mesmo nome curto que o ranking mostra quando o cliente não tem alcunha ("Tiago C.").
+function shortName(fullName: string | undefined): string {
+  const parts = (fullName ?? "").trim().split(/\s+/).filter(Boolean);
+  if (parts.length <= 1) return parts[0] ?? "";
+  return `${parts[0]} ${parts[parts.length - 1][0]}.`;
+}
+
 const WEBSITE_URL = "https://www.tiagolifestyle.com/";
 const INSTAGRAM_URL = "https://www.instagram.com/tiagolifestyle_93/";
 
@@ -28,9 +35,16 @@ export default function ProfileScreen() {
   const [tier, setTier] = useState<SubscriptionTier | null>(null);
   const [activeUntil, setActiveUntil] = useState<string | null>(null);
   const [showInRanking, setShowInRanking] = useState(profile?.show_in_ranking ?? true);
+  const [savedNickname, setSavedNickname] = useState(profile?.ranking_nickname ?? "");
+  const [nickname, setNickname] = useState(profile?.ranking_nickname ?? "");
+  const [nicknameStatus, setNicknameStatus] = useState<"saving" | "saved" | "taken" | "invalid" | "error" | null>(null);
 
   useEffect(() => {
-    if (profile) setShowInRanking(profile.show_in_ranking ?? true);
+    if (profile) {
+      setShowInRanking(profile.show_in_ranking ?? true);
+      setSavedNickname(profile.ranking_nickname ?? "");
+      setNickname(profile.ranking_nickname ?? "");
+    }
   }, [profile]);
 
   useEffect(() => {
@@ -60,6 +74,42 @@ export default function ProfileScreen() {
       if (error) setShowInRanking(!value);
     }
   }
+
+  async function saveNickname() {
+    if (!profile) return;
+    const value = nickname.trim();
+    if (value && (value.length < 2 || value.length > 20)) {
+      setNicknameStatus("invalid");
+      return;
+    }
+    setNicknameStatus("saving");
+    const { error } = await supabase
+      .from("profiles")
+      .update({ ranking_nickname: value || null })
+      .eq("id", profile.id);
+    if (!error) {
+      setSavedNickname(value);
+      setNickname(value);
+      setNicknameStatus("saved");
+    } else if (error.code === "23505") {
+      setNicknameStatus("taken");
+    } else if (error.code === "23514") {
+      setNicknameStatus("invalid");
+    } else {
+      setNicknameStatus("error");
+    }
+  }
+
+  const nicknameMessage =
+    nicknameStatus === "saved"
+      ? t("profile.saved")
+      : nicknameStatus === "taken"
+        ? t("profile.nicknameTaken")
+        : nicknameStatus === "invalid"
+          ? t("profile.nicknameInvalid")
+          : nicknameStatus === "error"
+            ? t("profile.nicknameError")
+            : t("profile.rankingNicknameHint", { name: shortName(profile?.full_name) });
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
@@ -132,6 +182,41 @@ export default function ProfileScreen() {
             />
           </View>
           <Text className="text-xs text-muted">{t("profile.showInRankingHint")}</Text>
+
+          <Text className="mt-2 text-sm font-medium text-foreground">{t("profile.rankingNickname")}</Text>
+          <View className="flex-row items-center gap-2">
+            <TextInput
+              value={nickname}
+              onChangeText={(value) => {
+                setNickname(value);
+                setNicknameStatus(null);
+              }}
+              placeholder={shortName(profile?.full_name)}
+              placeholderTextColor="#6B6B76"
+              maxLength={20}
+              className="min-w-0 flex-1 rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-base text-foreground"
+            />
+            <Pressable
+              onPress={saveNickname}
+              disabled={nicknameStatus === "saving" || nickname.trim() === savedNickname}
+              className={`shrink-0 rounded-2xl bg-accent px-4 py-3 active:opacity-80 ${
+                nicknameStatus === "saving" || nickname.trim() === savedNickname ? "opacity-50" : ""
+              }`}
+            >
+              <Text className="font-semibold text-background">{t("profile.save")}</Text>
+            </Pressable>
+          </View>
+          <Text
+            className={`text-xs ${
+              nicknameStatus === "saved"
+                ? "text-success"
+                : nicknameStatus === "taken" || nicknameStatus === "invalid" || nicknameStatus === "error"
+                  ? "text-danger"
+                  : "text-muted"
+            }`}
+          >
+            {nicknameMessage}
+          </Text>
         </Card>
 
         <Card className="gap-3">

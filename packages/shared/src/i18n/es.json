@@ -224,7 +224,14 @@
     "security": "Seguridad",
     "website": "Sitio web",
     "showInRanking": "Aparecer en el ranking",
-    "showInRankingHint": "Los demás clientes ven tu nombre, la inicial de tu apellido, tu nivel y tus puntos."
+    "showInRankingHint": "Los demás clientes ven tu apodo (o tu nombre y la inicial de tu apellido), tu nivel y tus puntos.",
+    "rankingNickname": "Apodo en el ranking",
+    "rankingNicknameHint": "Si lo dejas vacío, aparece «{{name}}».",
+    "save": "Guardar",
+    "saved": "Guardado ✓",
+    "nicknameTaken": "Ese apodo ya está en uso. Elige otro.",
+    "nicknameInvalid": "El apodo debe tener entre 2 y 20 caracteres.",
+    "nicknameError": "No se ha podido guardar. Inténtalo de nuevo."
   },
   "account": {
     "inactiveTitle": "Cuenta inactiva",

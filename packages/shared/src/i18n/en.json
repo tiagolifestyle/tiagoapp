@@ -224,7 +224,14 @@
     "security": "Security",
     "website": "Website",
     "showInRanking": "Show me in the ranking",
-    "showInRankingHint": "Other clients see your first name, last-name initial, level and points."
+    "showInRankingHint": "Other clients see your nickname (or your first name and last-name initial), your level and your points.",
+    "rankingNickname": "Ranking nickname",
+    "rankingNicknameHint": "If you leave it empty, “{{name}}” is shown.",
+    "save": "Save",
+    "saved": "Saved ✓",
+    "nicknameTaken": "That nickname is already taken. Choose another one.",
+    "nicknameInvalid": "Your nickname must be 2 to 20 characters long.",
+    "nicknameError": "Couldn't save. Please try again."
   },
   "account": {
     "inactiveTitle": "Account inactive",

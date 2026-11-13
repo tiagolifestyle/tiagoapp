@@ -26,6 +26,7 @@ export interface Profile {
   phone: string | null;
   locale: AppLocale;
   show_in_ranking: boolean;
+  ranking_nickname: string | null;
   created_at: string;
   updated_at: string;
 }
