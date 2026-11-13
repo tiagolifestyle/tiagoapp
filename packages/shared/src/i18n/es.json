@@ -148,6 +148,19 @@
     "allDone": "¡Día completo! 💪",
     "empty": "Tu coach aún no ha añadido hábitos."
   },
+  "ranking": {
+    "button": "Ranking",
+    "title": "Ranking",
+    "thisMonth": "Este mes",
+    "allTime": "Siempre",
+    "yourPosition": "Estás en el {{position}}.º puesto",
+    "you": "tú",
+    "hidden": "No apareces en el ranking. Puedes cambiarlo en el Perfil.",
+    "empty": "Todavía no hay clientes en el ranking.",
+    "points_zero": "{{count}} puntos",
+    "points_one": "{{count}} punto",
+    "points_other": "{{count}} puntos"
+  },
   "dishes": {
     "button": "Platos especiales",
     "subtitle": "Ideas de comidas para adaptar a tu plan",
@@ -209,7 +222,9 @@
     "validUntil": "Válido hasta {{date}}",
     "personalInfo": "Información personal",
     "security": "Seguridad",
-    "website": "Sitio web"
+    "website": "Sitio web",
+    "showInRanking": "Aparecer en el ranking",
+    "showInRankingHint": "Los demás clientes ven tu nombre, la inicial de tu apellido, tu nivel y tus puntos."
   },
   "account": {
     "inactiveTitle": "Cuenta inactiva",

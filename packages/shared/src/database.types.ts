@@ -25,6 +25,7 @@ export interface Profile {
   avatar_url: string | null;
   phone: string | null;
   locale: AppLocale;
+  show_in_ranking: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -319,6 +320,15 @@ export interface Habit {
   order_index: number;
   created_at: string;
   updated_at: string;
+}
+
+// Uma linha do ranking (função get_ranking): só nome curto e pontos, nunca dados privados.
+export interface RankingRow {
+  rank: number;
+  display_name: string;
+  points: number;
+  total_points: number;
+  is_me: boolean;
 }
 
 export interface Conversation {

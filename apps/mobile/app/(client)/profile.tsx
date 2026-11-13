@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, ScrollView, Pressable, Linking } from "react-native";
+import { View, Text, ScrollView, Pressable, Linking, Switch } from "react-native";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
@@ -27,6 +27,11 @@ export default function ProfileScreen() {
   const { theme, setTheme } = useTheme();
   const [tier, setTier] = useState<SubscriptionTier | null>(null);
   const [activeUntil, setActiveUntil] = useState<string | null>(null);
+  const [showInRanking, setShowInRanking] = useState(profile?.show_in_ranking ?? true);
+
+  useEffect(() => {
+    if (profile) setShowInRanking(profile.show_in_ranking ?? true);
+  }, [profile]);
 
   useEffect(() => {
     if (!profile) return;
@@ -45,6 +50,14 @@ export default function ProfileScreen() {
     await i18n.changeLanguage(locale);
     if (profile) {
       await supabase.from("profiles").update({ locale }).eq("id", profile.id);
+    }
+  }
+
+  async function changeShowInRanking(value: boolean) {
+    setShowInRanking(value);
+    if (profile) {
+      const { error } = await supabase.from("profiles").update({ show_in_ranking: value }).eq("id", profile.id);
+      if (error) setShowInRanking(!value);
     }
   }
 
@@ -104,6 +117,21 @@ export default function ProfileScreen() {
               </Pressable>
             ))}
           </View>
+        </Card>
+
+        <Card className="gap-2">
+          <View className="flex-row items-center justify-between gap-3">
+            <Text className="flex-1 text-base font-medium text-foreground">{t("profile.showInRanking")}</Text>
+            <Switch
+              value={showInRanking}
+              onValueChange={changeShowInRanking}
+              trackColor={{ false: "#6B6B76", true: "#C9A227" }}
+              thumbColor="#F5F5F2"
+              // Na versão web a bolinha ligada usa activeThumbColor (prop só do react-native-web).
+              {...({ activeThumbColor: "#F5F5F2" } as object)}
+            />
+          </View>
+          <Text className="text-xs text-muted">{t("profile.showInRankingHint")}</Text>
         </Card>
 
         <Card className="gap-3">

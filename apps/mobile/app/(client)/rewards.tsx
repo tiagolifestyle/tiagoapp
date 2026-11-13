@@ -82,7 +82,16 @@ export default function RewardsScreen() {
         refreshControl={<RefreshControl refreshing={isLoading} onRefresh={refresh} tintColor="#C9A227" />}
       >
         <Button label={t("common.back")} variant="ghost" onPress={() => router.back()} />
-        <Text className="text-2xl font-semibold text-foreground">{t("rewards.title")}</Text>
+        <View className="flex-row items-center justify-between gap-3">
+          <Text className="text-2xl font-semibold text-foreground">{t("rewards.title")}</Text>
+          <Pressable
+            onPress={() => router.push("/(client)/ranking")}
+            className="flex-row items-center gap-1.5 rounded-full border border-accent bg-surface-elevated px-4 py-2 active:opacity-80"
+          >
+            <Ionicons name="trophy" size={16} color="#C9A227" />
+            <Text className="text-sm font-semibold text-accent">{t("ranking.button")}</Text>
+          </Pressable>
+        </View>
 
         <Card className="items-center gap-3" style={{ borderColor: `${current.color}66` }}>
           <Image source={LEVEL_IMAGES[current.key]} style={{ width: 120, height: 120 }} resizeMode="contain" />
