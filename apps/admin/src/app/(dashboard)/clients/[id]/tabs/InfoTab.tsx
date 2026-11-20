@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Client, ClientStatus, SubscriptionTier } from "@tiagolifestyle/shared";
+import type { Client, ClientSex, ClientStatus, SubscriptionTier } from "@tiagolifestyle/shared";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { Card } from "@/components/Card";
 
@@ -11,6 +11,7 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
   const [activeUntil, setActiveUntil] = useState(initialClient.active_until ?? "");
   const [tier, setTier] = useState<SubscriptionTier>(initialClient.subscription_tier);
   const [heightCm, setHeightCm] = useState(initialClient.height_cm != null ? String(initialClient.height_cm) : "");
+  const [sex, setSex] = useState<ClientSex | "">(initialClient.sex ?? "");
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   // Alcunha que o cliente escolheu para o ranking; o coach pode removê-la se for inadequada.
@@ -46,6 +47,7 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
         active_until: activeUntil || null,
         subscription_tier: tier,
         height_cm: parsedHeight != null && !Number.isNaN(parsedHeight) ? parsedHeight : null,
+        sex: sex || null,
       })
       .eq("id", clientId);
     setSaving(false);
@@ -113,6 +115,19 @@ export function InfoTab({ clientId, initialClient }: { clientId: string; initial
             className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
           />
         </div>
+      </div>
+
+      <div className="flex flex-col gap-2 sm:w-1/2 sm:pr-2">
+        <label className="text-sm font-medium text-muted">Sexo (para os Recordes)</label>
+        <select
+          value={sex}
+          onChange={(event) => setSex(event.target.value as ClientSex | "")}
+          className="rounded-2xl border border-border bg-surface-elevated px-4 py-3 text-sm text-foreground outline-none focus:border-accent"
+        >
+          <option value="">—</option>
+          <option value="male">Masculino</option>
+          <option value="female">Feminino</option>
+        </select>
       </div>
 
       <div className="flex items-center gap-3">

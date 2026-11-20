@@ -11,6 +11,7 @@ import {
   Gift,
   UtensilsCrossed,
   Sparkles,
+  Trophy,
   LogOut,
 } from "lucide-react";
 import { createBrowserSupabaseClient } from "@/lib/supabase/browser";
@@ -24,6 +25,7 @@ const NAV_ITEMS = [
   { href: "/rewards", label: "Recompensas", icon: Gift },
   { href: "/dishes", label: "Pratos especiais", icon: UtensilsCrossed },
   { href: "/mentor", label: "Mentor LifeStyle", icon: Sparkles },
+  { href: "/records", label: "Recordes", icon: Trophy },
 ];
 
 export function Sidebar({ coachName }: { coachName: string }) {

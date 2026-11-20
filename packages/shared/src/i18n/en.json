@@ -161,6 +161,15 @@
     "points_one": "{{count}} point",
     "points_other": "{{count}} points"
   },
+  "records": {
+    "title": "Records",
+    "male": "Men",
+    "female": "Women",
+    "requirements": "To take part: lift the weight for at least 3 reps with correct technique and send the video to your coach as proof.",
+    "noRecord": "No record yet — be the first! 💪",
+    "anonymous": "Anonymous",
+    "empty": "There are no exercises in the records yet."
+  },
   "dishes": {
     "button": "Special dishes",
     "subtitle": "Meal ideas to adapt to your plan",

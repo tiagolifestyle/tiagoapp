@@ -17,6 +17,7 @@ export type ExerciseDifficulty = "iniciante" | "intermedio" | "avancado";
 export type DeliveryType = "vaginal" | "cesarean";
 export type BabySex = "boy" | "girl" | "twins";
 export type PostpartumContentCategory = "info" | "hypopressive";
+export type ClientSex = "male" | "female";
 
 export interface Profile {
   id: string;
@@ -42,6 +43,7 @@ export interface Client {
   active_until: string | null;
   subscription_tier: SubscriptionTier;
   notes_private: string | null;
+  sex: ClientSex | null;
   created_at: string;
   updated_at: string;
 }
@@ -330,6 +332,31 @@ export interface RankingRow {
   points: number;
   total_points: number;
   is_me: boolean;
+}
+
+// Recorde de um exercício (definido pelo coach), por sexo.
+export interface ExerciseRecord {
+  id: string;
+  exercise_id: string;
+  gender: ClientSex;
+  order_index: number;
+  holder_client_id: string | null;
+  weight_kg: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// O que a app do cliente recebe de get_records(): só nome curto/alcunha, peso e pontos.
+export interface RecordRow {
+  id: string;
+  gender: ClientSex;
+  order_index: number;
+  exercise_name: string;
+  image_url: string | null;
+  weight_kg: number | null;
+  holder_name: string | null;
+  holder_hidden: boolean;
+  holder_points: number | null;
 }
 
 export interface Conversation {

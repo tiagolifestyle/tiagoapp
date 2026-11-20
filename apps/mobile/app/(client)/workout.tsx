@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { View, Text, ScrollView, Pressable, RefreshControl } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useAuth } from "@/context/AuthContext";
@@ -50,6 +51,12 @@ export default function WorkoutScreen() {
             <View className="flex-row items-center gap-2">
               <Text className="text-sm text-muted">{t("workout.planVersion", { version: plan.version })}</Text>
               <RmCalculatorButton />
+              <Pressable
+                onPress={() => router.push("/(client)/records")}
+                className="h-8 w-8 items-center justify-center rounded-full border border-accent bg-surface-elevated"
+              >
+                <Ionicons name="trophy-outline" size={16} color="#C9A227" />
+              </Pressable>
               {selectedDay && profile?.id ? (
                 <PlanProgressButton
                   clientId={profile.id}

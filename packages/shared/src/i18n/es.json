@@ -161,6 +161,15 @@
     "points_one": "{{count}} punto",
     "points_other": "{{count}} puntos"
   },
+  "records": {
+    "title": "Récords",
+    "male": "Masculino",
+    "female": "Femenino",
+    "requirements": "Requisitos para participar: levantar el peso al menos 3 repeticiones, con técnica correcta, y enviar el vídeo al coach para comprobarlo.",
+    "noRecord": "Todavía sin récord — ¡sé el primero! 💪",
+    "anonymous": "Anónimo",
+    "empty": "Todavía no hay ejercicios en los récords."
+  },
   "dishes": {
     "button": "Platos especiales",
     "subtitle": "Ideas de comidas para adaptar a tu plan",
