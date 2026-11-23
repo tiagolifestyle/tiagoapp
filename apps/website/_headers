@@ -1,0 +1,11 @@
+# Cloudflare Pages: o browser confirma sempre se há versão nova da página,
+# do estilo e dos scripts (resposta rápida "304" quando nada mudou).
+# Imagens e vídeo mantêm a cache normal.
+/
+  Cache-Control: no-cache
+/index.html
+  Cache-Control: no-cache
+/css/*
+  Cache-Control: no-cache
+/js/*
+  Cache-Control: no-cache
