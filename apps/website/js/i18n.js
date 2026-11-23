@@ -182,8 +182,8 @@ window.I18N = {
       orderNote: "O pagamento e o envio são combinados comigo pelo WhatsApp.",
       front: "frente",
       back: "costas",
-      tags: {
-        shortSleeve: "Manga curta",
+      types: {
+        "short-sleeve": "Manga curta",
       },
       products: {
         "just-lift-tee": {
@@ -411,8 +411,8 @@ window.I18N = {
       orderNote: "El pago y el envío se acuerdan conmigo por WhatsApp.",
       front: "delante",
       back: "espalda",
-      tags: {
-        shortSleeve: "Manga corta",
+      types: {
+        "short-sleeve": "Manga corta",
       },
       products: {
         "just-lift-tee": {
@@ -640,8 +640,8 @@ window.I18N = {
       orderNote: "Payment and shipping are arranged with me on WhatsApp.",
       front: "front",
       back: "back",
-      tags: {
-        shortSleeve: "Short sleeve",
+      types: {
+        "short-sleeve": "Short sleeve",
       },
       products: {
         "just-lift-tee": {

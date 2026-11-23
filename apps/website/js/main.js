@@ -335,19 +335,43 @@
   const shopSize = {};
 
   // A loja tem 3 vistas, escolhidas pelo endereço: #shop (categorias),
-  // #shop-<categoria> (peças da categoria) e #shop-<peça> (detalhe da peça).
+  // #shop-<categoria> ou #shop-<categoria>-<tipo> (peças) e #shop-<peça> (detalhe da peça).
   function shopRoute() {
     const hash = decodeURIComponent(location.hash.slice(1));
     if (hash.indexOf("shop-") === 0) {
       const id = hash.slice(5);
-      if (CONFIG.shopCategories.some((c) => c.id === id)) return { view: "category", id: id };
+      for (const cat of CONFIG.shopCategories) {
+        if (id === cat.id) return { view: "category", id: cat.id };
+        const type = id.slice(cat.id.length + 1);
+        if (id.indexOf(cat.id + "-") === 0 && typesIn(cat.id).includes(type)) {
+          return { view: "category", id: cat.id, type: type };
+        }
+      }
       if (CONFIG.products.some((p) => p.id === id)) return { view: "product", id: id };
     }
     return { view: "categories" };
   }
 
-  function productsIn(categoryId) {
-    return CONFIG.products.filter((p) => p.category === categoryId);
+  function productsIn(categoryId, type) {
+    return CONFIG.products.filter((p) => p.category === categoryId && (!type || p.type === type));
+  }
+
+  // Tipos de uma categoria (ex.: manga curta), pela ordem em que aparecem nos produtos.
+  function typesIn(categoryId) {
+    const types = [];
+    productsIn(categoryId).forEach((p) => {
+      if (p.type && !types.includes(p.type)) types.push(p.type);
+    });
+    return types;
+  }
+
+  function collectionName(categoryId, type) {
+    const name = t("shop.categories." + categoryId);
+    return type ? name + " · " + t("shop.types." + type) : name;
+  }
+
+  function collectionHref(categoryId, type) {
+    return "#shop-" + categoryId + (type ? "-" + type : "");
   }
 
   function itemsCount(n) {
@@ -355,7 +379,7 @@
   }
 
   function tagsHtml(product) {
-    return (product.tags || []).map((tag) => '<span class="shop-tag">' + t("shop.tags." + tag) + "</span>").join("");
+    return product.type ? '<span class="shop-tag">' + t("shop.types." + product.type) + "</span>" : "";
   }
 
   function categoriesHtml() {
@@ -363,19 +387,28 @@
       const name = t("shop.categories." + cat.id);
       const items = productsIn(cat.id);
       if (items.length) {
-        return (
-          '<a class="shop-cat" href="#shop-' +
-          cat.id +
-          '"><div class="shop-cat-media"><img src="' +
-          items[0].images[0] +
-          '" alt="" width="1024" height="1024" loading="lazy"/></div><div class="shop-cat-body"><h3>' +
-          name +
-          "</h3><span>" +
-          itemsCount(items.length) +
-          " · " +
-          t("shop.viewItems") +
-          '<svg><use href="#i-arrow"/></svg></span></div></a>'
-        );
+        // Um cartão por tipo: selo com a categoria (ex.: T-shirts) e título com o tipo (ex.: Manga curta).
+        const types = typesIn(cat.id);
+        return (types.length ? types : [null])
+          .map((type) => {
+            const group = productsIn(cat.id, type);
+            return (
+              '<a class="shop-cat" href="' +
+              collectionHref(cat.id, type) +
+              '"><div class="shop-cat-media"><img src="' +
+              group[0].images[0] +
+              '" alt="" width="1024" height="1024" loading="lazy"/>' +
+              (type ? '<span class="product-soon">' + name + "</span>" : "") +
+              '</div><div class="shop-cat-body"><h3>' +
+              (type ? t("shop.types." + type) : name) +
+              "</h3><span>" +
+              itemsCount(group.length) +
+              " · " +
+              t("shop.viewItems") +
+              '<svg><use href="#i-arrow"/></svg></span></div></a>'
+            );
+          })
+          .join("");
       }
       // Sem peças ainda: "Em breve", e o cartão pede para ser avisado pelo WhatsApp.
       return (
@@ -397,8 +430,8 @@
     return '<div class="shop-cats">' + cards.join("") + "</div>";
   }
 
-  function categoryHtml(id) {
-    const items = productsIn(id);
+  function categoryHtml(id, type) {
+    const items = productsIn(id, type);
     const cards = items.map((p) => {
       const texts = t("shop.products." + p.id);
       return (
@@ -425,7 +458,7 @@
       '<div class="shop-bar"><a class="shop-back" href="#shop"><svg><use href="#i-arrow"/></svg>' +
       t("shop.allCategories") +
       '</a><h3 class="shop-bar-title">' +
-      t("shop.categories." + id) +
+      collectionName(id, type) +
       " <small>" +
       itemsCount(items.length) +
       '</small></h3></div><div class="shop-grid">' +
@@ -484,10 +517,10 @@
       )
       .join("");
     return (
-      '<div class="shop-bar"><a class="shop-back" href="#shop-' +
-      p.category +
+      '<div class="shop-bar"><a class="shop-back" href="' +
+      collectionHref(p.category, p.type) +
       '"><svg><use href="#i-arrow"/></svg>' +
-      t("shop.categories." + p.category) +
+      collectionName(p.category, p.type) +
       '</a></div><div class="pdp"><div class="pdp-gallery"><div class="pdp-track">' +
       slides +
       "</div>" +
@@ -582,7 +615,7 @@
     document.getElementById("drop-banner").hidden = route.view !== "categories";
     view.dataset.view = route.view;
     if (route.view === "category") {
-      view.innerHTML = categoryHtml(route.id);
+      view.innerHTML = categoryHtml(route.id, route.type);
     } else if (route.view === "product") {
       view.innerHTML = productHtml(route.id);
       setupProduct(view, route.id);

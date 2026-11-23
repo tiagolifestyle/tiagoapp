@@ -48,7 +48,8 @@ window.SITE_CONFIG = {
   //  - price: em euros
   //  - sizes: tamanhos à venda; soldOut: tamanhos esgotados (aparecem riscados)
   //  - swatch: cor da bolinha de cor
-  //  - tags: etiquetas (textos em i18n.js → shop.tags)
+  //  - type: tipo dentro da categoria (ex.: manga curta). Cada tipo tem o seu cartão na loja.
+  //    Textos em i18n.js → shop.types
   //  - images: fotos, a primeira é a capa
   products: [
     {
@@ -58,7 +59,7 @@ window.SITE_CONFIG = {
       sizes: ["S", "M", "L", "XL", "XXL"],
       soldOut: [],
       swatch: "#111111",
-      tags: ["shortSleeve"],
+      type: "short-sleeve",
       images: ["assets/img/shop/just-lift-front.webp", "assets/img/shop/just-lift-back.webp"],
     },
   ],
