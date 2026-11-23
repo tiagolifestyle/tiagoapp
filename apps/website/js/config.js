@@ -22,8 +22,11 @@ window.SITE_CONFIG = {
 
   // Planos. O "id" liga aos textos em i18n.js (plans.<id>.*).
   // Na base de dados, "basic" corresponde ao tier interno "free".
+  // Planos com o mesmo "group" partilham a mesma coluna e deslizam lado a lado.
+  // "comparePrice" mostra o preço riscado; "months" é a duração do pagamento único.
   plans: [
-    { id: "basic", price: 29.99, badge: null, choice: true },
+    { id: "basic", price: 29.99, badge: null, choice: true, group: "basic" },
+    { id: "basic3", price: 71, comparePrice: 89.97, months: 3, badge: "discount", choice: true, group: "basic" },
     { id: "premium", price: 45, badge: "popular", choice: false },
     { id: "vip", price: 89.99, badge: "vip", choice: false },
   ],

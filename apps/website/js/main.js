@@ -8,8 +8,14 @@
 
   let lang = detectLang();
   let shopFilter = "all";
-  // Escolha do plano Basic (treino / nutrição), guardada entre mudanças de língua.
-  const planChoice = { basic: "training" };
+  // Escolha treino / nutrição de cada plano, guardada entre mudanças de língua.
+  const planChoice = {};
+  CONFIG.plans.forEach((p) => {
+    if (p.choice) planChoice[p.id] = "training";
+  });
+  // Cartão visível em cada grupo de planos que desliza (ex.: Basic / Basic 3 meses).
+  const planSlide = {};
+  let planSliders = [];
 
   // ---------- Língua ----------
 
@@ -107,93 +113,202 @@
 
   // ---------- Planos ----------
 
-  const planTextKey = { basic: "basic", premium: "premium", vip: "vipPlan" };
+  const planTextKey = { basic: "basic", basic3: "basic3", premium: "premium", vip: "vipPlan" };
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function planMessage(plan) {
     const name = t("plans." + planTextKey[plan.id] + ".name");
     const price = formatPrice(plan.price);
-    if (plan.choice) {
-      const choice = t("plans." + planChoice[plan.id]);
-      return fill(t("wa.planChoice"), { plan: name, choice: choice, price: price });
-    }
+    const choice = plan.choice ? t("plans." + planChoice[plan.id]) : "";
+    if (plan.months) return fill(t("wa.planBundle"), { plan: name, choice: choice, price: price });
+    if (plan.choice) return fill(t("wa.planChoice"), { plan: name, choice: choice, price: price });
     return fill(t("wa.plan"), { plan: name, price: price });
+  }
+
+  function planPriceHtml(plan) {
+    if (!plan.comparePrice) {
+      return (
+        '<div class="plan-price"><strong>' +
+        formatPrice(plan.price) +
+        "</strong><span>" +
+        t("plans.perMonth") +
+        "</span></div>"
+      );
+    }
+    const note =
+      fill(t("plans.monthly"), { price: formatPrice(plan.price / plan.months) }) +
+      " · " +
+      fill(t("plans.youSave"), { amount: formatPrice(plan.comparePrice - plan.price) });
+    return (
+      '<div class="plan-price plan-price-deal"><del>' +
+      formatPrice(plan.comparePrice) +
+      "</del><strong>" +
+      formatPrice(plan.price) +
+      "</strong><span>" +
+      fill(t("plans.forMonths"), { n: plan.months }) +
+      '</span><small class="plan-price-note">' +
+      note +
+      "</small></div>"
+    );
+  }
+
+  function buildPlanCard(plan) {
+    const texts = t("plans." + planTextKey[plan.id]);
+    const features = Object.keys(texts)
+      .filter((k) => /^f\d+$/.test(k))
+      .map((k) => '<li><svg><use href="#i-check"/></svg><span>' + texts[k] + "</span></li>")
+      .join("");
+
+    let badge = "";
+    if (plan.badge === "popular") badge = '<span class="plan-badge">' + t("plans.popular") + "</span>";
+    if (plan.badge === "vip") badge = '<span class="plan-badge plan-badge-vip"><svg><use href="#i-crown"/></svg>' + t("plans.vip") + "</span>";
+    if (plan.badge === "discount") {
+      const pct = Math.round((1 - plan.price / plan.comparePrice) * 100);
+      badge = '<span class="plan-badge">' + fill(t("plans.discount"), { pct: pct }) + "</span>";
+    }
+
+    let choice = "";
+    if (plan.choice) {
+      choice =
+        '<div class="plan-choice" role="radiogroup"><span>' +
+        t("plans.choose") +
+        "</span>" +
+        ["training", "nutrition"]
+          .map(
+            (opt) =>
+              '<button type="button" role="radio" data-choice="' +
+              opt +
+              '" aria-checked="' +
+              (planChoice[plan.id] === opt) +
+              '">' +
+              t("plans." + opt) +
+              "</button>"
+          )
+          .join("") +
+        "</div>";
+    }
+
+    const card = document.createElement("article");
+    card.className = "plan plan-" + plan.id + " is-visible";
+    card.innerHTML =
+      badge +
+      '<h3 class="plan-name">' +
+      texts.name +
+      "</h3>" +
+      '<p class="plan-tagline">' +
+      texts.tagline +
+      "</p>" +
+      planPriceHtml(plan) +
+      choice +
+      '<ul class="plan-features">' +
+      features +
+      "</ul>" +
+      '<a class="btn ' +
+      (plan.badge === "popular" ? "btn-gold" : "btn-dark") +
+      ' plan-cta" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg><span>' +
+      t("plans.cta") +
+      "</span></a>";
+
+    const cta = card.querySelector(".plan-cta");
+    cta.href = waUrl(planMessage(plan));
+
+    card.querySelectorAll("[data-choice]").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        planChoice[plan.id] = btn.dataset.choice;
+        card.querySelectorAll("[data-choice]").forEach((b) => b.setAttribute("aria-checked", String(b === btn)));
+        cta.href = waUrl(planMessage(plan));
+      });
+    });
+
+    return card;
+  }
+
+  // Coluna com vários cartões que desliza: com o dedo no telemóvel, com as setas no computador.
+  function buildPlanSlider(groupId, plans) {
+    const slider = document.createElement("div");
+    slider.className = "plan-slider";
+    const track = document.createElement("div");
+    track.className = "plan-track";
+    const cards = plans.map(buildPlanCard);
+    cards.forEach((c) => track.appendChild(c));
+
+    const nav = document.createElement("div");
+    nav.className = "plan-slider-nav";
+    nav.innerHTML =
+      '<button type="button" class="plan-arrow plan-arrow-prev" aria-label="' +
+      t("plans.prevPlan") +
+      '"><svg><use href="#i-arrow"/></svg></button><div class="plan-dots">' +
+      plans
+        .map(
+          (p, i) =>
+            '<button type="button" class="plan-dot" data-index="' +
+            i +
+            '" aria-label="' +
+            t("plans." + planTextKey[p.id] + ".name") +
+            '"></button>'
+        )
+        .join("") +
+      '</div><button type="button" class="plan-arrow plan-arrow-next" aria-label="' +
+      t("plans.nextPlan") +
+      '"><svg><use href="#i-arrow"/></svg></button>';
+
+    slider.appendChild(track);
+    slider.appendChild(nav);
+
+    const prev = nav.querySelector(".plan-arrow-prev");
+    const next = nav.querySelector(".plan-arrow-next");
+    const dots = nav.querySelectorAll(".plan-dot");
+
+    const update = () => {
+      const max = track.scrollWidth - track.clientWidth;
+      const index = max > 0 ? Math.round((track.scrollLeft / max) * (cards.length - 1)) : 0;
+      planSlide[groupId] = index;
+      dots.forEach((d, i) => d.setAttribute("aria-current", String(i === index)));
+      prev.disabled = index === 0;
+      next.disabled = index === cards.length - 1;
+    };
+
+    const go = (index, smooth) => {
+      const i = Math.max(0, Math.min(cards.length - 1, index));
+      const left = cards[i].offsetLeft - parseFloat(getComputedStyle(track).paddingLeft);
+      track.scrollTo({ left: left, behavior: smooth && !reduceMotion ? "smooth" : "auto" });
+    };
+
+    prev.addEventListener("click", () => go((planSlide[groupId] || 0) - 1, true));
+    next.addEventListener("click", () => go((planSlide[groupId] || 0) + 1, true));
+    dots.forEach((d) => d.addEventListener("click", () => go(Number(d.dataset.index), true)));
+    track.addEventListener("scroll", () => requestAnimationFrame(update), { passive: true });
+
+    const realign = () => {
+      go(planSlide[groupId] || 0, false);
+      update();
+    };
+    return { el: slider, realign: realign };
   }
 
   function renderPlans() {
     const grid = document.getElementById("plans-grid");
     grid.innerHTML = "";
+    planSliders = [];
 
+    const done = {};
     CONFIG.plans.forEach((plan) => {
-      const key = "plans." + planTextKey[plan.id];
-      const texts = t(key);
-      const features = Object.keys(texts)
-        .filter((k) => /^f\d+$/.test(k))
-        .map((k) => '<li><svg><use href="#i-check"/></svg><span>' + texts[k] + "</span></li>")
-        .join("");
-
-      let badge = "";
-      if (plan.badge === "popular") badge = '<span class="plan-badge">' + t("plans.popular") + "</span>";
-      if (plan.badge === "vip") badge = '<span class="plan-badge plan-badge-vip"><svg><use href="#i-crown"/></svg>' + t("plans.vip") + "</span>";
-
-      let choice = "";
-      if (plan.choice) {
-        choice =
-          '<div class="plan-choice" role="radiogroup"><span>' +
-          t("plans.choose") +
-          "</span>" +
-          ["training", "nutrition"]
-            .map(
-              (opt) =>
-                '<button type="button" role="radio" data-choice="' +
-                opt +
-                '" aria-checked="' +
-                (planChoice[plan.id] === opt) +
-                '">' +
-                t("plans." + opt) +
-                "</button>"
-            )
-            .join("") +
-          "</div>";
+      if (!plan.group) {
+        grid.appendChild(buildPlanCard(plan));
+        return;
       }
-
-      const card = document.createElement("article");
-      card.className = "plan plan-" + plan.id + " is-visible";
-      card.innerHTML =
-        badge +
-        '<h3 class="plan-name">' +
-        texts.name +
-        "</h3>" +
-        '<p class="plan-tagline">' +
-        texts.tagline +
-        "</p>" +
-        '<div class="plan-price"><strong>' +
-        formatPrice(plan.price) +
-        "</strong><span>" +
-        t("plans.perMonth") +
-        "</span></div>" +
-        choice +
-        '<ul class="plan-features">' +
-        features +
-        "</ul>" +
-        '<a class="btn ' +
-        (plan.badge === "popular" ? "btn-gold" : "btn-dark") +
-        ' plan-cta" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg><span>' +
-        t("plans.cta") +
-        "</span></a>";
-
-      const cta = card.querySelector(".plan-cta");
-      cta.href = waUrl(planMessage(plan));
-
-      card.querySelectorAll("[data-choice]").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          planChoice[plan.id] = btn.dataset.choice;
-          card.querySelectorAll("[data-choice]").forEach((b) => b.setAttribute("aria-checked", String(b === btn)));
-          cta.href = waUrl(planMessage(plan));
-        });
-      });
-
-      grid.appendChild(card);
+      if (done[plan.group]) return;
+      done[plan.group] = true;
+      const slider = buildPlanSlider(
+        plan.group,
+        CONFIG.plans.filter((p) => p.group === plan.group)
+      );
+      grid.appendChild(slider.el);
+      planSliders.push(slider);
     });
+
+    grid.classList.toggle("has-slider", planSliders.length > 0);
+    planSliders.forEach((s) => s.realign());
   }
 
   // ---------- Loja ----------
@@ -370,6 +485,8 @@
     }
 
     document.getElementById("year").textContent = new Date().getFullYear();
+
+    window.addEventListener("resize", () => planSliders.forEach((s) => s.realign()));
   }
 
   setupInteractions();
