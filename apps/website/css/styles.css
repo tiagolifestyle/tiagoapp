@@ -1929,6 +1929,24 @@ p {
   text-transform: uppercase;
 }
 
+.shop-tag.is-limited {
+  background: var(--gold-gradient);
+  color: #17130a;
+}
+
+.shop-stock {
+  display: block;
+  margin-top: 2px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold-deep);
+}
+
+.pdp-stock {
+  margin-top: -4px;
+  font-size: 14px;
+}
+
 @media (hover: hover) {
   .shop-cat:hover,
   .shop-item:hover .shop-item-media {

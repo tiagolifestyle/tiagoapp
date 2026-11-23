@@ -33,6 +33,7 @@ window.SITE_CONFIG = {
 
   // Categorias da loja, pela ordem em que aparecem.
   // Uma categoria sem produtos aparece como "Em breve".
+  // "hidden": não aparece nos cartões (a Edição Limitada abre pelo cartão dourado da loja).
   //  - icon (para "Em breve"): tshirt | hoodie | leggings | towel | bottle | bag | cap | shaker
   //  - tone: cor do fundo do cartão — "black" | "cream" | "sand"
   shopCategories: [
@@ -41,6 +42,7 @@ window.SITE_CONFIG = {
     { id: "hoodies", icon: "hoodie", tone: "black" },
     { id: "towels", icon: "towel", tone: "cream" },
     { id: "accessories", icon: "bottle", tone: "sand" },
+    { id: "limited", hidden: true },
   ],
 
   // Produtos da loja. Textos de cada produto em i18n.js → shop.products.<id>.
@@ -51,6 +53,7 @@ window.SITE_CONFIG = {
   //  - type: tipo dentro da categoria (ex.: manga curta). Cada tipo tem o seu cartão na loja.
   //    Textos em i18n.js → shop.types
   //  - images: fotos, a primeira é a capa
+  //  - limited: edição limitada — total de unidades e quantas restam (atualizar a cada venda)
   products: [
     {
       id: "just-lift-tee",
@@ -61,6 +64,16 @@ window.SITE_CONFIG = {
       swatch: "#111111",
       type: "short-sleeve",
       images: ["assets/img/shop/just-lift-front.webp", "assets/img/shop/just-lift-back.webp"],
+    },
+    {
+      id: "dios-posible",
+      category: "limited",
+      price: 119.99,
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      soldOut: [],
+      swatch: "#111111",
+      limited: { total: 7, left: 6 },
+      images: ["assets/img/shop/dios-posible-front.webp", "assets/img/shop/dios-posible-back.webp"],
     },
   ],
 };

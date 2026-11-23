@@ -379,11 +379,25 @@
   }
 
   function tagsHtml(product) {
-    return product.type ? '<span class="shop-tag">' + t("shop.types." + product.type) + "</span>" : "";
+    return (
+      (product.limited ? '<span class="shop-tag is-limited">' + t("shop.categories.limited") + "</span>" : "") +
+      (product.type ? '<span class="shop-tag">' + t("shop.types." + product.type) + "</span>" : "")
+    );
+  }
+
+  // Unidades de uma edição limitada: "Restam 6 de 7", ou "Esgotado".
+  function stockText(product) {
+    if (!product.limited) return "";
+    if (product.limited.left <= 0) return t("shop.soldOut");
+    return fill(t("shop.unitsLeft"), { left: product.limited.left, total: product.limited.total });
+  }
+
+  function isSoldOut(product) {
+    return Boolean(product.limited) && product.limited.left <= 0;
   }
 
   function categoriesHtml() {
-    const cards = CONFIG.shopCategories.map((cat) => {
+    const cards = CONFIG.shopCategories.filter((cat) => !cat.hidden).map((cat) => {
       const name = t("shop.categories." + cat.id);
       const items = productsIn(cat.id);
       if (items.length) {
@@ -451,7 +465,9 @@
         texts.name +
         '</h4><span class="shop-item-price">' +
         formatPrice(p.price) +
-        "</span></div></a>"
+        "</span>" +
+        (p.limited ? '<span class="shop-stock">' + stockText(p) + "</span>" : "") +
+        "</div></a>"
       );
     });
     return (
@@ -510,7 +526,7 @@
           '" aria-checked="' +
           (shopSize[id] === s) +
           '"' +
-          (soldOut.includes(s) ? ' disabled title="' + t("shop.soldOut") + '"' : "") +
+          (soldOut.includes(s) || isSoldOut(p) ? ' disabled title="' + t("shop.soldOut") + '"' : "") +
           ">" +
           s +
           "</button>"
@@ -531,7 +547,15 @@
       texts.name +
       '</h3><div class="pdp-price">' +
       formatPrice(p.price) +
-      '</div><p class="pdp-desc">' +
+      "</div>" +
+      (p.limited
+        ? '<div class="shop-stock pdp-stock">' +
+          fill(t("shop.editionOf"), { total: p.limited.total }) +
+          " · " +
+          stockText(p) +
+          "</div>"
+        : "") +
+      '<p class="pdp-desc">' +
       texts.desc +
       '</p><div class="pdp-label">' +
       t("shop.color") +
@@ -558,12 +582,22 @@
     const label = cta.querySelector("span");
     const sizeButtons = view.querySelectorAll("[data-size]");
 
-    // O botão só encomenda depois de escolher o tamanho.
+    // O botão só encomenda depois de escolher o tamanho (e enquanto houver unidades).
     const updateCta = () => {
-      const size = shopSize[id];
-      if (size) {
+      const size = isSoldOut(p) ? null : shopSize[id];
+      if (isSoldOut(p)) {
+        cta.removeAttribute("href");
+        cta.classList.add("is-disabled");
+        cta.setAttribute("aria-disabled", "true");
+        label.textContent = t("shop.soldOut");
+      } else if (size) {
         cta.href = waUrl(
-          fill(t("wa.order"), { product: texts.name, color: texts.color, size: size, price: formatPrice(p.price) })
+          fill(t(p.limited ? "wa.orderLimited" : "wa.order"), {
+            product: texts.name,
+            color: texts.color,
+            size: size,
+            price: formatPrice(p.price),
+          })
         );
         cta.classList.remove("is-disabled");
         cta.removeAttribute("aria-disabled");
