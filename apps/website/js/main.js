@@ -7,7 +7,6 @@
   const STORAGE_KEY = "tls-lang";
 
   let lang = detectLang();
-  let shopFilter = "all";
   // Escolha treino / nutrição de cada plano, guardada entre mudanças de língua.
   const planChoice = {};
   CONFIG.plans.forEach((p) => {
@@ -77,7 +76,7 @@
 
     renderTicker();
     renderPlans();
-    renderProducts();
+    renderShop();
     updateStoreButtons();
     updateStaticLinks();
   }
@@ -332,83 +331,272 @@
       '<rect x="6" y="22" width="52" height="30" rx="6"/><path d="M22 22v-6c0-2 2-4 4-4h12c2 0 4 2 4 4v6"/><path d="M6 34h52"/>',
   };
 
-  function productMessage(product, size) {
-    const name = t("shop.products." + product.id + ".name");
-    if (product.price == null) return fill(t("wa.notify"), { product: name });
-    const sizeText = size ? fill(t("wa.sizeSuffix"), { size: size }) : "";
-    return fill(t("wa.order"), { product: name, size: sizeText });
+  // Tamanho escolhido em cada peça, guardado entre mudanças de língua.
+  const shopSize = {};
+
+  // A loja tem 3 vistas, escolhidas pelo endereço: #shop (categorias),
+  // #shop-<categoria> (peças da categoria) e #shop-<peça> (detalhe da peça).
+  function shopRoute() {
+    const hash = decodeURIComponent(location.hash.slice(1));
+    if (hash.indexOf("shop-") === 0) {
+      const id = hash.slice(5);
+      if (CONFIG.shopCategories.some((c) => c.id === id)) return { view: "category", id: id };
+      if (CONFIG.products.some((p) => p.id === id)) return { view: "product", id: id };
+    }
+    return { view: "categories" };
   }
 
-  function renderProducts() {
-    const wrap = document.getElementById("products");
-    wrap.innerHTML = "";
+  function productsIn(categoryId) {
+    return CONFIG.products.filter((p) => p.category === categoryId);
+  }
 
-    CONFIG.products
-      .filter((p) => shopFilter === "all" || p.category === shopFilter)
-      .forEach((product) => {
-        const texts = t("shop.products." + product.id);
-        const available = product.price != null;
-        let selectedSize = product.sizes[Math.min(1, product.sizes.length - 1)] || null;
+  function itemsCount(n) {
+    return fill(t(n === 1 ? "shop.itemsOne" : "shop.itemsMany"), { n: n });
+  }
 
-        const sizes = product.sizes.length
-          ? '<div class="sizes" role="radiogroup" aria-label="' +
-            t("shop.size") +
-            '">' +
-            product.sizes
-              .map(
-                (s) =>
-                  '<button type="button" role="radio" data-size="' +
-                  s +
-                  '" aria-checked="' +
-                  (s === selectedSize) +
-                  '">' +
-                  s +
-                  "</button>"
-              )
-              .join("") +
-            "</div>"
-          : "";
+  function tagsHtml(product) {
+    return (product.tags || []).map((tag) => '<span class="shop-tag">' + t("shop.tags." + tag) + "</span>").join("");
+  }
 
-        const card = document.createElement("article");
-        card.className = "product is-visible";
-        card.innerHTML =
-          '<div class="product-media tone-' +
-          product.tone +
-          '">' +
-          (available ? "" : '<span class="product-soon">' + t("shop.soon") + "</span>") +
-          '<svg class="product-icon" viewBox="0 0 64 64" aria-hidden="true">' +
-          productIcons[product.icon] +
-          "</svg>" +
-          '<img class="product-logo" src="assets/img/logo-mark-sm.png" alt="" width="28" height="30" loading="lazy"/>' +
-          "</div>" +
-          '<div class="product-body">' +
-          '<div class="product-top"><h3>' +
+  function categoriesHtml() {
+    const cards = CONFIG.shopCategories.map((cat) => {
+      const name = t("shop.categories." + cat.id);
+      const items = productsIn(cat.id);
+      if (items.length) {
+        return (
+          '<a class="shop-cat" href="#shop-' +
+          cat.id +
+          '"><div class="shop-cat-media"><img src="' +
+          items[0].images[0] +
+          '" alt="" width="1024" height="1024" loading="lazy"/></div><div class="shop-cat-body"><h3>' +
+          name +
+          "</h3><span>" +
+          itemsCount(items.length) +
+          " · " +
+          t("shop.viewItems") +
+          '<svg><use href="#i-arrow"/></svg></span></div></a>'
+        );
+      }
+      // Sem peças ainda: "Em breve", e o cartão pede para ser avisado pelo WhatsApp.
+      return (
+        '<a class="shop-cat is-soon" target="_blank" rel="noopener" href="' +
+        waUrl(fill(t("wa.notifyCategory"), { category: name })) +
+        '"><div class="shop-cat-media product-media tone-' +
+        cat.tone +
+        '"><span class="product-soon">' +
+        t("shop.soon") +
+        '</span><svg class="product-icon" viewBox="0 0 64 64" aria-hidden="true">' +
+        productIcons[cat.icon] +
+        '</svg><img class="product-logo" src="assets/img/logo-mark-sm.png" alt="" width="28" height="30" loading="lazy"/></div><div class="shop-cat-body"><h3>' +
+        name +
+        "</h3><span>" +
+        t("shop.notify") +
+        "</span></div></a>"
+      );
+    });
+    return '<div class="shop-cats">' + cards.join("") + "</div>";
+  }
+
+  function categoryHtml(id) {
+    const items = productsIn(id);
+    const cards = items.map((p) => {
+      const texts = t("shop.products." + p.id);
+      return (
+        '<a class="shop-item" href="#shop-' +
+        p.id +
+        '"><div class="shop-item-media"><img src="' +
+        p.images[0] +
+        '" alt="' +
+        texts.name +
+        '" width="1024" height="1024" loading="lazy"/>' +
+        (p.images[1]
+          ? '<img class="shop-item-alt" src="' + p.images[1] + '" alt="" width="1024" height="1024" loading="lazy"/>'
+          : "") +
+        '</div><div class="shop-item-body"><div class="shop-tags">' +
+        tagsHtml(p) +
+        "</div><h4>" +
+        texts.name +
+        '</h4><span class="shop-item-price">' +
+        formatPrice(p.price) +
+        "</span></div></a>"
+      );
+    });
+    return (
+      '<div class="shop-bar"><a class="shop-back" href="#shop"><svg><use href="#i-arrow"/></svg>' +
+      t("shop.allCategories") +
+      '</a><h3 class="shop-bar-title">' +
+      t("shop.categories." + id) +
+      " <small>" +
+      itemsCount(items.length) +
+      '</small></h3></div><div class="shop-grid">' +
+      cards.join("") +
+      "</div>"
+    );
+  }
+
+  function productHtml(id) {
+    const p = CONFIG.products.find((x) => x.id === id);
+    const texts = t("shop.products." + id);
+    const sides = [t("shop.front"), t("shop.back")];
+    const slides = p.images
+      .map(
+        (src, i) =>
+          '<img src="' +
+          src +
+          '" alt="' +
           texts.name +
-          "</h3><span class=\"product-price\">" +
-          (available ? formatPrice(product.price) : t("shop.soon")) +
-          "</span></div>" +
-          "<p>" +
-          texts.desc +
-          "</p>" +
-          sizes +
-          '<a class="btn btn-outline-dark btn-sm product-cta" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg><span>' +
-          (available ? t("shop.order") : t("shop.notify")) +
-          "</span></a>" +
-          "</div>";
+          (sides[i] ? " — " + sides[i] : "") +
+          '" width="1024" height="1024"' +
+          (i ? ' loading="lazy"' : "") +
+          "/>"
+      )
+      .join("");
+    const thumbs =
+      p.images.length > 1
+        ? '<div class="pdp-thumbs">' +
+          p.images
+            .map(
+              (src, i) =>
+                '<button type="button" data-slide="' +
+                i +
+                '" aria-label="' +
+                (sides[i] || String(i + 1)) +
+                '"><img src="' +
+                src +
+                '" alt="" width="1024" height="1024"/></button>'
+            )
+            .join("") +
+          "</div>"
+        : "";
+    const soldOut = p.soldOut || [];
+    const sizes = p.sizes
+      .map(
+        (s) =>
+          '<button type="button" role="radio" data-size="' +
+          s +
+          '" aria-checked="' +
+          (shopSize[id] === s) +
+          '"' +
+          (soldOut.includes(s) ? ' disabled title="' + t("shop.soldOut") + '"' : "") +
+          ">" +
+          s +
+          "</button>"
+      )
+      .join("");
+    return (
+      '<div class="shop-bar"><a class="shop-back" href="#shop-' +
+      p.category +
+      '"><svg><use href="#i-arrow"/></svg>' +
+      t("shop.categories." + p.category) +
+      '</a></div><div class="pdp"><div class="pdp-gallery"><div class="pdp-track">' +
+      slides +
+      "</div>" +
+      thumbs +
+      '</div><div class="pdp-info"><div class="shop-tags">' +
+      tagsHtml(p) +
+      '</div><h3 class="pdp-name">' +
+      texts.name +
+      '</h3><div class="pdp-price">' +
+      formatPrice(p.price) +
+      '</div><p class="pdp-desc">' +
+      texts.desc +
+      '</p><div class="pdp-label">' +
+      t("shop.color") +
+      ": <b>" +
+      texts.color +
+      '</b><span class="pdp-swatch" style="background:' +
+      p.swatch +
+      '"></span></div><div class="pdp-label">' +
+      t("shop.size") +
+      '</div><div class="sizes pdp-sizes" role="radiogroup" aria-label="' +
+      t("shop.size") +
+      '">' +
+      sizes +
+      '</div><a class="btn btn-gold pdp-cta" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg><span></span></a><p class="pdp-note">' +
+      t("shop.orderNote") +
+      "</p></div></div>"
+    );
+  }
 
-        const cta = card.querySelector(".product-cta");
-        cta.href = waUrl(productMessage(product, selectedSize));
+  function setupProduct(view, id) {
+    const p = CONFIG.products.find((x) => x.id === id);
+    const texts = t("shop.products." + id);
+    const cta = view.querySelector(".pdp-cta");
+    const label = cta.querySelector("span");
+    const sizeButtons = view.querySelectorAll("[data-size]");
 
-        card.querySelectorAll("[data-size]").forEach((btn) => {
-          btn.addEventListener("click", () => {
-            selectedSize = btn.dataset.size;
-            card.querySelectorAll("[data-size]").forEach((b) => b.setAttribute("aria-checked", String(b === btn)));
-            cta.href = waUrl(productMessage(product, selectedSize));
-          });
-        });
+    // O botão só encomenda depois de escolher o tamanho.
+    const updateCta = () => {
+      const size = shopSize[id];
+      if (size) {
+        cta.href = waUrl(
+          fill(t("wa.order"), { product: texts.name, color: texts.color, size: size, price: formatPrice(p.price) })
+        );
+        cta.classList.remove("is-disabled");
+        cta.removeAttribute("aria-disabled");
+        label.textContent = t("shop.order");
+      } else {
+        cta.removeAttribute("href");
+        cta.classList.add("is-disabled");
+        cta.setAttribute("aria-disabled", "true");
+        label.textContent = t("shop.chooseSize");
+      }
+    };
 
-        wrap.appendChild(card);
+    sizeButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        shopSize[id] = btn.dataset.size;
+        sizeButtons.forEach((b) => b.setAttribute("aria-checked", String(b === btn)));
+        updateCta();
       });
+    });
+    cta.addEventListener("click", (e) => {
+      if (shopSize[id]) return;
+      e.preventDefault();
+      const first = view.querySelector("[data-size]:not(:disabled)");
+      if (first) first.focus();
+    });
+    updateCta();
+
+    const track = view.querySelector(".pdp-track");
+    const thumbs = view.querySelectorAll("[data-slide]");
+    const setActive = () => {
+      const i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+      thumbs.forEach((b, j) => b.setAttribute("aria-current", String(i === j)));
+    };
+    thumbs.forEach((b) => {
+      b.addEventListener("click", () => {
+        track.scrollTo({
+          left: track.children[Number(b.dataset.slide)].offsetLeft,
+          behavior: reduceMotion ? "auto" : "smooth",
+        });
+      });
+    });
+    track.addEventListener("scroll", () => requestAnimationFrame(setActive), { passive: true });
+    setActive();
+  }
+
+  function renderShop() {
+    const view = document.getElementById("shop-view");
+    const route = shopRoute();
+    document.getElementById("drop-banner").hidden = route.view !== "categories";
+    view.dataset.view = route.view;
+    if (route.view === "category") {
+      view.innerHTML = categoryHtml(route.id);
+    } else if (route.view === "product") {
+      view.innerHTML = productHtml(route.id);
+      setupProduct(view, route.id);
+    } else {
+      view.innerHTML = categoriesHtml();
+    }
+  }
+
+  function showShopFromHash(instant) {
+    renderShop();
+    if (shopRoute().view !== "categories") {
+      const smooth = instant !== true && !reduceMotion;
+      document.getElementById("shop-view").scrollIntoView({ behavior: smooth ? "smooth" : "instant" });
+    }
   }
 
   // ---------- App ----------
@@ -437,13 +625,7 @@
       btn.addEventListener("click", () => setLang(btn.dataset.lang));
     });
 
-    document.querySelectorAll("[data-filter]").forEach((chip) => {
-      chip.addEventListener("click", () => {
-        shopFilter = chip.dataset.filter;
-        document.querySelectorAll("[data-filter]").forEach((c) => c.classList.toggle("is-active", c === chip));
-        renderProducts();
-      });
-    });
+    window.addEventListener("hashchange", showShopFromHash);
 
     const header = document.querySelector(".site-header");
     const onScroll = () => {
@@ -491,4 +673,9 @@
 
   setupInteractions();
   applyTranslations();
+  // Link direto para uma categoria ou peça: vai lá depois de a página carregar (fotos e letras incluídas).
+  if (shopRoute().view !== "categories") {
+    if (document.readyState === "complete") showShopFromHash(true);
+    else window.addEventListener("load", () => showShopFromHash(true), { once: true });
+  }
 })();

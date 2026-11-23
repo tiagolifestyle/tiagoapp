@@ -31,21 +31,35 @@ window.SITE_CONFIG = {
     { id: "vip", price: 89.99, badge: "vip", choice: false },
   ],
 
-  // Produtos da loja.
-  //  - category: "apparel" | "towels" | "accessories"
-  //  - icon: tshirt | hoodie | leggings | towel | bottle | bag | cap | shaker
-  //  - price: número em euros, ou null para mostrar "Em breve"
-  //  - sizes: lista de tamanhos, ou [] se não se aplica
+  // Categorias da loja, pela ordem em que aparecem.
+  // Uma categoria sem produtos aparece como "Em breve".
+  //  - icon (para "Em breve"): tshirt | hoodie | leggings | towel | bottle | bag | cap | shaker
   //  - tone: cor do fundo do cartão — "black" | "cream" | "sand"
+  shopCategories: [
+    { id: "tshirts", icon: "tshirt", tone: "black" },
+    { id: "pants", icon: "leggings", tone: "sand" },
+    { id: "hoodies", icon: "hoodie", tone: "black" },
+    { id: "towels", icon: "towel", tone: "cream" },
+    { id: "accessories", icon: "bottle", tone: "sand" },
+  ],
+
+  // Produtos da loja. Textos de cada produto em i18n.js → shop.products.<id>.
+  //  - category: id de uma categoria acima
+  //  - price: em euros
+  //  - sizes: tamanhos à venda; soldOut: tamanhos esgotados (aparecem riscados)
+  //  - swatch: cor da bolinha de cor
+  //  - tags: etiquetas (textos em i18n.js → shop.tags)
+  //  - images: fotos, a primeira é a capa
   products: [
-    { id: "tee-essential", category: "apparel", icon: "tshirt", price: null, sizes: ["S", "M", "L", "XL", "XXL"], tone: "black" },
-    { id: "hoodie-signature", category: "apparel", icon: "hoodie", price: null, sizes: ["S", "M", "L", "XL", "XXL"], tone: "sand" },
-    { id: "leggings-sculpt", category: "apparel", icon: "leggings", price: null, sizes: ["XS", "S", "M", "L", "XL"], tone: "black" },
-    { id: "cap-classic", category: "apparel", icon: "cap", price: null, sizes: [], tone: "cream" },
-    { id: "towel-gym", category: "towels", icon: "towel", price: null, sizes: [], tone: "black" },
-    { id: "towel-premium", category: "towels", icon: "towel", price: null, sizes: [], tone: "sand" },
-    { id: "bottle-thermal", category: "accessories", icon: "bottle", price: null, sizes: [], tone: "cream" },
-    { id: "shaker", category: "accessories", icon: "shaker", price: null, sizes: [], tone: "black" },
-    { id: "bag-duffel", category: "accessories", icon: "bag", price: null, sizes: [], tone: "sand" },
+    {
+      id: "just-lift-tee",
+      category: "tshirts",
+      price: 35,
+      sizes: ["S", "M", "L", "XL", "XXL"],
+      soldOut: [],
+      swatch: "#111111",
+      tags: ["shortSleeve"],
+      images: ["assets/img/shop/just-lift-front.webp", "assets/img/shop/just-lift-back.webp"],
+    },
   ],
 };
