@@ -31,6 +31,15 @@ window.SITE_CONFIG = {
     { id: "vip", price: 89.99, badge: "vip", choice: false },
   ],
 
+  // Códigos promocionais da loja (valem para todas as peças).
+  // Cada código fica guardado cifrado, para não se ler no código do site:
+  //   hash = SHA-256 de "tiagolifestyle:" + CÓDIGO EM MAIÚSCULAS
+  // Para criar, mudar ou apagar um código, pede ao Claude.
+  promoCodes: [
+    { hash: "cd4043ebc51e5aa4da5a7e985506e4ffe22862c08ca6fca3298572399492aaf0", percent: 10 },
+    { hash: "627b8c2f8d6690d13a022c3209dbc8da63208b6c5d58fd438ae0cb22882c3c37", percent: 15 },
+  ],
+
   // Categorias da loja, pela ordem em que aparecem.
   // Uma categoria sem produtos aparece como "Em breve".
   // "hidden": não aparece nos cartões (a Edição Limitada abre pelo cartão dourado da loja).

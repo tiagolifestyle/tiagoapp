@@ -334,6 +334,61 @@
   // Tamanho escolhido em cada peça, guardado entre mudanças de língua.
   const shopSize = {};
 
+  // Código promocional aplicado ({ code, percent }), válido em todas as peças durante a visita.
+  const PROMO_KEY = "tls-promo";
+  let promo = null;
+  try {
+    promo = JSON.parse(sessionStorage.getItem(PROMO_KEY));
+  } catch (e) {}
+
+  function savePromo() {
+    try {
+      if (promo) sessionStorage.setItem(PROMO_KEY, JSON.stringify(promo));
+      else sessionStorage.removeItem(PROMO_KEY);
+    } catch (e) {}
+  }
+
+  function normalizeCode(value) {
+    return value.replace(/\s+/g, "").toUpperCase();
+  }
+
+  // Os códigos estão guardados cifrados em config.js (SHA-256), por isso compara-se o código cifrado.
+  async function findPromo(code) {
+    if (!code || !window.crypto || !crypto.subtle) return null;
+    const data = new TextEncoder().encode("tiagolifestyle:" + code);
+    const digest = await crypto.subtle.digest("SHA-256", data);
+    const hash = Array.from(new Uint8Array(digest))
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
+    return (CONFIG.promoCodes || []).find((c) => c.hash === hash) || null;
+  }
+
+  function finalPrice(product) {
+    if (!promo) return product.price;
+    return Math.round(product.price * (100 - promo.percent)) / 100;
+  }
+
+  function promoHtml() {
+    if (promo) {
+      return (
+        '<div class="promo-applied" role="status"><span>' +
+        fill(t("shop.promoApplied"), { code: promo.code, percent: promo.percent }) +
+        '</span><button type="button" class="promo-remove">' +
+        t("shop.promoRemove") +
+        "</button></div>"
+      );
+    }
+    return (
+      '<form class="promo" novalidate><label class="pdp-label" for="promo-code">' +
+      t("shop.promoLabel") +
+      '</label><div class="promo-row"><input id="promo-code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="' +
+      t("shop.promoPlaceholder") +
+      '"/><button type="submit" class="btn btn-dark btn-sm">' +
+      t("shop.promoApply") +
+      '</button></div><p class="promo-msg" role="status"></p></form>'
+    );
+  }
+
   // A loja tem 3 vistas, escolhidas pelo endereço: #shop (categorias),
   // #shop-<categoria> ou #shop-<categoria>-<tipo> (peças) e #shop-<peça> (detalhe da peça).
   function shopRoute() {
@@ -546,7 +601,7 @@
       '</div><h3 class="pdp-name">' +
       texts.name +
       '</h3><div class="pdp-price">' +
-      formatPrice(p.price) +
+      (promo ? "<del>" + formatPrice(p.price) + "</del>" + formatPrice(finalPrice(p)) : formatPrice(p.price)) +
       "</div>" +
       (p.limited
         ? '<div class="shop-stock pdp-stock">' +
@@ -555,6 +610,7 @@
           stockText(p) +
           "</div>"
         : "") +
+      promoHtml() +
       '<p class="pdp-desc">' +
       texts.desc +
       '</p><div class="pdp-label">' +
@@ -591,12 +647,16 @@
         cta.setAttribute("aria-disabled", "true");
         label.textContent = t("shop.soldOut");
       } else if (size) {
+        const template = (p.limited ? "wa.orderLimited" : "wa.order") + (promo ? "Promo" : "");
         cta.href = waUrl(
-          fill(t(p.limited ? "wa.orderLimited" : "wa.order"), {
+          fill(t(template), {
             product: texts.name,
             color: texts.color,
             size: size,
             price: formatPrice(p.price),
+            code: promo ? promo.code : "",
+            percent: promo ? promo.percent : "",
+            final: formatPrice(finalPrice(p)),
           })
         );
         cta.classList.remove("is-disabled");
@@ -609,6 +669,34 @@
         label.textContent = t("shop.chooseSize");
       }
     };
+
+    const promoForm = view.querySelector(".promo");
+    if (promoForm) {
+      promoForm.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = promoForm.querySelector("input");
+        const msg = promoForm.querySelector(".promo-msg");
+        const code = normalizeCode(input.value);
+        if (!code) return;
+        const match = await findPromo(code);
+        if (match) {
+          promo = { code: code, percent: match.percent };
+          savePromo();
+          renderShop();
+        } else {
+          msg.textContent = t("shop.promoInvalid");
+          msg.classList.add("is-error");
+        }
+      });
+    }
+    const promoRemove = view.querySelector(".promo-remove");
+    if (promoRemove) {
+      promoRemove.addEventListener("click", () => {
+        promo = null;
+        savePromo();
+        renderShop();
+      });
+    }
 
     sizeButtons.forEach((btn) => {
       btn.addEventListener("click", () => {

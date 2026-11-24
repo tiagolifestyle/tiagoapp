@@ -2055,6 +2055,101 @@ p {
   font-weight: 700;
 }
 
+.pdp-price del {
+  margin-right: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration-thickness: 2px;
+}
+
+/* Código promocional */
+.promo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.promo .pdp-label {
+  margin-top: 0;
+}
+
+.promo-row {
+  display: flex;
+  gap: 8px;
+}
+
+.promo-row input {
+  flex: 1;
+  min-width: 0;
+  height: 46px;
+  padding: 0 14px;
+  border: 1px solid var(--line-light);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.promo-row input::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.promo-row input:focus {
+  outline: 2px solid var(--gold);
+  outline-offset: 1px;
+  border-color: var(--gold);
+}
+
+.promo-row .btn {
+  min-height: 46px;
+}
+
+.promo-msg {
+  margin: 0;
+  font-size: 13px;
+}
+
+.promo-msg:empty {
+  display: none;
+}
+
+.promo-msg.is-error {
+  color: #b3261e;
+}
+
+.promo-applied {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: rgba(201, 162, 39, 0.14);
+  color: var(--gold-deep);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.promo-remove {
+  flex: none;
+  min-height: 32px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
 .pdp-desc {
   margin: 0;
   color: var(--ink-soft);
