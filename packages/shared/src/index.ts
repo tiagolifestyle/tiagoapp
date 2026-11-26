@@ -1,6 +1,7 @@
 export * from "./database.types";
 export * from "./levels";
 export * from "./habits";
+export * from "./questionnaires";
 export * from "./supabase/client";
 export * from "./i18n/resources";
 

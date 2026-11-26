@@ -170,6 +170,26 @@
     "anonymous": "Anonymous",
     "empty": "There are no exercises in the records yet."
   },
+  "questionnaires": {
+    "title": "Questionnaires",
+    "training": "Training questionnaire",
+    "postpartum": "Postpartum questionnaire",
+    "nutrition": "Nutrition questionnaire",
+    "pending": "To fill in",
+    "done": "Completed ✓",
+    "hint": "Only answer what applies to you. You can update your answers whenever you like.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved ✓",
+    "saveError": "Couldn't save. Please try again.",
+    "lastUpdated": "Last updated: {{date}}",
+    "fullName": "Full name",
+    "date": "Date",
+    "autoDate": "set automatically when you save",
+    "namePlaceholder": "full name",
+    "otherPlaceholder": "Write here…",
+    "bmiAuto": "Calculated automatically from your height and weight."
+  },
   "dishes": {
     "button": "Special dishes",
     "subtitle": "Meal ideas to adapt to your plan",

@@ -1,9 +1,16 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { View, Text, ScrollView, Pressable, Linking, Switch, TextInput } from "react-native";
+import { router, useFocusEffect } from "expo-router";
 import { useTranslation } from "react-i18next";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
-import { supportedLocales, type SupportedLocale, type SubscriptionTier } from "@tiagolifestyle/shared";
+import {
+  QUESTIONNAIRE_KINDS,
+  supportedLocales,
+  type QuestionnaireKind,
+  type SupportedLocale,
+  type SubscriptionTier,
+} from "@tiagolifestyle/shared";
 import { useAuth } from "@/context/AuthContext";
 import { useTheme, type ThemeMode } from "@/context/ThemeContext";
 import { supabase } from "@/lib/supabase";
@@ -17,6 +24,12 @@ const localeLabels: Record<SupportedLocale, string> = {
 };
 
 const THEME_MODES: ThemeMode[] = ["dark", "light"];
+
+const QUESTIONNAIRE_ICONS: Record<QuestionnaireKind, keyof typeof Ionicons.glyphMap> = {
+  training: "barbell-outline",
+  postpartum: "heart-outline",
+  nutrition: "nutrition-outline",
+};
 
 // O mesmo nome curto que o ranking mostra quando o cliente não tem alcunha ("Tiago C.").
 function shortName(fullName: string | undefined): string {
@@ -39,6 +52,19 @@ export default function ProfileScreen() {
   const [savedNickname, setSavedNickname] = useState(profile?.ranking_nickname ?? "");
   const [nickname, setNickname] = useState(profile?.ranking_nickname ?? "");
   const [nicknameStatus, setNicknameStatus] = useState<"saving" | "saved" | "taken" | "invalid" | "error" | null>(null);
+  const [filledQuestionnaires, setFilledQuestionnaires] = useState<QuestionnaireKind[]>([]);
+
+  // Estado dos questionários (preenchido / por preencher), atualizado ao voltar a este separador.
+  useFocusEffect(
+    useCallback(() => {
+      if (!profile) return;
+      supabase
+        .from("questionnaire_responses")
+        .select("kind")
+        .eq("client_id", profile.id)
+        .then(({ data }) => setFilledQuestionnaires((data ?? []).map((row) => row.kind as QuestionnaireKind)));
+    }, [profile])
+  );
 
   useEffect(() => {
     if (profile) {
@@ -134,6 +160,27 @@ export default function ProfileScreen() {
         <Card className="gap-1">
           <Text className="text-lg font-medium text-foreground">{profile?.full_name}</Text>
           <Text className="text-sm text-muted">{profile?.role === "client" ? "Cliente" : profile?.role}</Text>
+        </Card>
+
+        <Card className="gap-1">
+          <Text className="mb-1 text-base font-medium text-foreground">{t("questionnaires.title")}</Text>
+          {QUESTIONNAIRE_KINDS.map((kind) => {
+            const filled = filledQuestionnaires.includes(kind);
+            return (
+              <Pressable
+                key={kind}
+                onPress={() => router.push({ pathname: "/(client)/questionnaire", params: { kind } })}
+                className="flex-row items-center gap-3 py-3 active:opacity-70"
+              >
+                <Ionicons name={QUESTIONNAIRE_ICONS[kind]} size={20} color="#C9A227" />
+                <Text className="flex-1 text-base text-foreground">{t(`questionnaires.${kind}`)}</Text>
+                <Text className={`text-xs ${filled ? "font-semibold text-success" : "text-muted"}`}>
+                  {filled ? t("questionnaires.done") : t("questionnaires.pending")}
+                </Text>
+                <Ionicons name="chevron-forward" size={16} color="#9A9AA5" />
+              </Pressable>
+            );
+          })}
         </Card>
 
         <Card className="gap-3">

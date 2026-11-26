@@ -170,6 +170,26 @@
     "anonymous": "Anónimo",
     "empty": "Ainda não há exercícios nos recordes."
   },
+  "questionnaires": {
+    "title": "Questionários",
+    "training": "Questionário de treino",
+    "postpartum": "Questionário pós-parto",
+    "nutrition": "Questionário alimentar",
+    "pending": "Por preencher",
+    "done": "Preenchido ✓",
+    "hint": "Responde só ao que se aplica a ti. Podes atualizar as respostas sempre que quiseres.",
+    "save": "Guardar",
+    "saving": "A guardar…",
+    "saved": "Guardado ✓",
+    "saveError": "Não foi possível guardar. Tenta novamente.",
+    "lastUpdated": "Última atualização: {{date}}",
+    "fullName": "Nome completo",
+    "date": "Data",
+    "autoDate": "automática ao guardar",
+    "namePlaceholder": "nome completo",
+    "otherPlaceholder": "Escreve aqui…",
+    "bmiAuto": "Calculado automaticamente com a altura e o peso."
+  },
   "dishes": {
     "button": "Pratos especiais",
     "subtitle": "Ideias de refeições para adaptar ao teu plano",
