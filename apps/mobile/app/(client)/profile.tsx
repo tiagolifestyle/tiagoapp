@@ -26,7 +26,8 @@ function shortName(fullName: string | undefined): string {
 }
 
 const WEBSITE_URL = "https://www.tiagolifestyle.com/";
-const INSTAGRAM_URL = "https://www.instagram.com/tiagolifestyle_93/";
+const INSTAGRAM_POSTPARTUM_URL = "https://www.instagram.com/tiagolifestyle_93/";
+const INSTAGRAM_HYPERTROPHY_URL = "https://www.instagram.com/tiagolifestyle_100/";
 
 export default function ProfileScreen() {
   const { t, i18n } = useTranslation();
@@ -221,20 +222,27 @@ export default function ProfileScreen() {
 
         <Card className="gap-3">
           <Text className="text-base font-medium text-foreground">TiagoLifeStyle</Text>
+          <Pressable
+            onPress={() => Linking.openURL(WEBSITE_URL)}
+            className="flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
+          >
+            <Ionicons name="globe-outline" size={18} color="#C9A227" />
+            <Text className="text-foreground">{t("profile.website")}</Text>
+          </Pressable>
           <View className="flex-row gap-3">
             <Pressable
-              onPress={() => Linking.openURL(WEBSITE_URL)}
-              className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
-            >
-              <Ionicons name="globe-outline" size={18} color="#C9A227" />
-              <Text className="text-foreground">{t("profile.website")}</Text>
-            </Pressable>
-            <Pressable
-              onPress={() => Linking.openURL(INSTAGRAM_URL)}
+              onPress={() => Linking.openURL(INSTAGRAM_POSTPARTUM_URL)}
               className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
             >
               <Ionicons name="logo-instagram" size={18} color="#C9A227" />
-              <Text className="text-foreground">Instagram</Text>
+              <Text className="text-foreground">{t("profile.instagramPostpartum")}</Text>
+            </Pressable>
+            <Pressable
+              onPress={() => Linking.openURL(INSTAGRAM_HYPERTROPHY_URL)}
+              className="flex-1 flex-row items-center justify-center gap-2 rounded-2xl border border-border px-4 py-3 active:opacity-80"
+            >
+              <Ionicons name="logo-instagram" size={18} color="#C9A227" />
+              <Text className="text-foreground">{t("profile.instagramHypertrophy")}</Text>
             </Pressable>
           </View>
         </Card>
