@@ -226,6 +226,8 @@ window.I18N = {
       text: "Conta-me pelo WhatsApp e começamos hoje.",
       whatsapp: "Falar no WhatsApp",
       instagram: "Seguir no Instagram",
+      igPostpartum: "Pós-parto",
+      igHypertrophy: "Hipertrofia",
     },
     footer: {
       tagline: "Coaching de fitness personalizado.",
@@ -471,6 +473,8 @@ window.I18N = {
       text: "Cuéntamelo por WhatsApp y empezamos hoy.",
       whatsapp: "Hablar por WhatsApp",
       instagram: "Seguir en Instagram",
+      igPostpartum: "Posparto",
+      igHypertrophy: "Hipertrofia",
     },
     footer: {
       tagline: "Coaching fitness personalizado.",
@@ -716,6 +720,8 @@ window.I18N = {
       text: "Tell me on WhatsApp and let's start today.",
       whatsapp: "Chat on WhatsApp",
       instagram: "Follow on Instagram",
+      igPostpartum: "Postpartum",
+      igHypertrophy: "Hypertrophy",
     },
     footer: {
       tagline: "Personalised fitness coaching.",

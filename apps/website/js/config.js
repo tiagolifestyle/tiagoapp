@@ -8,10 +8,11 @@ window.SITE_CONFIG = {
   // Ex.: Portugal 351912345678 · Espanha 34612345678
   whatsappNumber: "351966530401",
 
-  instagram: {
-    handle: "tiagolifestyle_93",
-    url: "https://www.instagram.com/tiagolifestyle_93/",
-  },
+  // Contas de Instagram. O "id" liga aos textos em i18n.js (final.ig<Id>) e aos botões do site.
+  instagram: [
+    { id: "postpartum", handle: "tiagolifestyle_93", url: "https://www.instagram.com/tiagolifestyle_93/" },
+    { id: "hypertrophy", handle: "tiagolifestyle_100", url: "https://www.instagram.com/tiagolifestyle_100/" },
+  ],
 
   // Links da app. Deixa "" enquanto não estiverem publicados — aparece "Em breve".
   appLinks: {

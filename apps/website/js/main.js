@@ -93,10 +93,10 @@
       el.href = waUrl(t("wa." + el.dataset.wa));
     });
     document.querySelectorAll("[data-instagram]").forEach((el) => {
-      el.href = CONFIG.instagram.url;
-    });
-    document.querySelectorAll(".ig-handle").forEach((el) => {
-      el.textContent = "@" + CONFIG.instagram.handle;
+      const account = CONFIG.instagram.find((a) => a.id === el.dataset.instagram);
+      el.href = account.url;
+      const handle = el.querySelector(".ig-handle");
+      if (handle) handle.textContent = "@" + account.handle;
     });
   }
 
