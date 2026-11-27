@@ -457,6 +457,7 @@
       const items = productsIn(cat.id);
       if (items.length) {
         // Um cartão por tipo: selo com a categoria (ex.: T-shirts) e título com o tipo (ex.: Manga curta).
+        // Sem tipo, o título repete a categoria (ex.: Leggings).
         const types = typesIn(cat.id);
         return (types.length ? types : [null])
           .map((type) => {
@@ -467,7 +468,9 @@
               '"><div class="shop-cat-media"><img src="' +
               group[0].images[0] +
               '" alt="" width="1024" height="1024" loading="lazy"/>' +
-              (type ? '<span class="product-soon">' + name + "</span>" : "") +
+              '<span class="product-soon">' +
+              name +
+              "</span>" +
               '</div><div class="shop-cat-body"><h3>' +
               (type ? t("shop.types." + type) : name) +
               "</h3><span>" +
