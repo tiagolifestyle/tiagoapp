@@ -201,6 +201,11 @@ window.I18N = {
           desc: "Manga curta, ideal para o verão. Logo TLS à frente e «JUST LIFT.» nas costas.",
           color: "Preto",
         },
+        "no-days-off-tee": {
+          name: "T-shirt No Days Off",
+          desc: "Manga curta, para o ginásio e para o dia a dia. Logo TLS branco ao centro, à frente, e «NO DAYS OFF» em estilo grafíti com halteres nas costas.",
+          color: "Preto",
+        },
         "leggings-tls": {
           name: "Leggings TLS",
           desc: "Leggings para ginásio e desporto. Tecido elástico e confortável, que acompanha todos os movimentos, com o logo TLS dourado na perna.",
@@ -454,6 +459,11 @@ window.I18N = {
           desc: "Manga corta, perfecta para el verano. Logo TLS delante y «JUST LIFT.» en la espalda.",
           color: "Negro",
         },
+        "no-days-off-tee": {
+          name: "Camiseta No Days Off",
+          desc: "Manga corta, para el gimnasio y el día a día. Logo TLS blanco centrado delante y «NO DAYS OFF» en estilo grafiti con mancuernas en la espalda.",
+          color: "Negro",
+        },
         "leggings-tls": {
           name: "Leggings TLS",
           desc: "Leggings para gimnasio y deporte. Tejido elástico y cómodo, que acompaña cada movimiento, con el logo TLS dorado en la pierna.",
@@ -705,6 +715,11 @@ window.I18N = {
         "just-lift-tee": {
           name: "Just Lift Tee",
           desc: "Short sleeve, made for summer. TLS logo on the front and “JUST LIFT.” down the back.",
+          color: "Black",
+        },
+        "no-days-off-tee": {
+          name: "No Days Off Tee",
+          desc: "Short sleeve, for the gym and everyday wear. White TLS logo centred on the front and “NO DAYS OFF” in graffiti style with dumbbells on the back.",
           color: "Black",
         },
         "leggings-tls": {

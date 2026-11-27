@@ -77,6 +77,16 @@ window.SITE_CONFIG = {
       images: ["assets/img/shop/just-lift-front.webp", "assets/img/shop/just-lift-back.webp"],
     },
     {
+      id: "no-days-off-tee",
+      category: "tshirts",
+      price: 32.99,
+      sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+      soldOut: [],
+      swatch: "#111111",
+      type: "short-sleeve",
+      images: ["assets/img/shop/no-days-off-front.webp", "assets/img/shop/no-days-off-back.webp"],
+    },
+    {
       id: "leggings-tls",
       category: "leggings",
       price: 34.99,
