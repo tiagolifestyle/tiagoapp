@@ -48,6 +48,7 @@ window.SITE_CONFIG = {
   //  - tone: cor do fundo do cartão — "black" | "cream" | "sand"
   shopCategories: [
     { id: "tshirts", icon: "tshirt", tone: "black" },
+    { id: "leggings", icon: "leggings", tone: "black" },
     { id: "pants", icon: "leggings", tone: "sand" },
     { id: "hoodies", icon: "hoodie", tone: "black" },
     { id: "towels", icon: "towel", tone: "cream" },
@@ -74,6 +75,15 @@ window.SITE_CONFIG = {
       swatch: "#111111",
       type: "short-sleeve",
       images: ["assets/img/shop/just-lift-front.webp", "assets/img/shop/just-lift-back.webp"],
+    },
+    {
+      id: "leggings-tls",
+      category: "leggings",
+      price: 34.99,
+      sizes: ["XS", "S", "M", "L", "XL", "XXL"],
+      soldOut: [],
+      swatch: "#111111",
+      images: ["assets/img/shop/leggings-tls-front.webp", "assets/img/shop/leggings-tls-back.webp"],
     },
     {
       id: "dios-posible",

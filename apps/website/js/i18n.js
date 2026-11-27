@@ -167,6 +167,7 @@ window.I18N = {
       notify: "Avisa-me quando chegar",
       categories: {
         tshirts: "T-shirts",
+        leggings: "Leggings",
         pants: "Calças",
         hoodies: "Hoodies",
         towels: "Toalhas",
@@ -197,12 +198,17 @@ window.I18N = {
       products: {
         "just-lift-tee": {
           name: "T-shirt Just Lift",
-          desc: "Manga curta, ideal para o verão. Logo LTS à frente e «JUST LIFT.» nas costas.",
+          desc: "Manga curta, ideal para o verão. Logo TLS à frente e «JUST LIFT.» nas costas.",
+          color: "Preto",
+        },
+        "leggings-tls": {
+          name: "Leggings TLS",
+          desc: "Leggings para ginásio e desporto. Tecido elástico e confortável, que acompanha todos os movimentos, com o logo TLS dourado na perna.",
           color: "Preto",
         },
         "dios-posible": {
           name: "Dios-Posible",
-          desc: "Manga curta. Logo LTS dourado à frente e, nas costas, «IMPOSIBLE» transformado em «POSIBLE» com «DIOS» em cruz, com estampado dourado. Edição limitada com NFC gravado com o teu nome na nossa página web.",
+          desc: "Manga curta. Logo TLS dourado à frente e, nas costas, «IMPOSIBLE» transformado em «POSIBLE» com «DIOS» em cruz, com estampado dourado. Edição limitada com NFC gravado com o teu nome na nossa página web.",
           color: "Preto",
         },
       },
@@ -414,6 +420,7 @@ window.I18N = {
       notify: "Avísame cuando llegue",
       categories: {
         tshirts: "Camisetas",
+        leggings: "Leggings",
         pants: "Pantalones",
         hoodies: "Sudaderas",
         towels: "Toallas",
@@ -444,12 +451,17 @@ window.I18N = {
       products: {
         "just-lift-tee": {
           name: "Camiseta Just Lift",
-          desc: "Manga corta, perfecta para el verano. Logo LTS delante y «JUST LIFT.» en la espalda.",
+          desc: "Manga corta, perfecta para el verano. Logo TLS delante y «JUST LIFT.» en la espalda.",
+          color: "Negro",
+        },
+        "leggings-tls": {
+          name: "Leggings TLS",
+          desc: "Leggings para gimnasio y deporte. Tejido elástico y cómodo, que acompaña cada movimiento, con el logo TLS dorado en la pierna.",
           color: "Negro",
         },
         "dios-posible": {
           name: "Dios-Posible",
-          desc: "Manga corta. Logo LTS dorado delante y, en la espalda, «IMPOSIBLE» convertido en «POSIBLE» con «DIOS» en cruz, estampado en dorado. Edición limitada con NFC grabado con tu nombre en nuestra página web.",
+          desc: "Manga corta. Logo TLS dorado delante y, en la espalda, «IMPOSIBLE» convertido en «POSIBLE» con «DIOS» en cruz, estampado en dorado. Edición limitada con NFC grabado con tu nombre en nuestra página web.",
           color: "Negro",
         },
       },
@@ -661,6 +673,7 @@ window.I18N = {
       notify: "Notify me",
       categories: {
         tshirts: "T-shirts",
+        leggings: "Leggings",
         pants: "Pants",
         hoodies: "Hoodies",
         towels: "Towels",
@@ -691,12 +704,17 @@ window.I18N = {
       products: {
         "just-lift-tee": {
           name: "Just Lift Tee",
-          desc: "Short sleeve, made for summer. LTS logo on the front and “JUST LIFT.” down the back.",
+          desc: "Short sleeve, made for summer. TLS logo on the front and “JUST LIFT.” down the back.",
+          color: "Black",
+        },
+        "leggings-tls": {
+          name: "Leggings TLS",
+          desc: "Leggings for the gym and sport. Stretchy, comfortable fabric that moves with you, with the gold TLS logo on the leg.",
           color: "Black",
         },
         "dios-posible": {
           name: "Dios-Posible",
-          desc: "Short sleeve. Gold LTS logo on the front and, on the back, “IMPOSIBLE” turned into “POSIBLE” with “DIOS” forming a cross, printed in gold. Limited edition with an NFC chip engraved with your name on our website.",
+          desc: "Short sleeve. Gold TLS logo on the front and, on the back, “IMPOSIBLE” turned into “POSIBLE” with “DIOS” forming a cross, printed in gold. Limited edition with an NFC chip engraved with your name on our website.",
           color: "Black",
         },
       },
