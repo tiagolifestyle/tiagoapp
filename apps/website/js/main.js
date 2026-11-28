@@ -77,6 +77,7 @@
     renderTicker();
     renderPlans();
     renderShop();
+    renderCart();
     updateStoreButtons();
     updateStaticLinks();
   }
@@ -368,7 +369,7 @@
     return Math.round(product.price * (100 - promo.percent)) / 100;
   }
 
-  function promoHtml() {
+  function promoHtml(place) {
     if (promo) {
       return (
         '<div class="promo-applied" role="status"><span>' +
@@ -379,14 +380,309 @@
       );
     }
     return (
-      '<form class="promo" novalidate><label class="pdp-label" for="promo-code">' +
+      '<form class="promo" novalidate><label class="pdp-label" for="promo-code-' +
+      place +
+      '">' +
       t("shop.promoLabel") +
-      '</label><div class="promo-row"><input id="promo-code" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="' +
+      '</label><div class="promo-row"><input id="promo-code-' +
+      place +
+      '" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="' +
       t("shop.promoPlaceholder") +
       '"/><button type="submit" class="btn btn-dark btn-sm">' +
       t("shop.promoApply") +
       '</button></div><p class="promo-msg" role="status"></p></form>'
     );
+  }
+
+  // A caixa do código funciona igual na página da peça e no carrinho.
+  function bindPromo(root) {
+    const form = root.querySelector(".promo");
+    if (form) {
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const input = form.querySelector("input");
+        const msg = form.querySelector(".promo-msg");
+        const code = normalizeCode(input.value);
+        if (!code) return;
+        const match = await findPromo(code);
+        if (match) {
+          promo = { code: code, percent: match.percent };
+          savePromo();
+          renderShop();
+          renderCart();
+        } else {
+          msg.textContent = t("shop.promoInvalid");
+          msg.classList.add("is-error");
+        }
+      });
+    }
+    const remove = root.querySelector(".promo-remove");
+    if (remove) {
+      remove.addEventListener("click", () => {
+        promo = null;
+        savePromo();
+        renderShop();
+        renderCart();
+      });
+    }
+  }
+
+  // ---------- Carrinho ----------
+
+  // Linhas do carrinho: { id, size, qty }. Fica guardado no browser do cliente.
+  const CART_KEY = "tls-cart";
+  let cart = loadCart();
+  // Quantidade escolhida na página de cada peça (volta a 1 depois de adicionar).
+  const shopQty = {};
+  let toastTimer = null;
+
+  function productById(id) {
+    return CONFIG.products.find((p) => p.id === id);
+  }
+
+  // Edição limitada: não deixa pôr no carrinho mais do que as unidades que restam.
+  function maxQty(product) {
+    return product.limited ? product.limited.left : Infinity;
+  }
+
+  function cartQtyOf(id) {
+    return cart.filter((line) => line.id === id).reduce((sum, line) => sum + line.qty, 0);
+  }
+
+  function loadCart() {
+    let lines = [];
+    try {
+      lines = JSON.parse(localStorage.getItem(CART_KEY)) || [];
+    } catch (e) {}
+    if (!Array.isArray(lines)) return [];
+    // Ignora peças que já não existem, tamanhos que já não há e edições esgotadas.
+    const clean = [];
+    lines.forEach((line) => {
+      const p = line && productById(line.id);
+      if (!p || !p.sizes.includes(line.size) || isSoldOut(p)) return;
+      const used = clean.filter((l) => l.id === p.id).reduce((sum, l) => sum + l.qty, 0);
+      const qty = Math.min(Math.max(1, Math.floor(Number(line.qty)) || 1), maxQty(p) - used);
+      if (qty > 0) clean.push({ id: p.id, size: line.size, qty: qty });
+    });
+    return clean;
+  }
+
+  function saveCart() {
+    try {
+      localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    } catch (e) {}
+  }
+
+  function addToCart(id, size, qty) {
+    const p = productById(id);
+    const add = Math.min(qty, maxQty(p) - cartQtyOf(id));
+    if (add <= 0) return 0;
+    const line = cart.find((l) => l.id === id && l.size === size);
+    if (line) line.qty += add;
+    else cart.push({ id: id, size: size, qty: add });
+    saveCart();
+    renderCart();
+    return add;
+  }
+
+  // Valores em cêntimos, para as contas não terem erros de arredondamento.
+  function cents(price) {
+    return Math.round(price * 100);
+  }
+
+  function money(amountCents) {
+    return formatPrice(amountCents / 100);
+  }
+
+  function cartTotals() {
+    const subtotal = cart.reduce((sum, line) => sum + cents(productById(line.id).price) * line.qty, 0);
+    const discount = promo ? Math.round((subtotal * promo.percent) / 100) : 0;
+    return { subtotal: subtotal, discount: discount, total: subtotal - discount };
+  }
+
+  function cartMessage() {
+    const totals = cartTotals();
+    const lines = [t("wa.cartIntro")];
+    cart.forEach((line, i) => {
+      const p = productById(line.id);
+      const texts = t("shop.products." + p.id);
+      let text = fill(t("wa.cartLine"), {
+        n: i + 1,
+        product: texts.name + (p.limited ? t("wa.limitedSuffix") : ""),
+        color: texts.color,
+        size: line.size,
+        qty: line.qty,
+        price: money(cents(p.price)),
+      });
+      if (line.qty > 1) text += fill(t("wa.cartLineTotal"), { total: money(cents(p.price) * line.qty) });
+      lines.push(text);
+    });
+    lines.push("");
+    lines.push(fill(t("wa.cartSubtotal"), { amount: money(totals.subtotal) }));
+    lines.push(t("wa.cartShipping"));
+    if (promo) {
+      lines.push(fill(t("wa.cartPromo"), { code: promo.code, percent: promo.percent, amount: money(totals.discount) }));
+    }
+    lines.push(fill(t("wa.cartTotal"), { amount: money(totals.total) }));
+    return lines.join("\n");
+  }
+
+  function updateCartCount() {
+    const count = cart.reduce((sum, line) => sum + line.qty, 0);
+    const badge = document.querySelector(".cart-count");
+    badge.textContent = String(count);
+    badge.hidden = count === 0;
+  }
+
+  function qtyHtml(value, minusDisabled, plusDisabled) {
+    return (
+      '<div class="qty"><button type="button" data-qty="-1" aria-label="' +
+      t("shop.decrease") +
+      '"' +
+      (minusDisabled ? " disabled" : "") +
+      '><svg><use href="#i-minus"/></svg></button><span class="qty-value">' +
+      value +
+      '</span><button type="button" data-qty="1" aria-label="' +
+      t("shop.increase") +
+      '"' +
+      (plusDisabled ? " disabled" : "") +
+      '><svg><use href="#i-plus"/></svg></button></div>'
+    );
+  }
+
+  function renderCart() {
+    const body = document.getElementById("cart-body");
+    updateCartCount();
+
+    if (!cart.length) {
+      body.innerHTML =
+        '<div class="cart-empty"><svg><use href="#i-bag"/></svg><p>' +
+        t("shop.cartEmpty") +
+        '</p><a class="btn btn-dark btn-sm" href="#shop" data-cart-close>' +
+        t("shop.cartBrowse") +
+        "</a></div>";
+      return;
+    }
+
+    const items = cart
+      .map((line, i) => {
+        const p = productById(line.id);
+        const texts = t("shop.products." + p.id);
+        const full = cartQtyOf(p.id) >= maxQty(p);
+        return (
+          '<li class="cart-item" data-index="' +
+          i +
+          '"><img src="' +
+          p.images[0] +
+          '" alt="" width="1024" height="1024"/><div class="cart-item-info"><h3>' +
+          texts.name +
+          "</h3><p>" +
+          (p.limited ? t("shop.categories.limited") + " · " : "") +
+          texts.color +
+          " · " +
+          line.size +
+          '</p><div class="cart-item-row">' +
+          qtyHtml(line.qty, line.qty <= 1, full) +
+          "<strong>" +
+          money(cents(p.price) * line.qty) +
+          '</strong></div></div><button type="button" class="cart-remove" aria-label="' +
+          t("shop.cartRemove") +
+          " " +
+          texts.name +
+          '"><svg><use href="#i-trash"/></svg></button></li>'
+        );
+      })
+      .join("");
+
+    const totals = cartTotals();
+    body.innerHTML =
+      '<ul class="cart-items">' +
+      items +
+      '</ul><div class="cart-summary">' +
+      promoHtml("cart") +
+      '<dl class="cart-totals"><div><dt>' +
+      t("shop.subtotal") +
+      "</dt><dd>" +
+      money(totals.subtotal) +
+      "</dd></div><div><dt>" +
+      t("shop.shipping") +
+      '</dt><dd class="is-free">' +
+      t("shop.shippingFree") +
+      "</dd></div>" +
+      (promo
+        ? '<div class="is-discount"><dt>' +
+          fill(t("shop.discount"), { code: promo.code, percent: promo.percent }) +
+          "</dt><dd>-" +
+          money(totals.discount) +
+          "</dd></div>"
+        : "") +
+      '<div class="cart-total"><dt>' +
+      t("shop.total") +
+      "</dt><dd>" +
+      money(totals.total) +
+      '</dd></div></dl><a class="btn btn-gold cart-checkout" target="_blank" rel="noopener" href="' +
+      waUrl(cartMessage()) +
+      '"><svg><use href="#i-whatsapp"/></svg><span>' +
+      t("shop.checkout") +
+      '</span></a><p class="cart-note">' +
+      t("shop.cartNote") +
+      "</p></div>";
+
+    body.querySelectorAll(".cart-item").forEach((row) => {
+      const line = cart[Number(row.dataset.index)];
+      row.querySelectorAll("[data-qty]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          line.qty = Math.max(1, line.qty + Number(btn.dataset.qty));
+          const p = productById(line.id);
+          const over = cartQtyOf(p.id) - maxQty(p);
+          if (over > 0) line.qty -= over;
+          saveCart();
+          renderCart();
+        });
+      });
+      row.querySelector(".cart-remove").addEventListener("click", () => {
+        cart.splice(cart.indexOf(line), 1);
+        saveCart();
+        renderCart();
+        renderShop();
+      });
+    });
+    bindPromo(body);
+  }
+
+  function openCart() {
+    document.body.classList.add("cart-open");
+    document.querySelector(".cart-toggle").setAttribute("aria-expanded", "true");
+    hideToast();
+    setTimeout(() => document.querySelector(".cart-close").focus(), 50);
+  }
+
+  function closeCart() {
+    if (!document.body.classList.contains("cart-open")) return;
+    const wasInside = document.getElementById("cart").contains(document.activeElement);
+    document.body.classList.remove("cart-open");
+    const toggle = document.querySelector(".cart-toggle");
+    toggle.setAttribute("aria-expanded", "false");
+    if (wasInside) toggle.focus();
+  }
+
+  function showToast() {
+    const toast = document.getElementById("cart-toast");
+    toast.innerHTML =
+      '<svg><use href="#i-check"/></svg><span>' +
+      t("shop.added") +
+      '</span><button type="button">' +
+      t("shop.viewCart") +
+      "</button>";
+    toast.querySelector("button").addEventListener("click", openCart);
+    toast.classList.add("is-visible");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(hideToast, 4000);
+  }
+
+  function hideToast() {
+    clearTimeout(toastTimer);
+    document.getElementById("cart-toast").classList.remove("is-visible");
   }
 
   // A loja tem 3 vistas, escolhidas pelo endereço: #shop (categorias),
@@ -613,7 +909,7 @@
           stockText(p) +
           "</div>"
         : "") +
-      promoHtml() +
+      promoHtml("product") +
       '<p class="pdp-desc">' +
       texts.desc +
       '</p><div class="pdp-label">' +
@@ -628,7 +924,11 @@
       t("shop.size") +
       '">' +
       sizes +
-      '</div><a class="btn btn-gold pdp-cta" target="_blank" rel="noopener"><svg><use href="#i-whatsapp"/></svg><span></span></a><p class="pdp-note">' +
+      '</div><div class="pdp-label">' +
+      t("shop.quantity") +
+      '</div><div class="pdp-qty">' +
+      qtyHtml(1, true, false) +
+      '</div><button type="button" class="btn btn-gold pdp-cta"><svg><use href="#i-bag"/></svg><span></span></button><p class="pdp-note">' +
       t("shop.orderNote") +
       "</p></div></div>"
     );
@@ -641,65 +941,36 @@
     const label = cta.querySelector("span");
     const sizeButtons = view.querySelectorAll("[data-size]");
 
-    // O botão só encomenda depois de escolher o tamanho (e enquanto houver unidades).
+    const qtyValue = view.querySelector(".pdp-qty .qty-value");
+    const minus = view.querySelector('.pdp-qty [data-qty="-1"]');
+    const plus = view.querySelector('.pdp-qty [data-qty="1"]');
+
+    // Quantas ainda se podem pôr no carrinho (só conta na edição limitada).
+    const room = () => Math.max(1, maxQty(p) - cartQtyOf(id));
+
+    // O botão só adiciona depois de escolher o tamanho (e enquanto houver unidades).
     const updateCta = () => {
-      const size = isSoldOut(p) ? null : shopSize[id];
+      const qty = Math.min(shopQty[id] || 1, room());
+      shopQty[id] = qty;
+      qtyValue.textContent = String(qty);
+      minus.disabled = qty <= 1 || isSoldOut(p);
+      plus.disabled = qty >= room() || isSoldOut(p);
       if (isSoldOut(p)) {
-        cta.removeAttribute("href");
         cta.classList.add("is-disabled");
         cta.setAttribute("aria-disabled", "true");
         label.textContent = t("shop.soldOut");
-      } else if (size) {
-        const template = (p.limited ? "wa.orderLimited" : "wa.order") + (promo ? "Promo" : "");
-        cta.href = waUrl(
-          fill(t(template), {
-            product: texts.name,
-            color: texts.color,
-            size: size,
-            price: formatPrice(p.price),
-            code: promo ? promo.code : "",
-            percent: promo ? promo.percent : "",
-            final: formatPrice(finalPrice(p)),
-          })
-        );
+      } else if (shopSize[id]) {
         cta.classList.remove("is-disabled");
         cta.removeAttribute("aria-disabled");
-        label.textContent = t("shop.order");
+        label.textContent = t("shop.addToCart");
       } else {
-        cta.removeAttribute("href");
         cta.classList.add("is-disabled");
         cta.setAttribute("aria-disabled", "true");
         label.textContent = t("shop.chooseSize");
       }
     };
 
-    const promoForm = view.querySelector(".promo");
-    if (promoForm) {
-      promoForm.addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const input = promoForm.querySelector("input");
-        const msg = promoForm.querySelector(".promo-msg");
-        const code = normalizeCode(input.value);
-        if (!code) return;
-        const match = await findPromo(code);
-        if (match) {
-          promo = { code: code, percent: match.percent };
-          savePromo();
-          renderShop();
-        } else {
-          msg.textContent = t("shop.promoInvalid");
-          msg.classList.add("is-error");
-        }
-      });
-    }
-    const promoRemove = view.querySelector(".promo-remove");
-    if (promoRemove) {
-      promoRemove.addEventListener("click", () => {
-        promo = null;
-        savePromo();
-        renderShop();
-      });
-    }
+    bindPromo(view);
 
     sizeButtons.forEach((btn) => {
       btn.addEventListener("click", () => {
@@ -708,11 +979,24 @@
         updateCta();
       });
     });
-    cta.addEventListener("click", (e) => {
-      if (shopSize[id]) return;
-      e.preventDefault();
-      const first = view.querySelector("[data-size]:not(:disabled)");
-      if (first) first.focus();
+    [minus, plus].forEach((btn) => {
+      btn.addEventListener("click", () => {
+        shopQty[id] = Math.max(1, (shopQty[id] || 1) + Number(btn.dataset.qty));
+        updateCta();
+      });
+    });
+    cta.addEventListener("click", () => {
+      if (isSoldOut(p)) return;
+      if (!shopSize[id]) {
+        const first = view.querySelector("[data-size]:not(:disabled)");
+        if (first) first.focus();
+        return;
+      }
+      const added = addToCart(id, shopSize[id], shopQty[id] || 1);
+      shopQty[id] = 1;
+      updateCta();
+      if (added) showToast();
+      else openCart();
     });
     updateCta();
 
@@ -784,6 +1068,18 @@
     });
 
     window.addEventListener("hashchange", showShopFromHash);
+
+    document.querySelector(".cart-toggle").addEventListener("click", () => {
+      if (document.body.classList.contains("cart-open")) closeCart();
+      else openCart();
+    });
+    // Fecha com o ✕, tocando fora do carrinho, em "Ver a loja" ou com a tecla Esc.
+    document.addEventListener("click", (e) => {
+      if (e.target.closest("[data-cart-close]")) closeCart();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeCart();
+    });
 
     const header = document.querySelector(".site-header");
     const onScroll = () => {
